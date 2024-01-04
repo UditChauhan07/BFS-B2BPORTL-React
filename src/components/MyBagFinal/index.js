@@ -19,8 +19,7 @@ function MyBagFinal() {
   const { addOrder, orderQuantity } = useBag();
   const [begValue, setBegValue] = useState(fetchBeg());
   useEffect(() => {
-    if (begValue?.Account?.id && begValue?.Manufacturer?.id && begValue?.orderList?.length>0) {
-      console.log({begValue});
+    if (begValue) {
       setButtonActive(true);
     }
   }, []);
@@ -91,11 +90,10 @@ function MyBagFinal() {
                   </svg>
                 </button>
                 <h4>
-                  {buttonActive ? (
+                  {buttonActive && (
                     <>
                       <span> {localStorage.getItem("manufacturer")} | </span> {localStorage.getItem("Account")}
-                    </>):
-                    (<span>Empty bag</span>
+                    </>
                   )}
                 </h4>
               </div>
