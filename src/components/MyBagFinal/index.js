@@ -90,11 +90,10 @@ function MyBagFinal() {
                   </svg>
                 </button>
                 <h4>
-                  {buttonActive ? (
+                  {buttonActive && (
                     <>
                       <span> {localStorage.getItem("manufacturer")} | </span> {localStorage.getItem("Account")}
-                    </>):
-                    (<span>Empty bag</span>
+                    </>
                   )}
                 </h4>
               </div>
