@@ -6,6 +6,8 @@ import Header from "../components/All Headers/header/Header";
 import Footer from "../components/Footer/Footer";
 import Dashboard from "../components/Dashboard/Dashboard";
 import { useNavigate } from "react-router-dom";
+import MobileHeader from '../components/All Headers/mobileHeader/MobileHeader'
+
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -16,31 +18,32 @@ const DashboardPage = () => {
   }, []);
   return (
     <>
-      <div className="container  p-0">
-        <div className="row m-0 d-flex flex-column justify-content-around align-items-center">
+      <div className="container ">
+        <div className="row  ">
           {/* TopNav */}
-          <div className="col-12 p-0">
+          
             <TopNav />
-          </div>
+          
           <hr className="hrBgColor"></hr>
           {/* all headers */}
-          <div className="col-12 p-0">
+          
             <LogoHeader />
             <Header />
-          </div>
+            <MobileHeader/>
+          
           {/* dashboard */}
-          <div className="col-12 p-0">
+          
             <Dashboard />
-          </div>
+          
       </div>
           {/* footer */}
           
         </div>
             <HelpSection />
 
-            <div className="container">
+            
             <Footer />
-          </div>
+          
     </>
   );
 };

@@ -35,20 +35,22 @@ const Header = () => {
         </select>
         </p> */}
       <p className={`m-0  ${styles.text}`}>
-        <Link to="/sales-report" className="linkStyle">
-          Sales Report
+        <Link to="" className="linkStyle">
+                 
+          <div class="dropdown">
+  <a class=" dropdown-toggle"  role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  Report
+  </a>
+
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item">Newness Report</a></li>
+    <li><a class="dropdown-item">Comparison Report</a></li>
+  </ul>
+</div>
         </Link>
       </p>
-      <p className={`m-0  ${styles.text}`}>
-        <Link to="/newness-report" className="linkStyle">
-          Newness Report
-        </Link>
-      </p>
-      <p className={`m-0  ${styles.text}`}>
-        <Link to="/comparison-report" className="linkStyle">
-         Comparison Report
-        </Link>
-      </p>
+      
+      
     </div>
   );
 };

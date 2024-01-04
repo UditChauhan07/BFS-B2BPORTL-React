@@ -9,9 +9,8 @@ const TopNav = () => {
     <>
       {/* {userDetails?.status === 200 ? ( */}
       <>
-        <div
-          className={`${styles.topNav} d-flex justify-content-between  align-items-center gap-2 `}
-        >
+      <div className={styles.NeedNone}>
+        <div className={`${styles.topNav} d-flex justify-content-between  align-items-center gap-2 `}>
           <div className="d-flex justify-content-center align-items-center gap-2">
             <img src={"/assets/images/americanFlag.svg"} alt="img" />
             <div className={styles.vr}></div>
@@ -41,6 +40,7 @@ const TopNav = () => {
               </Link>
             </p>
           </div>
+        </div>
         </div>
       </>
       {/* ) : (

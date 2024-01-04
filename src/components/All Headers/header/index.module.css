@@ -8,6 +8,22 @@
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
+
+.text a{
+  color: #000;
+text-align: center;
+font-family: "Montserrat";
+font-size: 12px;
+font-style: normal;
+font-weight: 500;
+line-height: 32px; /* 266.667% */
+letter-spacing: 1.2px;
+text-transform: uppercase;
+text-decoration: none;
+}
+
+
+
 @media screen and (max-width: 1130px) and (min-width: 700px) {
   #main {
     flex-wrap: wrap;
@@ -16,7 +32,7 @@
     font-size: 10px !important;
   }
 }
-@media screen and (max-width: 700px) and (min-width: 200px) {
+@media screen and (max-width: 767.98px) and (min-width: 200px) {
   #main {
     display: none !important;
   }

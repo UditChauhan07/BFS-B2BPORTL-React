@@ -62,7 +62,6 @@
 
 .accordion {
   border-radius: 5px;
- 
   background: #fff;
 }
 
@@ -121,4 +120,36 @@ align-items: center;
 .arrowDown {
   transform: rotate(0deg);
   transition: transform 0.3s ease; /* Add smooth transition effect */
+}
+.warning {
+  color: #000;
+  font-family: Montserrat-500;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 2.2px;
+}
+.warningContent {
+  color: #000;
+  text-align: center;
+  font-family: Arial;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 1.12px;
+}
+.modalButton {
+  color: #fff;
+  font-family: Montserrat-600;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 1.4px;
+  background-color: #000;
+  width: 100px;
+  height: 30px;
+
 }

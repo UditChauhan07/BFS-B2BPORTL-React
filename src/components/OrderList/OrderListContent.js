@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import Styles from "./style.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ModalPage from "../Modal UI";
+import MyBagFinal from "./MyBagFinal";
+import { AuthCheck } from "../../lib/store";
+import axios from "axios";
 import TrackingStatus from "./TrackingStatus/TrackingStatus";
 import Orderstatus from "./OrderStatus/Orderstatus";
-
-import { Link } from "react-router-dom";
-import MyBagFinal from "./MyBagFinal";
+import { useParams } from "react-router-dom";
 
 
 
@@ -54,8 +55,15 @@ function OrderListContent({ data }) {
     );
   };
 
-  let size = 3;
 
+  let ab = localStorage.getItem("Api Data")
+  let headersList = {
+    "Accept": "*/*"
+  }
+
+  let Content = new FormData();
+  Content.append("key", JSON.parse(ab).data.access_token);
+  // Content.append("opportunity_id", opportunity);
 
   const MyBagId = (id) => {
     localStorage.setItem("OpportunityId",JSON.stringify(id))
@@ -95,10 +103,7 @@ function OrderListContent({ data }) {
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div> */}
             <div class="modal-body  mt-4">
-              <Orderstatus
-                TrackingData={Orderdata}
-                opportunityId={oppoId}
-              />
+              <Orderstatus />
             </div>
           </div>
         </div>
@@ -145,17 +150,21 @@ function OrderListContent({ data }) {
 
                   <div className={Styles.ProtuctInnerBox1}>
                     <ul>
-                      {item.OpportunityLineItems?.records.slice(0, size).map((ele) => {
+                      {item.OpportunityLineItems?.records.map((ele) => {
                         return (
                           <>
-                            <li>
+                            {/* <li>{ele.Name}</li> */}
+
+                            <li
+                              className={Styles.tool}
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              onClick={handleclick}
+                            >
                               {Viewmore
                                 ? ele.Name
                                 : `${ele.Name.slice(0, 31)}...`}
-
                             </li>
-
-
                           </>
                         );
                       })}
@@ -189,14 +198,14 @@ function OrderListContent({ data }) {
               <div className={Styles.StatusOrder}>
                 <div className={Styles.Status1}>
                   <h2 data-bs-toggle="modal" data-bs-target="#exampleModal1"
-                    // onClick={() => {
-                    //   setIsTrackingModal(true);
-                    // }}
-                    onClick={(e) => setoppoId(item.Id)}
+                  // onClick={() => {
+                  //   setIsTrackingModal(true);
+                  // }}
+                  onClick={handlemodal}
                   >
                     Tracking Status
                   </h2>
-                  <h3 data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={(e) => setoppoId(item.Id)}> Order Status</h3>
+                  <h3 data-bs-toggle="modal" data-bs-target="#exampleModal2">Order Status</h3>
                   <h4>Invoice </h4>
                 </div>
 

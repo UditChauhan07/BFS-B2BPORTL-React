@@ -10,6 +10,9 @@ import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
 import FilterSearch from "../components/FilterSearch";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import MobileHeader from '../components/All Headers/mobileHeader/MobileHeader'
+import Page from './page.module.css'
+
 
 const MyRetailersPage = () => {
   const { data: manufacturers } = useManufacturer();
@@ -44,14 +47,13 @@ const MyRetailersPage = () => {
       <div className="container p-0 ">
         <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center ">
           {/* TopNav */}
-          <div className="p-0">
-            <TopNav />
-          </div>
-          <hr className="hrBgColor"></hr>
+          <TopNav />
+                    <hr className="hrBgColor"></hr>
           {/* all headers */}
-          <div className="p-0">
+          
             <LogoHeader />
             <Header />
+            <MobileHeader/>
             <div className="filter-container">
               <FilterItem
                 label="Sort by"
@@ -96,9 +98,9 @@ const MyRetailersPage = () => {
                 CLEAR ALL
               </button>
             </div>
-          </div>
+         
           {/* my retailers */}
-          <div className="">
+          
             <MyRetailers
               pageData={data?.data}
               sortBy={sortBy}
@@ -115,13 +117,13 @@ const MyRetailersPage = () => {
           </div>
           {/* footer */}
       </div>
-        </div>
-          <div className="">
+        
+          
             <HelpSection />
-          </div>
-          <div className="container">
+          
+          
             <Footer />
-          </div>
+          
     </>
   );
 };

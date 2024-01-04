@@ -479,3 +479,10 @@ background-color: #fffac9 !important;
         border-right: 0px rgb(32, 32, 32) dashed;
     }
 }
+
+
+@media(max-width:767.98px){
+.head_topp{
+    display: none;
+}
+}

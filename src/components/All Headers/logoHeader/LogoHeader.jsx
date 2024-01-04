@@ -1,16 +1,15 @@
 import React from "react";
 import styles from "../topNav/index.module.css";
 import { Link } from "react-router-dom";
-import { useGlobal } from "../../../context/GlobalContext";
+import { useBag } from "../../../context/BagContext";
 
 const LogoHeader = () => {
-  const ordersQuantity = localStorage.getItem("categoryOrderQuantity");
-  const { orderQuantity } = useGlobal();
+  const { orderQuantity } = useBag();
 
   return (
     <>
       <div className={` ${styles.laptopMode}`}>
-        <div className="d-flex justify-content-between align-items-center col-lg-4 col-xl-3">
+        <div className={styles.lapSetting}>
           <p className={`m-0  ${styles.language}`}>
             <Link to="/my-retailers" className={`linkStyle`}>
               My Retailers
@@ -28,13 +27,13 @@ const LogoHeader = () => {
           </p>
         </div>
         {/* image div */}
-        <div className="d-flex justify-content-center align-items-center col-lg-4 col-xl-6">
+        <div className={styles.lapSetting}>
           <Link to="/dashboard" className={`linkStyle`}>
             <img src={"/assets/images/BFSG_logo.svg"} alt="img" />
           </Link>
         </div>
         {/* my bag */}
-        <div className="d-flex justify-content-between align-items-center col-lg-4 col-xl-3">
+        <div className={styles.lapSetting}>
           <p className={`m-0  ${styles.language}`}>
             <Link to="/dashboard" className={`linkStyle`}>
               Dashboard
@@ -45,10 +44,10 @@ const LogoHeader = () => {
             <img src={"/assets/images/searchIcon.svg"} alt="img" />
           </p>
           <p className={`m-0  ${styles.language}`}>
-          <Link to="/my-bag" className={`linkStyle`}>
-          My Bag ({orderQuantity??0})
+            <Link to="/my-bag" className={`linkStyle`}>
+              My Bag ({orderQuantity ?? 0})
             </Link>
-           </p>
+          </p>
         </div>
       </div>
     </>

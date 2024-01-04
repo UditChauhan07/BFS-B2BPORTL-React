@@ -15,8 +15,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../Loading";
 import { FilterItem } from "../FilterItem";
 import FilterSearch from "../FilterSearch";
-import { useGlobal } from "../../context/GlobalContext";
+
 import ModalPage from "../Modal UI";
+import { useBag } from "../../context/BagContext";
 
 const groupBy = function (xs, key) {
   return xs?.reduce(function (rv, x) {
@@ -26,7 +27,7 @@ const groupBy = function (xs, key) {
 };
 
 function Product() {
-  const { orderQuantity, setOrderQuantity } = useGlobal();
+  const { orderQuantity } = useBag();
 
   const { user } = useAuth();
   // const [searchParams] = useSearchParams();
@@ -42,14 +43,11 @@ function Product() {
     Sales_Rep__c: user?.data.Sales_Rep__c,
     Manufacturer: localStorage.getItem("ManufacturerId__c"),
     AccountId__c: localStorage.getItem("AccountId__c"),
-    //  Manufacturer: searchParams.get("manufacturerId"),
-    // AccountId__c: searchParams.get("accountId"),
   });
-  // console.log("data", data);
   const brandName = data?.data?.records?.[0]?.ManufacturerName__c;
 
-  const formattedData = useMemo(() => {
-    const groupedData = groupBy(data?.data?.records || [], "Category__c");
+  const groupProductDataByCategory = (productData) => {
+    const groupedData = groupBy(productData || [], "Category__c");
 
     const tester = [...(groupedData["TESTER"] || [])];
     delete groupedData["TESTER"];
@@ -64,71 +62,89 @@ function Product() {
     }
 
     return groupedData;
-  }, [data?.data?.records]);
-  // console.log(formattedData);
+  };
+
+  const formattedData = useMemo(
+    () => groupProductDataByCategory(data?.data?.records),
+    [data?.data?.records]
+  );
+
   const formattedFilterData = useMemo(() => {
-    let filteredData = { ...formattedData };
+    let finalFilteredProducts = { ...formattedData };
+
     if (categoryFilters?.length) {
       let newData = {};
-      Object.keys(filteredData)?.forEach((key) => {
+      Object.keys(finalFilteredProducts)?.forEach((key) => {
         if (categoryFilters?.includes(key)) {
-          newData[key] = filteredData[key];
+          newData[key] = finalFilteredProducts[key];
         }
       });
-      filteredData = { ...newData };
+      finalFilteredProducts = { ...newData };
     }
 
     if (productTypeFilter) {
       let newData = {};
-      Object.keys(filteredData)?.forEach((key) => {
+      Object.keys(finalFilteredProducts)?.forEach((key) => {
         if (productTypeFilter === "Pre-order") {
           if (key === "PREORDER") {
-            newData[key] = filteredData[key];
+            newData[key] = finalFilteredProducts[key];
           }
         } else {
           if (key !== "PREORDER") {
-            newData[key] = filteredData[key];
+            newData[key] = finalFilteredProducts[key];
           }
         }
       });
-      filteredData = { ...newData };
+      finalFilteredProducts = { ...newData };
     }
-    // not working
+
     if (searchBy) {
       let newData = {};
-      Object.keys(filteredData)?.forEach((key) => {
-        const values = filteredData[key];
-        // console.log(values);
-        newData = values?.filter((value) => value.Name?.toLowerCase().includes(searchBy?.toLowerCase()));
-        filteredData = { ...newData };
-
-        // console.log(filteredData);
-      });
+      const filteredProductsArray = Object.values(finalFilteredProducts)
+        ?.flat()
+        ?.filter((value) => {
+          return value.Name.toLowerCase().includes(searchBy?.toLowerCase());
+        });
+      newData = groupProductDataByCategory(filteredProductsArray);
+      finalFilteredProducts = { ...newData };
     }
 
     if (sortBy === "Price: Low To High") {
       let newData = {};
-      Object.keys(filteredData)?.forEach((key) => {
-        const value = filteredData[key];
+      Object.keys(finalFilteredProducts)?.forEach((key) => {
+        const value = finalFilteredProducts[key];
 
         value?.sort((a, b) => {
-          return +a?.usdRetail__c?.replace("$", "") - +b?.usdRetail__c?.replace("$", "");
+          return (
+            +a?.usdRetail__c?.replace("$", "") -
+            +b?.usdRetail__c?.replace("$", "")
+          );
         });
       });
     }
 
     if (sortBy === "Price: High To Low") {
       let newData = {};
-      Object.keys(filteredData)?.forEach((key) => {
-        const value = filteredData[key];
-        value?.sort((a, b) => +b?.usdRetail__c?.replace("$", "") - +a?.usdRetail__c?.replace("$", ""));
+      Object.keys(finalFilteredProducts)?.forEach((key) => {
+        const value = finalFilteredProducts[key];
+        value?.sort(
+          (a, b) =>
+            +b?.usdRetail__c?.replace("$", "") -
+            +a?.usdRetail__c?.replace("$", "")
+        );
       });
     }
 
-    return filteredData;
+    return finalFilteredProducts;
   }, [formattedData, categoryFilters, productTypeFilter, sortBy, searchBy]);
+
   useEffect(() => {
-    if (!(localStorage.getItem("ManufacturerId__c") && localStorage.getItem("AccountId__c"))) {
+    if (
+      !(
+        localStorage.getItem("ManufacturerId__c") &&
+        localStorage.getItem("AccountId__c")
+      )
+    ) {
       setRedirect(true);
     }
   }, []);
@@ -146,7 +162,8 @@ function Product() {
           content={
             <div>
               <p className="text-center">
-                Data is not available for selected Account and Manufacturer. <br></br>
+                Data is not available for selected Account and Manufacturer.{" "}
+                <br></br>
                 <br></br>
                 Redirecting to My Retailers page...
               </p>
@@ -201,7 +218,12 @@ function Product() {
                     setProductTypeFilter(value);
                   }}
                 />
-                <FilterSearch onChange={(e) => setSearchBy(e.target.value)} value={searchBy} placeholder={"Enter Product name"} width="155px" />
+                <FilterSearch
+                  onChange={(e) => setSearchBy(e.target.value)}
+                  value={searchBy}
+                  placeholder={"Enter Product name"}
+                  width="155px"
+                />
                 <button
                   className="border px-2.5 py-1 leading-tight"
                   onClick={() => {
@@ -230,7 +252,13 @@ function Product() {
                             }}
                           >
                             {" "}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" viewBox="0 0 24 16" fill="none">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="16"
+                              viewBox="0 0 24 16"
+                              fill="none"
+                            >
                               <path
                                 d="M8.94284 2.27615C9.46349 1.75544 9.46349 0.911229 8.94284 0.390521C8.42213 -0.130174 7.57792 -0.130174 7.05721 0.390521L2.3911 5.05666C2.39128 5.05648 2.39092 5.05684 2.3911 5.05666L0.390558 7.05721C0.153385 7.29442 0.024252 7.59868 0.00313201 7.90895C-0.00281464 7.99562 -0.000321319 8.08295 0.010852 8.17002C0.0431986 8.42308 0.148118 8.66868 0.325638 8.87322C0.348651 8.89975 0.372651 8.92535 0.397585 8.94989L7.05721 15.6095C7.57792 16.1302 8.42213 16.1302 8.94284 15.6095C9.46349 15.0888 9.46349 14.2446 8.94284 13.7239L4.55231 9.33335H22.6667C23.4031 9.33335 24 8.73642 24 8.00002C24 7.26362 23.4031 6.66668 22.6667 6.66668H4.55231L8.94284 2.27615Z"
                                 fill="black"
@@ -241,7 +269,8 @@ function Product() {
                         </h4>
 
                         <p>
-                          <span>Account</span>: {localStorage.getItem("Account")}
+                          <span>Account</span>:{" "}
+                          {localStorage.getItem("Account")}
                         </p>
                       </div>
 
@@ -262,8 +291,17 @@ function Product() {
                         </div>
 
                         <div className="col-lg-9 col-md-8 col-sm-12 ">
-                          <div className={`${styles.AccorBorder} overflow-auto`} style={{ height: "64vh", border: "1px dashed black" }}>
-                            <Accordion data={data} formattedData={formattedFilterData}></Accordion>
+                          <div
+                            className={`${styles.AccorBorder} overflow-auto`}
+                            style={{
+                              height: "64vh",
+                              border: "1px dashed black",
+                            }}
+                          >
+                            <Accordion
+                              data={data}
+                              formattedData={formattedFilterData}
+                            ></Accordion>
                           </div>
                           <div className={`${styles.TotalSide} px-3`}>
                             <h4>Total Number of Products : {orderQuantity}</h4>

@@ -19,7 +19,7 @@ const OrderListPage = () => {
           <div className="col-10">
             <LogoHeader />
             <Header />
-          {/* <div className="filter-container"></div> */}
+          <div className="filter-container"></div>
           </div>
           {/* Order list */}
           <OrderList/>

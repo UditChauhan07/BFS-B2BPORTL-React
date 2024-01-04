@@ -29,7 +29,7 @@ function OrderList() {
         getOrderList({
           user: {
             key: response.x_access_token,
-            Sales_Rep__c: "00530000005AdvsAAC" || response.Sales_Rep__c,
+            Sales_Rep__c: false?"00530000005AdvsAAC" : response.Sales_Rep__c,
           },
         })
           .then((order) => {
@@ -65,7 +65,10 @@ function OrderList() {
     setviewmore(!Viewmore);
   };
 
+  // const filteredArray = data?.filter((item) => {
+  //   return  console.log( item);item.AccountName.toLowerCase().includes(searchTextfilter.toLowerCase());
 
+  // })
   const handlefilter = (e) => {
     const search = e.target.value;
     const fill = data?.filter(
@@ -216,7 +219,7 @@ function OrderList() {
                 <>
                   <OrderListDataSort />
                 </>
-              ) : cards   ? (
+              ) : cards ? (
                 <>
                   <div className={Styles.orderStatement}>
                     {cards.map((item, index) => {

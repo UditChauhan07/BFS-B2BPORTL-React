@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import Page from '../pages/page.module.css'
 
 export const FilterItem = ({ label, options, onChange, minWidth, value }) => {
   const [selectedOption, setSelectedOption] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative filterItem">
+    <div className={`relative filterItem ${Page.FilterNoneClass}`}>
       <div
         className="flex justify-center items-center gap-1 leading-tight cursor-pointer select-none"
         onClick={() => {

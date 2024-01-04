@@ -52,3 +52,10 @@
         left: 125%;
     }
 }
+
+
+/* @media(max-width:768.98px){
+  .FilterNoneClass{
+    display: none;
+  }
+} */

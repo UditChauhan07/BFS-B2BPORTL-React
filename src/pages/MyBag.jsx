@@ -22,51 +22,6 @@ const MyBag = () => {
             <LogoHeader />
             <Header />
             <div className="filter-container">
-            {/* <FilterItem
-              label="Sort by"
-              value={sortBy}
-              options={[
-                {
-                  label: "Price: High To Low",
-                  value: "Price: High To Low",
-                },
-                {
-                  label: "Price: Low To High",
-                  value: "Price: Low To High",
-                },
-              ]}
-              onChange={(value) => {
-                setSortBy(value);
-              }}
-            />
-            <FilterItem
-              label="Product type"
-              value={productTypeFilter}
-              options={[
-                {
-                  label: "Wholesale",
-                  value: "Wholesale",
-                },
-                {
-                  label: "PREORDER",
-                  value: "Pre-order",
-                },
-              ]}
-              onChange={(value) => {
-                setProductTypeFilter(value);
-              }}
-            />
-            <FilterSearch onChange={(e) => setSearchBy(e.target.value)} value={searchBy} placeholder={"Enter Product name"} width="155px" />
-            <button
-              className="border px-2.5 py-1 leading-tight"
-              onClick={() => {
-                setSortBy("Price: High To Low");
-                setSearchBy("");
-                setProductTypeFilter("Wholesale");
-              }}
-            >
-              CLEAR ALL
-            </button> */}
           </div>
           </div>
           {/* My Bag */}

@@ -40,15 +40,36 @@
 }
 .laptopMode {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@media screen and (max-width: 426px) and (min-width: 200px) {
-  .topNav {
-    display: none !important;
+
+.lapSetting{
+  display: flex;
+  gap: 20px;
+  
+}
+
+
+
+
+
+ 
+
+
+@media screen and (max-width: 767.98px) and (min-width: 200px) {
+  .laptopMode{
+    display: none;
+  }
+
+  .NeedNone{
+    display: none;
   }
 }
 @media screen and (max-width: 900px) and (min-width: 200px) {
-  .laptopMode {
-    display: none !important;
-  }
+  
+  .lapSetting {
+    gap: 12px;
+}
 }

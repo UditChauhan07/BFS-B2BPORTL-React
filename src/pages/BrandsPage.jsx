@@ -10,6 +10,7 @@ import FilterSearch from "../components/FilterSearch";
 import { useManufacturer } from "../api/useManufacturer";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router";
+import MobileHeader from '../components/All Headers/mobileHeader/MobileHeader'
 
 import Page from './page.module.css'
 
@@ -79,6 +80,7 @@ const BrandsPage = () => {
         <div className="col-12 p-0">
           <LogoHeader />
           <Header />
+          <MobileHeader/>
           <div className="filter-container">
             <FilterItem
               minWidth="220px"

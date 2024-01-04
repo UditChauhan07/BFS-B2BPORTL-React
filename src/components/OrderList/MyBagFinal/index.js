@@ -2,56 +2,19 @@ import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Styles from './Styles.module.css'
 import Img1 from './Images/Eye1.png'
-import axios from 'axios';
-import Loading from '../../Loading';
-import { useNavigate } from 'react-router-dom';
 
 
 
-function MyBagFinal() {
-  const [OrderData, setOrderData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+function MyBagFinal({opportunityId}) {
+  console.log(opportunityId);
+ 
 
-  const navigate = useNavigate();
-
-
-
-  useEffect(() => {
-    getOrderDetails();
-  }, [])
-
-
-  const OrderId = JSON.parse(localStorage.getItem('OpportunityId'));
-  const Key = JSON.parse(localStorage.getItem('Api Data'));
-
-  let headersList = {
-    "Accept": "*/*",
-    'Content-Type': 'application/json;charset=UTF-8',
-  }
-
-  let BodyContent = new FormData();
-  BodyContent.append("key", Key.data.access_token);
-  BodyContent.append("opportunity_id", OrderId);
-
-  const getOrderDetails = async () => {
-    const response = await axios.post(`https://dev.beautyfashionsales.com/beauty/0DS68FOD7s`, BodyContent, headersList)
-    // console.log(response.data.data);
-    setOrderData(response.data.data)
-    setIsLoading(true);
-
-  }
-
-  const handleback = () =>{
-    navigate('/order-list')
-  }
-
-  if (!isLoading) return <Loading />;
-
+  
+ 
 
   return (
     <div>
       <section>
-      
         <div className='container mt-4'>
           <div>
             <div className={Styles.MyBagFinalTop}>
@@ -141,7 +104,7 @@ function MyBagFinal() {
                     </div>
 
                     <div className={Styles.ShipAdress2}>
-                      <h4>Note:-</h4>
+                      <h4>Note</h4>
                       <textarea placeholder='' />
                     </div>
 

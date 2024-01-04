@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <>
-      <div className="  align-items-start gap-2">
+    <div className="container">
+      <div className=" ">
         {/* left part */}
         <div className="row ">
           
@@ -76,7 +77,7 @@ const Footer = () => {
       </div>
       <div className={`mt-3 ${footerStyle.copyright}`}>2023 © Beauty Fashion Sales Group, Inc. All rights reserved.</div>
       </div>
-      
+      </div>
     </>
   );
 };

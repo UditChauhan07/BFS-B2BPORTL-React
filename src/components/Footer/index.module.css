@@ -1,5 +1,13 @@
 .textLarge {
-  font-size: 14px !important;
+    color: #000;
+text-align: center;
+font-family: "Montserrat";
+font-size: 14px;
+font-style: normal;
+font-weight: 500;
+line-height: 32px; /* 228.571% */
+letter-spacing: 1.4px;
+text-transform: uppercase;
 }
 .underline {
   text-decoration-line: underline;
@@ -48,9 +56,24 @@
   display: none;
 }
 
+.ControlHelp{
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+
+}
+
 
 
 @media(max-width:767px){
+  .ControlHelp{
+    display: block;
+    text-align: center;
+    justify-content: center;
+    gap: 5px;
+  
+  }
+
   .joinWebUs{
     display: none;
   }
