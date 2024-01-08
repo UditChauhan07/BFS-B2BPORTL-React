@@ -13,7 +13,7 @@ const MyRetailersPage = () => {
   const { data: manufacturers } = useManufacturer();
   const [searchParams] = useSearchParams();
   const manufacturerId = searchParams.get("manufacturerId");
- 
+
 
   // console.log(manufacturers);
   const { data, isLoading } = useRetailersData();
@@ -39,9 +39,9 @@ const MyRetailersPage = () => {
 
   return (
     <>
-<Layout>
-            <div>
-            <div className="col-12">
+      <Layout>
+        <div>
+          <div className="col-12">
             <div className="filter-container  ">
               <FilterItem
                 label="Sort by"
@@ -86,9 +86,9 @@ const MyRetailersPage = () => {
                 CLEAR ALL
               </button>
             </div>
-            </div>
-                <div>
-                <MyRetailers
+          </div>
+          <div>
+            <MyRetailers
               pageData={data?.data}
               sortBy={sortBy}
               searchBy={searchBy}
@@ -96,15 +96,15 @@ const MyRetailersPage = () => {
               filterBy={
                 manufacturerFilter
                   ? manufacturers?.data?.find(
-                      (manufacturer) => manufacturer.Id === manufacturerFilter
-                    )
+                    (manufacturer) => manufacturer.Id === manufacturerFilter
+                  )
                   : null
               }
             />
-   {/* <OrderStatusFormSection /> */}
-                </div>
-            </div>
-        </Layout>
+            {/* <OrderStatusFormSection /> */}
+          </div>
+        </div>
+      </Layout>
     </>
   );
 };

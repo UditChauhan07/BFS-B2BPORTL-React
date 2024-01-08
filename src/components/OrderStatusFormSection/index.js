@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
+import { Bootstrap, useEffect, useState } from "react";
 import styles from "./style.module.css"
 import { GetAuthData, getSupportFormRaw, postSupport, supportClear, supportDriveBeg, supportShare } from "../../lib/store";
 import { Link, useNavigate } from "react-router-dom";
+import $ from 'jquery';
+
+
+
+
+
 const OrderStatusFormSection = () => {
     const navigate = useNavigate();
     const [prioritiesList, setPrioritiesList] = useState([]);
     const [contactList, setContactList] = useState([]);
     const [supportTicketData, setTicket] = useState();
-    const [activeBtn,setActive] = useState(false)
+    const [activeBtn, setActive] = useState(false)
     useEffect(() => {
         let data = supportDriveBeg();
         setTicket(data)
@@ -38,28 +44,34 @@ const OrderStatusFormSection = () => {
             console.error({ error });
         })
     }
-    const onSubmitHandler = (e)=>{
+    const onSubmitHandler = (e) => {
         e.preventDefault();
         setActive(true);
-        GetAuthData().then((user)=>{
+        GetAuthData().then((user) => {
             supportTicketData.orderStatusForm.salesRepId = user.Sales_Rep__c;
             supportTicketData.key = user.x_access_token;
-            console.log({supportTicketData});
-            postSupport({rawData:supportTicketData}).then((response)=>{
-                if(response){
+            console.log({ supportTicketData });
+            postSupport({ rawData: supportTicketData }).then((response) => {
+                if (response) {
                     let flush = supportClear()
-                    if(flush) navigate("/CustomerSupportDetails?id="+response)
-                }else{
+                    if (flush) navigate("/CustomerSupportDetails?id=" + response)
+                } else {
                     alert("something went wrong..")
                 }
-            }).catch((err)=>{
-                console.error({err});
+            }).catch((err) => {
+                console.error({ err });
             })
-        }).catch((error)=>{
-            console.error({error});
+        }).catch((error) => {
+            console.error({ error });
         })
         return;
     }
+
+ 
+
+
+
+
     // return(<p></p>)
     return (<div className={styles.container}>
         <form className={styles.formContainer} onSubmit={onSubmitHandler}>
@@ -70,19 +82,28 @@ const OrderStatusFormSection = () => {
                     {prioritiesList.map((priority) => { return (<option value={priority.value} selected={priority.value == supportTicketData?.orderStatusForm?.priority}>{priority.name}</option>) })}
                 </select>
             </label>
-            <label className={styles.labelHolder}>
+            <label className={`search_select_box select  ${styles.labelHolder}`}>
                 Contact Name
-                <select onChange={(e) => { onChangeHandler('contactId', e.target.value) }} required>
-                    {contactList.map((priority) => { return (<option value={priority.Id} selected={priority.Id == supportTicketData?.orderStatusForm?.contactId}>{priority.Name}</option>) })}
+                <select onChange={(e) => { onChangeHandler('contactId', e.target.value) }} required class="ch" >
+                <option data-tokens="ketchup mustard">Hot Dog</option>
+                    {contactList.map((priority) => {
+                        return (
+
+                            <option value={priority.Id} selected={priority.Id == supportTicketData?.orderStatusForm?.contactId}>{priority.Name}</option>)
+                    })}
                 </select>
+           
             </label>
+
+
+
             <label className={styles.labelHolder}>
                 Describe your issues
                 <textarea required rows={4} onChange={(e) => { onChangeHandler('desc', e.target.value) }} value={supportTicketData?.orderStatusForm?.desc}></textarea>
             </label>
             <label><input type="checkbox" checked={supportTicketData?.orderStatusForm?.sendEmail} onChange={(e) => { onChangeHandler('sendEmail', e.target.checked) }} />&nbsp;Send Updates via email</label>
             <div className={styles.dFlex}> <Link to={'/order-list'} className={styles.btn}>Cancel</Link>
-                <input type="submit" className={styles.btn} value={"Submit"} disabled={activeBtn}/>
+                <input type="submit" className={styles.btn} value={"Submit"} disabled={activeBtn} />
             </div>
         </form>
     </div>)

@@ -19,8 +19,10 @@ const SelectBrandModel = ({ brands, onClose }) => {
           open
           content={
             <>
+
               <div style={{ maxWidth: "309px" }}>
                 <h1 className={`fs-5 ${modalStyles.ModalHeader}`}>Warning</h1>
+
                 <p className={` ${modalStyles.ModalContent}`}>
                   Please Select Manufacturer
                 </p>
@@ -39,21 +41,34 @@ const SelectBrandModel = ({ brands, onClose }) => {
         />
       ) : null}
       <div className="px-[68px] pb-[67px] pt-[40px] max-w-[900px]">
-        <section>
-          <h1 className="font-[Montserrat-500] text-[22px] tracking-[2.20px] mb-[20px]">
+        <section >
+          <div class="modal-header d-flex justify-content-end align-item-end" onClick={onClose}>
+            <button type="button" class="btn-close" aria-label="Close"></button>
+          </div>
+          <h1 className="font-[Montserrat-500] text-[22px] tracking-[2.20px] mb-[20px] text-center mt-4">
             Choose the Manufacturer
           </h1>
-
-          <div className={Styles.BrandInRadio}>
+   
+           <div className={Styles.BrandInRadio}>
             <div className={Styles.ModalResponsive}>
               {brands?.map((brand, index) => (
                 <div className={Styles.BrandName} key={index}>
                   <input
                     type="radio"
                     name="brand_names"
-                    // checked={selectedBrandAccountId === brand.AccountId__c}
-                    onChange={() => {
-                      // setSelectedBrandAccountId(brand.AccountId__c);
+
+                    // onChange={() => {
+                    //   setSelectedBrandManufacturer(true);
+                    //   localStorage.setItem(
+                    //     "manufacturer",
+                    //     brand.ManufacturerName__c
+                    //   );
+                    //   localStorage.setItem(
+                    //     "ManufacturerId__c",
+                    //     brand.ManufacturerId__c
+                    //   );
+                    // }}
+                    onClick={() => {
                       setSelectedBrandManufacturer(true);
                       localStorage.setItem(
                         "manufacturer",
@@ -63,7 +78,12 @@ const SelectBrandModel = ({ brands, onClose }) => {
                         "ManufacturerId__c",
                         brand.ManufacturerId__c
                       );
+                      navigate(`/product`);
+
+
                     }}
+
+
                     id={brand.ManufacturerName__c}
                   />
                   <label htmlFor={brand.ManufacturerName__c}>
@@ -74,10 +94,10 @@ const SelectBrandModel = ({ brands, onClose }) => {
             </div>
 
             <div className={Styles.BrandButton}>
-              <button className={Styles.Button1} onClick={onClose}>
+              {/* <button className={Styles.Button1} onClick={onClose}>
                 CANCEL
-              </button>
-              <button
+              </button> */}
+              {/* <button
                 className={Styles.Button2}
                 onClick={() => {
                   if (selectedBrandManufacturer) {
@@ -88,9 +108,11 @@ const SelectBrandModel = ({ brands, onClose }) => {
                 }}
               >
                 SUBMIT
-              </button>
+              </button> */}
             </div>
           </div>
+
+         
         </section>
       </div>
     </>

@@ -19,6 +19,31 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address }) => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
+      {/* RETAILER MODAL */}
+
+      {/* <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg ">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <SelectBrandModel brands={brands} />
+
+      
+            </div>
+
+          </div>
+        </div>
+      </div> */}
+
+
+
+
+
+
+
       <ModalPage open={modalOpen} onClose={() => setModalOpen(false)} content={<SelectBrandModel brands={brands} onClose={() => setModalOpen(false)} />} />
       <div
         className={`${Styles.Retailer} cursor-pointer flex`}
@@ -28,6 +53,7 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address }) => {
           localStorage.setItem("AccountId__c", accountId);
           localStorage.setItem("address", JSON.stringify(address));
         }}
+        // data-bs-toggle="modal" data-bs-target="#exampleModal"
       >
         <div className={`${Styles.mainRetailer} flex flex-col justify-between`}>
           <h2 className="leading-normal">{title}</h2>

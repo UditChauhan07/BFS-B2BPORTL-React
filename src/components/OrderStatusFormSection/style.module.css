@@ -1,4 +1,7 @@
-.container {
+
+ 
+ 
+ .container {
   width: 60%;
   margin: 2rem auto;
 }
@@ -69,6 +72,16 @@ color: #000;
 .dFlex{
   display: flex;
   margin: 1rem auto;
+}
+.search{
+
+  background-repeat: no-repeat;
+  font-size: 16px;
+  padding: 14px 20px 12px 45px;
+  /* border: none; */
+border: 3px solid black;
+  width: 50%;
+
 }
 @media (max-width: 769px) {
   .container {
