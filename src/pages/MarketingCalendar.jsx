@@ -25,15 +25,51 @@ const MarketingCalendar = () => {
     {value:"Re-Nutriv",label:"Re-Nutriv"},
     {value:"Victoria Beckham Beauty",label:"Victoria Beckham Beauty"}
   ]
+  const [months,setMonths]=useState(null);
+  let OCDDate = [
+    { value: null, label: "All" },
+    {value:"JAN",label:"JAN"},
+    {value:"FEB",label:"FEB"},
+    {value:"MARCH",label:"MARCH"},
+    {value:"APRIL;",label:"APRIL"},
+    {value:"MAY",label:"MAY"},
+    {value:"JUN",label:"JUN"},
+    {value:"JULY",label:"JULY"},
+    {value:"AUG",label:"AUG"},
+    {value:"SEP",label:"SEP"},
+    {value:"OCT",label:"OCT"},
+    {value:"NOV",label:"NOV"},
+    {value:"DEC",label:"DEC"},
+    
+  ]
   return (
     <AppLayout 
     filterNodes={
       <>
-        <FilterItem
+      {/* <FilterItem
+          minWidth="220px"
+          label="All Month"
+          value={months}
+          options={date}
+          onChange={(value) => {
+            setMonths(value)
+          }}
+        /> */}
+        {/* <FilterItem
           minWidth="220px"
           label="All Brand"
           value={brand}
           options={brands}
+          onChange={(value) => {
+            setBrand(value)
+          }}
+        /> */}
+         
+        <FilterItem
+          minWidth="220px"
+          label="All month"
+          value={months}
+          options={OCDDate}
           onChange={(value) => {
             setBrand(value)
           }}
@@ -42,6 +78,7 @@ const MarketingCalendar = () => {
               className="border px-2.5 py-1 leading-tight"
               onClick={() => {
                 setBrand(null)
+                setMonths(null)
               }}
             >
               CLEAR ALL
@@ -50,6 +87,7 @@ const MarketingCalendar = () => {
     }
     >
       <LaunchCalendar brand={brand}/>
+      <LaunchCalendar OCDDate={OCDDate}/>
     </AppLayout>
   );
 };

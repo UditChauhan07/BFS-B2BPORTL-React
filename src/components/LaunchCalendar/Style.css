@@ -16,13 +16,14 @@ h1.TopHeading {
     border: 1px solid #efefef;
     border-radius: 100px;
 }
-.timeline {
+.timeline  {
     list-style: none;
     /* counter-reset: counter; */
     position: relative;
     color: rgb(17, 17, 17);
+      /* border-top: 2px dashed; */
 }
-.timeline>li::before, .timelineHolder01 {
+.timeline  >li::before, .timelineHolder01 {
     /* content: counter(counter, decimal-leading-zero); */
     position: absolute;
     padding: 16px;
@@ -32,7 +33,7 @@ h1.TopHeading {
     color: #237C94;  
     text-align: center;
     background-color: #ECFBFF;
-    font-size: 18px;    
+    font-size: 20px;    
     border-radius: 100px;
     font-weight: 600;
     text-transform: uppercase;
@@ -45,14 +46,14 @@ h1.TopHeading {
     z-index: 1;
     letter-spacing: 1.2px;
     font-family: 'Montserrat';
+  
 }
 
-.timeline>li>.timeline-content {
+.timeline >li>.timeline-content {
     border: 1px solid white;
     margin-bottom: 25px;
     background-color: #fff;
-    
-    border-radius: 10px;
+     border-radius: 10px;
     border: 1px dashed #000;
 }
 .timeline-content {
@@ -147,7 +148,7 @@ span.ProductQty {
     left: 28px;
     background-color: #ebebeb;
     z-index: 0;
-    border: 1px dotted #000;
+    border: 1px dashed #000;
 }
 
 .LaunchProductDetail {
