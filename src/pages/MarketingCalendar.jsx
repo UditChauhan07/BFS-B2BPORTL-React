@@ -923,8 +923,8 @@ const MarketingCalendar = () => {
           />
           <FilterItem
             minWidth="220px"
-            label="JUN-DEC"
-            name="JIN-DEC"
+            label="All Month"
+            name="All Month"
             value={month}
             options={months}
             onChange={(value) => {
