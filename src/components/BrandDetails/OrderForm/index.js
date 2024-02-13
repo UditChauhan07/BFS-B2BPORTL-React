@@ -243,7 +243,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
                     let error = !item?.Quantity || !Number.isInteger(item?.Quantity) || item?.Quantity < (productDetails.Min_Order_QTY__c || 0) || !productDetails?.Name || productDetails.Min_Order_QTY__c ? item?.Quantity % productDetails.Min_Order_QTY__c !== 0 : false;
                     return (
                       <tr key={index}>
-                        <td style={error ? { background: "red", color: "#fff" } : {}}
+                         <td style={error ? { background: "red", color: "#fff" } : {}}
                          onMouseEnter={() => setShowName({ index: item, type: true })}
                          onMouseLeave={() => setShowName({ index: item })}
                         >

@@ -14,7 +14,9 @@ const Accordion = ({ data, formattedData }) => {
   const [replaceCartModalOpen, setReplaceCartModalOpen] = useState(false);
   const [replaceCartProduct, setReplaceCartProduct] = useState({});
   const [showName, setShowName] = useState(false);
-  const onQuantityChange = (product, quantity) => {
+  const [inputLimit, setInputLimit] = useState('');
+  const onQuantityChange = (product, quantity, salesPrice = null, discount = null) => {
+    product.salesPrice = salesPrice;
     if (Object.values(orders).length) {
       if (
         Object.values(orders)[0]?.manufacturer?.name === localStorage.getItem("manufacturer") &&
@@ -43,6 +45,12 @@ const Accordion = ({ data, formattedData }) => {
     setOrders({});
     addOrder(replaceCartProduct.product, replaceCartProduct.quantity, data.discount);
   };
+  const handleNameChange =(e)=> {
+    const limit = 10;
+ // 👇️ only take first N characters
+     setInputLimit(e.target.value.slice(0, limit));
+    
+   };
   return (
     <>
       {replaceCartModalOpen ? (
@@ -120,39 +128,8 @@ const Accordion = ({ data, formattedData }) => {
                               <td>{value.ProductUPC__c === null || value.ProductUPC__c === "n/a" ? "--" : value.ProductUPC__c}</td>
                               <td>{value.usdRetail__c.includes("$") ? `$${listPrice}` : `$${Number(value.usdRetail__c).toFixed(2)}`}</td>
                               <td>
-                                {value.Category__c === "TESTER" ? (
-                                  <>
-                                    $
-                                    {value.usdRetail__c.includes("$")
-                                      ? (
-                                          +value.usdRetail__c.substring(1) -
-                                          (data?.discount?.testerMargin / 100) * +value.usdRetail__c.substring(1)
-                                        ).toFixed(2)
-                                      : (+value.usdRetail__c - (data?.discount?.testerMargin / 100) * +value.usdRetail__c).toFixed(2)}
-                                  </>
-                                ) : (
-                                  <>
-                                    {value.Category__c === "Samples" ? (
-                                      <>
-                                        {" "}
-                                        $
-                                        {value.usdRetail__c.includes("$")
-                                          ? (
-                                              +value.usdRetail__c.substring(1) -
-                                              (data?.discount?.sample / 100) * +value.usdRetail__c.substring(1)
-                                            ).toFixed(2)
-                                          : (+value.usdRetail__c - (data?.discount?.sample / 100) * +value.usdRetail__c).toFixed(2)}
-                                      </>
-                                    ) : (
-                                      <>
-                                        $
-                                        {value.usdRetail__c.includes("$")
-                                          ? (listPrice - (data?.discount?.margin / 100) * listPrice).toFixed(2)
-                                          : (+value.usdRetail__c - (data?.discount?.margin / 100) * +value.usdRetail__c).toFixed(2)}
-                                      </>
-                                    )}
-                                  </>
-                                )}
+                                $ {(true && inputPrice || inputPrice == 0) ? (<><input type="number" placeholder={Number(inputPrice).toFixed(2)} className={styles.customPriceInput} onKeyUp={(e) => { onPriceChangeHander(value, e.target.value) }}
+                                 id="input_limit"name="input_limit" value={inputLimit} onChange={handleNameChange} /></>) : salesPrice}
                               </td>
                               <td>{value.Min_Order_QTY__c || 0}</td>
                               <td>

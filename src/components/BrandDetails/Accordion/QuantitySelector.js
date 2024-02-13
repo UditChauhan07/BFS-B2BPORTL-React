@@ -11,14 +11,15 @@ const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
   const [qtyErrorModalOpen, setQtyErrorModalOpen] = useState(false);
   const [newQtyInput, setNewQtyInput] = useState(value);
   const [inputLimit, setInputLimit] = useState('');
-  
+
   useEffect(() => {
     if (value !== 0 && value < min) {
       onChange?.(min);
     }
   }, [value, min]);
   const qtyChangeHandler=({previous,newQty=0})=>{
-    if(newQty){
+    
+   if(newQty){
       if(newQty<min){
         setQtyErrorModalOpen(true)
       }else{
@@ -33,16 +34,17 @@ const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
       onChange?.(newQty);
       setQtyErrorModalOpen(false)
     }
+  
   };
   const customHandler = (value)=>{
     setNewQtyInput(parseInt(value))
   }
   const handleNameChange =(e)=> {
-   const limit = 10000;
-// 👇️ only take first N characters
-    setInputLimit(e.target.value.slice(0, limit));
-  };
- 
+    const limit = 10;
+ // 👇️ only take first N characters
+     setInputLimit(e.target.value.slice(0, limit));
+    
+   };
   return (
     <div className={`${Styles.ButtonControl}w-[85px] h-[27px] flex `}>
       {qtyErrorModalOpen ? (
@@ -54,13 +56,15 @@ const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
               <p className={`${Styles.warningContent} `}>
                 Please Enter Multiple by {min} of product to add into bag
                 <p className="mt-4">
-                <input type="number" className={Styles.customPriceInput} onKeyUp={(e)=>customHandler(e.target.value||0)} id="first_name"
+                <input type="number" className={Styles.customPriceInput} onKeyUp={(e)=>customHandler(e.target.value||0)} id="input_limit"
         name="input_limit" value={inputLimit} onChange={handleNameChange}/>
+         {/* {error.input_limit && <span className="form-error text-danger ps-1 m-0 fs-6 w-100">{error.input_limit}</span>} */}
+         {inputLimit.length > 10 &&<p className="form-error text-danger ps-1 m-0 fs-6 w-100">error</p>}
                 {newQtyInput%min!=0 &&<p style={{color:'red',fontSize:'11px',textAlign:''}}>* invalid</p>}
                 </p>
               </p>
               <div className="d-flex justify-content-around ">
-                <button className={`${Styles.modalButton}`} onClick={()=>{ newQtyInput%min===0 &&qtyChangeHandler({newQty:parseInt(newQtyInput||0),previous:padWithZero(value)})}}>
+                <button className={`${Styles.modalButton}`} id="input_limit"  name="input_limit" value={inputLimit} onClick={()=>{ newQtyInput%min===0 &&qtyChangeHandler({newQty:parseInt(newQtyInput||0),previous:padWithZero(value)})}}>
                   Submit
                 </button>
                 <button className={`${Styles.modalButton}`} onClick={() => setQtyErrorModalOpen(false)}>
