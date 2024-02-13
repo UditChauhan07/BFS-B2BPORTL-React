@@ -5,6 +5,7 @@ import ModalPage from "../../Modal UI";
 const padWithZero = (value) => {
   return String(value).padStart("2", "0");
 };
+
 // new functionality for min qty is added
 const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
   const [qtyErrorModalOpen, setQtyErrorModalOpen] = useState(false);
@@ -44,7 +45,6 @@ const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
      setInputLimit(e.target.value.slice(0, limit));
     
    };
-
   return (
     <div className={`${Styles.ButtonControl}w-[85px] h-[27px] flex `}>
       {qtyErrorModalOpen ? (
