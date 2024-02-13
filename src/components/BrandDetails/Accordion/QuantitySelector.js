@@ -5,10 +5,12 @@ import ModalPage from "../../Modal UI";
 const padWithZero = (value) => {
   return String(value).padStart("2", "0");
 };
+
 // new functionality for min qty is added
 const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
   const [qtyErrorModalOpen, setQtyErrorModalOpen] = useState(false);
   const [newQtyInput, setNewQtyInput] = useState(value);
+  const [inputLimit, setInputLimit] = useState('');
   
   useEffect(() => {
     if (value !== 0 && value < min) {
@@ -35,7 +37,12 @@ const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
   const customHandler = (value)=>{
     setNewQtyInput(parseInt(value))
   }
-
+  const handleNameChange =(e)=> {
+   const limit = 10000;
+// 👇️ only take first N characters
+    setInputLimit(e.target.value.slice(0, limit));
+  };
+ 
   return (
     <div className={`${Styles.ButtonControl}w-[85px] h-[27px] flex `}>
       {qtyErrorModalOpen ? (
@@ -47,7 +54,8 @@ const QuantitySelector = ({ onChange, value = 0, min = 0 }) => {
               <p className={`${Styles.warningContent} `}>
                 Please Enter Multiple by {min} of product to add into bag
                 <p className="mt-4">
-                <input type="number" className={Styles.customPriceInput} onKeyUp={(e)=>customHandler(e.target.value||0)}/>
+                <input type="number" className={Styles.customPriceInput} onKeyUp={(e)=>customHandler(e.target.value||0)} id="first_name"
+        name="input_limit" value={inputLimit} onChange={handleNameChange}/>
                 {newQtyInput%min!=0 &&<p style={{color:'red',fontSize:'11px',textAlign:''}}>* invalid</p>}
                 </p>
               </p>
