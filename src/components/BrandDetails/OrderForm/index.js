@@ -15,6 +15,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
   const fileInputRef = useRef(null);
   const [errorOnlist, setErrorOnList] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const [showName, setShowName] = useState(false);
   const navigate = useNavigate();
   const CheckError = (data) => {
     let totalQty = 0;
@@ -242,7 +243,13 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
                     let error = !item?.Quantity || !Number.isInteger(item?.Quantity) || item?.Quantity < (productDetails.Min_Order_QTY__c || 0) || !productDetails?.Name || item?.Quantity % productDetails.Min_Order_QTY__c !== 0;
                     return (
                       <tr key={index}>
-                        <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.Name || "---"}</td>
+                        <td style={error ? { background: "red", color: "#fff" } : {}}
+                         onMouseEnter={() => setShowName({ index: item, type: true })}
+                         onMouseLeave={() => setShowName({ index: item })}
+                        >
+                           {item !== showName?.index && productDetails.Name.length >= 23 ? `${productDetails.Name.substring(0, 23)}...` : productDetails.Name || "---"}
+                          {/* {productDetails?.Name || "---"} */}
+                        </td>
                         <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.ProductCode || item["Product Code"] || item['ProductCode']}</td>
                         <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.Category__c || "No Category"}</td>
                         <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.ProductUPC__c || item["ProductUPC"]}</td>
