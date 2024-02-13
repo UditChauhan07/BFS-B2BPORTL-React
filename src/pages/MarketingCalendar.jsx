@@ -923,8 +923,8 @@ const MarketingCalendar = () => {
           />
           <FilterItem
             minWidth="220px"
-            label="JUN-DEC"
-            name="JIN-DEC"
+            label="All Month"
+            name="All Month"
             value={month}
             options={months}
             onChange={(value) => {
@@ -940,9 +940,10 @@ const MarketingCalendar = () => {
           >
             CLEAR ALL
           </button>
-          <div className="dropdown dropdown-toggle border px-2.5 py-1 leading-tight d-flex" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          
+          <div className="dropdown dropdown-toggle dropdowntoggle border px-2.5 py-1 leading-tight  d-flex " role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <MdOutlineDownload size={16} />&nbsp;Download
-            <ul className="dropdown-menu">
+            <ul className=" dropdown-menu">
               <li>
                 <div className="dropdown-item text-start" onClick={() => generatePdf()}>&nbsp;Pdf</div>
               </li>
