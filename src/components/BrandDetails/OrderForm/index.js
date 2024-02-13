@@ -247,7 +247,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
                          onMouseEnter={() => setShowName({ index: item, type: true })}
                          onMouseLeave={() => setShowName({ index: item })}
                         >
-                           {item !== showName?.index && productDetails.Name.length >= 23 ? `${productDetails.Name.substring(0, 23)}...` : productDetails.Name || "---"}
+                           {item !== showName?.index && productDetails.Name?.length >= 23 ? `${productDetails.Name.substring(0, 23)}...` : productDetails.Name || "---"}
                           {/* {productDetails?.Name || "---"} */}
                         </td>
                         <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.ProductCode || item["Product Code"] || item['ProductCode']}</td>
