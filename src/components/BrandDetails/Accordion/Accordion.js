@@ -13,6 +13,8 @@ const Accordion = ({ data, formattedData }) => {
   const { orders, setOrders, setOrderQuantity, addOrder, setOrderProductPrice } = useBag();
   const [replaceCartModalOpen, setReplaceCartModalOpen] = useState(false);
   const [replaceCartProduct, setReplaceCartProduct] = useState({});
+  const [showName, setShowName] = useState(false);
+  const [inputLimit, setInputLimit] = useState('');
   const onQuantityChange = (product, quantity, salesPrice = null, discount = null) => {
     product.salesPrice = salesPrice;
     if (Object.values(orders).length) {
@@ -69,6 +71,12 @@ const Accordion = ({ data, formattedData }) => {
     setOrders({});
     addOrder(replaceCartProduct.product, replaceCartProduct.quantity, data.discount);
   };
+  const handleNameChange =(e)=> {
+    const limit = 10;
+ // 👇️ only take first N characters
+     setInputLimit(e.target.value.slice(0, limit));
+    
+   };
   return (
     <>
       {replaceCartModalOpen ? (
@@ -155,7 +163,14 @@ const Accordion = ({ data, formattedData }) => {
                               <td className={styles.ControlStyle}>
                                 <img src={Img1} alt="img" />
                               </td>
-                              <td className="text-capitalize" style={{ fontSize: '13px' }}>{value.Name}</td>
+
+                               <td
+                                className="text-capitalize"
+                                onMouseEnter={() => setShowName({ index: indexed, type: true })}
+                                onMouseLeave={() => setShowName({ index: indexed })}
+                              >
+                                {indexed !== showName?.index && value.Name.length >= 23 ? `${value.Name.substring(0, 23)}...` : value.Name}
+                              </td>
                               <td>{value.ProductCode}</td>
                               <td>{(value.ProductUPC__c === null || value.ProductUPC__c === "n/a") ? "--" : value.ProductUPC__c}</td>
                               <td>{value.usdRetail__c.includes("$") ? `$${listPrice}` : `$${Number(value.usdRetail__c).toFixed(2)}`}</td>
@@ -164,7 +179,8 @@ const Accordion = ({ data, formattedData }) => {
                                 {/* value={salesPrice} */}
                                 {/* {Object.values(orders)?.find((order) => order.product.Id === value.Id && order.manufacturer.name === value.ManufacturerName__c && order.account.name === localStorage.getItem("Account"))?.product?.salesPrice +"-"+salesPrice} */}
                                 {/* {Number(inputPrice).toFixed(2)}<br/> */}
-                                $ {(true && inputPrice || inputPrice == 0) ? (<><input type="number" placeholder={Number(inputPrice).toFixed(2)} className={styles.customPriceInput} onKeyUp={(e) => { onPriceChangeHander(value, e.target.value) }} /></>) : salesPrice}
+                                $ {(true && inputPrice || inputPrice == 0) ? (<><input type="number" placeholder={Number(inputPrice).toFixed(2)} className={styles.customPriceInput} onKeyUp={(e) => { onPriceChangeHander(value, e.target.value) }}
+                                 id="input_limit"name="input_limit" value={inputLimit} onChange={handleNameChange} /></>) : salesPrice}
                               </td>
                               <td>{value.Min_Order_QTY__c || 0}</td>
                               <td>
