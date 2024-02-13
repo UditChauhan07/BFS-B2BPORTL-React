@@ -117,13 +117,11 @@ const Accordion = ({ data, formattedData }) => {
                               <td className={styles.ControlStyle}>
                                 <img src={Img1} alt="img" />
                               </td>
-                              <td
-                                className="text-capitalize"
-                                onMouseEnter={() => setShowName({ index: indexed, type: true })}
-                                onMouseLeave={() => setShowName({ index: indexed })}
-                              >
+                              <td className="text-capitalize" style={{ fontSize: '13px' }} onMouseEnter={() => setShowName({ index: indexed, type: true })}
+                                onMouseLeave={() => setShowName({ index: indexed })}>
+                                {/* {value.Name} */}
                                 {indexed !== showName?.index && value.Name.length >= 23 ? `${value.Name.substring(0, 23)}...` : value.Name}
-                              </td>
+                                </td>
                               <td>{value.ProductCode}</td>
                               <td>{value.ProductUPC__c === null || value.ProductUPC__c === "n/a" ? "--" : value.ProductUPC__c}</td>
                               <td>{value.usdRetail__c.includes("$") ? `$${listPrice}` : `$${Number(value.usdRetail__c).toFixed(2)}`}</td>
