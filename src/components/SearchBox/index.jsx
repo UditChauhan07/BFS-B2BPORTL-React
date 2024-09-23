@@ -228,7 +228,7 @@ const MultiSelectSearch = ({ options, selectedValues, onChange, loading = null, 
                                 {(option.BrandIds?.length) ?
                                     <div className='user-brands'>
                                         <b>Brands Subscribed</b>
-                                        <span className='user-etc text-end text-[10px] max-w-[150px]'>{BrandNameGenerator(option.BrandIds)}</span>
+                                        <span className='user-etc user-etc07 text-end text-[10px] max-w-[150px]'>{BrandNameGenerator(option.BrandIds)}</span>
                                     </div> : null}
                             </div>
                         )) : "No record found." : <div className='m-auto'><Loading height={'100px'} /></div>}
