@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 function LaunchCalendar({ productList, brand, month }) {
   const products = productList;
+ 
   const [productDetailId, setProductDetailId] = useState();
   const [isEmpty, setIsEmpty] = useState(false);
   useEffect(() => {
