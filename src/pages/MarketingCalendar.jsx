@@ -55,7 +55,6 @@ const MarketingCalendar = () => {
   useEffect(() => {
     setIsloaed(false)
     GetAuthData().then((user) => {
-      console.log({selectYear});
       
       getMarketingCalendar({ key: user.x_access_token,year:selectYear }).then((productRes) => {        
         setProductList(productRes)
