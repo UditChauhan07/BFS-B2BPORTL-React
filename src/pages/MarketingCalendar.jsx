@@ -19,13 +19,19 @@ const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sh
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const MarketingCalendar = () => {
+  let date = new Date();
   // const [isLoading, setIsLoading] = useState(true);
   const [brand, setBrand] = useState(null);
   const [isLoaded, setIsloaed] = useState(false);
   const [isPDFLoaded, setPDFIsloaed] = useState(false);
   const [pdfLoadingText, setPdfLoadingText] = useState(".");
   const [productList, setProductList] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [selectYear, setSelectYear] = useState(date.getFullYear())
+  let yearList = [
+    { value: date.getFullYear(), label: date.getFullYear() },
+    { value: date.getFullYear()+1, label: date.getFullYear()+1 }
+  ]
   let brands = [
     { value: null, label: "All" },
     { value: "AERIN", label: "AERIN" },
@@ -47,21 +53,24 @@ const MarketingCalendar = () => {
   ];
 
   useEffect(() => {
+    setIsloaed(false)
     GetAuthData().then((user) => {
-      getMarketingCalendar({ key: user.x_access_token }).then((productRes) => {
+      console.log({selectYear});
+      
+      getMarketingCalendar({ key: user.x_access_token,year:selectYear }).then((productRes) => {        
         setProductList(productRes)
         setIsloaed(true)
         setTimeout(() => {
 
           let getMonth = new Date().getMonth();
           var element = document.getElementById(monthNames[getMonth]);
-          if (element) {
+          if (element && selectYear == date.getFullYear()) {
             element.scrollIntoView({ behavior: "smooth", block: "center" });
           }
         }, 2000);
       }).catch((err) => console.log({ err }))
     }).catch((e) => console.log({ e }))
-  }, [isLoaded])
+  }, [selectYear])
   const [month, setMonth] = useState("");
   let months = [
     { value: null, label: "All" },
@@ -195,7 +204,7 @@ const MarketingCalendar = () => {
 
       const filteredContent = monthData.content.filter((item) => {
         const itemBrand = item.ManufacturerName__c;
-        
+
         // Check for brand and month match
         const brandMatch = brand ? itemBrand === brand : true;
         return brandMatch;
@@ -203,7 +212,7 @@ const MarketingCalendar = () => {
 
       // Return the filtered content with month information
       return filteredContent.length > 0 ? { ...monthData, content: filteredContent } : null;
-    }).filter(monthData => month ? monthData?.month?.toUpperCase() === month:true);
+    }).filter(monthData => month ? monthData?.month?.toUpperCase() === month : true);
 
 
     exportToExcel({ list: filteredProductList });
@@ -262,7 +271,13 @@ const MarketingCalendar = () => {
       filterNodes={
         <>
 
-
+          <FilterItem
+            label="year"
+            name="Year"
+            value={selectYear}
+            options={yearList}
+            onChange={(value) => setSelectYear(value)}
+          />
           <FilterItem
             minWidth="220px"
             label="All Brands"
@@ -289,6 +304,7 @@ const MarketingCalendar = () => {
               setBrand("");
               setMonth(null);
               setPDFIsloaed(false);
+              setSelectYear(date.getFullYear())
             }}
           >
             <CloseButton crossFill={'#fff'} height={20} width={20} />
