@@ -161,18 +161,19 @@ const MultiSelectSearch = ({ options, selectedValues, onChange, loading = null, 
         const selectedBrands = manufacturersList
             ?.filter(brand => Brandids.includes(brand.Id))
             ?.map(brand => brand.Name) || [];
-    
+        
         // Ensure brandSelected is correctly referenced or set to selectedBrands
         const brandSelected = selectedBrands || [];
     
-        // Use reduce to format the brand names
-        return brandSelected.reduce((acc, curr, index) => {
-            if (index === brandSelected.length - 1) {
-                return `${acc} and ${curr}`;
-            }
-            return `${acc}, ${curr}`;
-        }, ''); // Provide an empty string as an initial value to avoid reduce errors
+        // Handle cases based on the number of brands selected
+        if (brandSelected.length === 0) return ''; // No brands selected
+        if (brandSelected.length === 1) return brandSelected[0]; // Only one brand
+        if (brandSelected.length === 2) return `${brandSelected[0]} and ${brandSelected[1]}`; // Two brands
+        
+        // More than two brands, format with commas and 'and' before the last one
+        return brandSelected.slice(0, -1).join(', ') + `, and ${brandSelected[brandSelected.length - 1]}`;
     };
+    
     
     return (
         <div className="multi-select-container">
@@ -228,7 +229,7 @@ const MultiSelectSearch = ({ options, selectedValues, onChange, loading = null, 
                                 {(option.BrandIds?.length) ?
                                     <div className='user-brands'>
                                         <b>Brands Subscribed</b>
-                                        <span className='user-etc text-end text-[10px] max-w-[150px]'>{BrandNameGenerator(option.BrandIds)}</span>
+                                        <span className='user-etc user-etc07 text-end text-[10px] max-w-[150px]'>{BrandNameGenerator(option.BrandIds)}</span>
                                     </div> : null}
                             </div>
                         )) : "No record found." : <div className='m-auto'><Loading height={'100px'} /></div>}
