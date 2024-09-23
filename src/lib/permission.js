@@ -277,7 +277,7 @@ export const permissionsArray = [
   },
   {
     userType: "None manager",
-    allows: ["0053b00000CwOnLAAV"],
+    allows: [],
     permissions: {
       modules: {
         godLevel: false, //check
