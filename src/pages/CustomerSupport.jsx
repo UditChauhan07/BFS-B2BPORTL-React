@@ -100,7 +100,7 @@ const CustomerSupport = () => {
   const filteredData = useMemo(() => {
     let newValues = supportList;
     if (status.length > 0) {
-      if(status == ["Open"]){
+      if(status == "Open"){
         newValues = newValues.filter((item) => !"Approved".includes(item.Status)&&!"Closed".includes(item.Status));
       }else{
         newValues = newValues.filter((item) => status.includes(item.Status));
