@@ -852,7 +852,9 @@ export async function generateBrandAuditTemplate({ key, Ids, currentPage }) {
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(originAPi + "/audit/8rM04B63RFDXH9Z", {
+  // let response = await fetch(originAPi + "/audit/VggvfddCdQDQNo6", {
+    let response = await fetch(originAPi + "/audit/n0xkPhL3KI9mpIT", {
+      // let response = await fetch(originAPi + "/audit/8rM04B63RFDXH9Z", {
     method: "POST",
     body: JSON.stringify({ key, Ids, currentPage }),
     headers: headersList,

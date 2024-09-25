@@ -285,7 +285,7 @@ function Dashboard({ dashboardData }) {
         if(admins.includes(user.Sales_Rep__c)){
           setSalesRepAdmin(true)
         }
-        getDashboardata({ user , saleRepId })
+        getDashboardata({ user , saleRepId:"00530000005AdvsAAC" })
           .then((dashboard) => {
             let oldSalesAmount = dashboard?.oldSalesAmount || 0;
             let currentSalesAmount = dashboard.monthlySalesRepData?.[user.Sales_Rep__c]?.sale || 0
@@ -300,7 +300,7 @@ function Dashboard({ dashboardData }) {
             setTargetValue(Number(dashboard.salesRepTarget));
             setAchievedSales(Number(dashboard?.totalPrice));
             setIsLoading(true)
-            if (dashboard.rawPerformance.length) {
+            if (dashboard.rawPerformance?.length) {
               setAccountPerformance({ isLoaded: true, data: dashboard?.rawPerformance || [] })
             } else {
               setAccountPerformance({ isLoaded: true, data: [] })
