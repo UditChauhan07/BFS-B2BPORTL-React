@@ -358,7 +358,7 @@ const orderGenerationHandler = () => {
                 <h4>
                   {buttonActive ? (
                     <>
-                      <span> {bagValue?.Manufacturer?.name} | </span> {bagValue?.Account?.name}
+                      <span> {bagValue?.Manufacturer?.name}&nbsp;|</span>&nbsp;{bagValue?.Account?.name}
                     </>
                   ) : (
                     <span>Empty bag</span>

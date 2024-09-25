@@ -54,6 +54,7 @@ const BagProvider = ({ children }) => {
     return true
   };
   const parseOrderObjectWithDiscount = (product, quantity, discount) => {
+    
     return {
       quantity: quantity,
       product,
@@ -76,7 +77,7 @@ const BagProvider = ({ children }) => {
       },
       productType : product.Category__c === "PREORDER" ? "pre-order" :
                     product.Category__c === "EVENT" ? "event" :
-                    product.Category__c === "TESTER" ? "tester"  :"wholesale",
+                    product.Category__c === "TESTER" ? "tester": product.Category__c.toUpperCase() === "SAMPLES" ? "samples"  :"wholesale",
     };
   };
   // deletion of orders with quantity 0

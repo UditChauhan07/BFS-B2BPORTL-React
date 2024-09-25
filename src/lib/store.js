@@ -1,6 +1,6 @@
 import { getPermissions } from "./permission";
-// export const originAPi = process.env.REACT_APP_OA_URL || "https://temp.beautyfashionsales.com/"
-export const originAPi = "https://bfs.uditchauhan.com"
+export const originAPi = process.env.REACT_APP_OA_URL || "https://temp.beautyfashionsales.com/"
+// export const originAPi = "https://bfs.uditchauhan.com"
 // export const originAPi = "http://localhost:2611"
 
 
@@ -14,7 +14,7 @@ const accountKey = "manufacturer";
 const POCount = "woX5MkCSIOlHXkT";
 const support = "AP0HBuNwbNnuhKR";
 const shareKey = "R7Mmw2nG41y6MqI";
-export const salesRepIdKey = "BzQIEAjzCEHmlXc"; 
+export const salesRepIdKey = "BzQIEAjzCEHmlXc";
 export const admins = ["00530000005AdvsAAC", "0053b00000DgEVEAA3", "0051O00000CvAVTQA3", "0053b00000CwOnLAAV"]; //, "0053b00000CwOnLAAV" ,"0053b00000DgEVEAA3"
 
 export const months = [
@@ -69,7 +69,7 @@ export function PublicCheck() {
 }
 
 export function fetchBeg() {
-  let orderStr = localStorage.getItem("orders"); 
+  let orderStr = localStorage.getItem("orders");
   let orderDetails = {
     orderList: [],
     Account: {
@@ -83,7 +83,7 @@ export function fetchBeg() {
       id: null,
     },
   };
-  
+
   if (orderStr) {
     let orderList = Object.values(JSON.parse(orderStr));
     if (orderList.length > 0) {
@@ -96,30 +96,19 @@ export function fetchBeg() {
       orderDetails.orderList = orderList;
     }
   }
-  
+
   return orderDetails;
 }
 
 
 export async function POGenerator() {
   try {
-    
+
     let orderDetails = fetchBeg();
-let count = parseInt(localStorage.getItem("woX5MkCSIOlHXkT")) || 1;
-if (isNaN(count)) {
-      localStorage.setItem("woX5MkCSIOlHXkT", 1);
-      count = 1;
-    }
-
-let date = new Date();
-    let currentMonth = padNumber(date.getMonth() + 1, true);
-    let currentDate = padNumber(date.getDate(), true);
-
-  let AcCode = getStrCode(orderDetails.Account?.name);
-    let MaCode = getStrCode(orderDetails.Manufacturer?.name);
+    let date = new Date();
 
     //  const response = await fetch( "http://localhost:2611/PoNumber/generatepo"
-    const response = await fetch( "https://bfs.uditchauhan.com/PoNumber/generatepo", {
+    const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepo", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -130,21 +119,18 @@ let date = new Date();
         orderDate: date.toISOString(),
       }),
     });
-    console.log(response)
- 
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-   
+
     const poData = await response.json();
     console.log(poData);
 
     if (poData.success) {
       let generatedPONumber = poData.poNumber;
 
-      localStorage.setItem("woX5MkCSIOlHXkT", count + 1);
-      
       return await generatedPONumber;
     } else {
       console.error('Failed to generate PO number:', poData.message);
@@ -160,7 +146,7 @@ let date = new Date();
 export function getStrCode(str) {
   if (!str) return null;
   let codeLength = str.split(" ");
-  
+
   if (codeLength.length >= 2) {
     return `${codeLength[0].charAt(0).toUpperCase() + codeLength[1].charAt(0).toUpperCase()}`;
   } else {
@@ -304,7 +290,7 @@ export async function getOrderCustomerSupport({ user, searchId }) {
   };
 
   let bodyContent = new FormData();
-  
+
   bodyContent.append("key", user.key);
   bodyContent.append("Sales_Rep__c", user.Sales_Rep__c);
   if (searchId) bodyContent.append("searchId", searchId);
@@ -476,7 +462,7 @@ export async function getOrderDetailsInvoice({ rawData }) {
   }
 }
 
-export async function getDashboardata({ user , saleRepId }) {
+export async function getDashboardata({ user, saleRepId }) {
   let headersList = {};
   if (user.headers) {
     headersList = user.headers || {};
@@ -989,7 +975,7 @@ export async function fetchNewsletterData({ token }) {
     throw err;
   }
 };
-export async function fetchNextMonthNewsletterBrand({ key, date = null,forMonth=1 }) {
+export async function fetchNextMonthNewsletterBrand({ key, date = null, forMonth = 1 }) {
   if (!key) {
     throw new Error('Access token is missing');
   }
@@ -1002,13 +988,13 @@ export async function fetchNextMonthNewsletterBrand({ key, date = null,forMonth=
     let response = await fetch(originAPi + "/newsletter/Cfe5pdfgpUBjnw9", {
       method: "POST",
       body: JSON.stringify({
-        key, date,forMonth
+        key, date, forMonth
       }),
       headers: headersList,
     });
     let data = JSON.parse(await response.text());
 
-    
+
     if (data.status == 300) {
       DestoryAuth();
     } else {
@@ -1162,7 +1148,7 @@ export async function resentEmailBlast({ key, ids }) {
     return data.data;
   }
 }
-export async function storeDatesHandler({ key, dates,forMonth=1 }) {
+export async function storeDatesHandler({ key, dates, forMonth = 1 }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
@@ -1170,7 +1156,7 @@ export async function storeDatesHandler({ key, dates,forMonth=1 }) {
 
   let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/08fC7mUSNzUduyt", {
     method: "POST",
-    body: JSON.stringify({ key, dates: JSON.stringify(dates),forMonth }),
+    body: JSON.stringify({ key, dates: JSON.stringify(dates), forMonth }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());

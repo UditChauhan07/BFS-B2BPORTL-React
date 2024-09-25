@@ -24,7 +24,8 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
     { value: "preorder", label: "Pre-Order" },
     { value: "tester", label: "Tester" },
     { value: "event", label: "Event" },
- 
+    { value: "samples", label: "Samples" },
+
   ]
 
   const navigate = useNavigate();
@@ -39,22 +40,12 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
           item?.Quantity < (productDetails.Min_Order_QTY__c || 0) ||
           !productDetails?.Name ||
           (productDetails.Min_Order_QTY__c > 0 && item?.Quantity % productDetails.Min_Order_QTY__c !== 0);
+console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:productDetails?.Category__c?.toLowerCase() === "tester",samp:productDetails?.Category__c?.toLowerCase() === "samples",event:productDetails?.Category__c?.toLowerCase().match("event")});
 
-         const validCategories = ["preorder", "wholesale", "tester", "event"];
-            if (validCategories.includes(orderType.toLowerCase())) {
-          if (!error) {
-            error = productDetails?.Category__c?.toLowerCase() !== orderType.toLowerCase();
-          }
-        } else {
-
-          if (!error) {
-            error = validCategories.includes(productDetails?.Category__c?.toLowerCase());
-          }
-        }
-        if (orderType.toLowerCase() === "wholesale" && productDetails?.Category__c?.toLowerCase() === "preorder") {
+        if (orderType.toLowerCase() === "wholesale" && (productDetails?.Category__c?.toLowerCase() === "preorder"||productDetails?.Category__c?.toLowerCase() === "tester"||productDetails?.Category__c?.toLowerCase() === "samples"||productDetails?.Category__c?.toLowerCase().match("event"))) {
           error = true;
         }
-       checkLimit++;
+        checkLimit++;
         return accumulator + (error ? 1 : 0);
       } else {
         totalQty += 1;
@@ -62,7 +53,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
       return accumulator;
     }, 0);
 
-   
+
     if (checkLimit > 500) {
       setLimitCheck(true);
       setIsLimitPass(true);
@@ -70,7 +61,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
       setLimitCheck(false);
     }
 
-   
+
     if (totalQty === data.length) {
       setErrorOnList(totalQty);
     } else {
@@ -115,7 +106,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
     if (!productCode) return {};
     let found = productList.find((item) => item.ProductCode == productCode);
     if (!found) return {};
-    let retailerPirce = found.usdRetail__c.trim().replace('$', '').replace(',', '')
+    let retailerPirce = found?.usdRetail__c?.trim().replace('$', '').replace(',', '')
     if (found?.Category__c === "TESTER") {
       let salesPrice = retailerPirce.includes("$")
         ? (+retailerPirce.substring(1) - (discount?.testerMargin / 100) * +retailerPirce.substring(1)).toFixed(2)
@@ -129,7 +120,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
       found.salesPrice = salesPrice;
       // found.discount = discount?.sample;
     } else {
-      let salesPrice = retailerPirce.includes("$")
+      let salesPrice = retailerPirce?.includes("$")
         ? (+retailerPirce.substring(1) - (discount?.margin / 100) * +retailerPirce.substring(1)).toFixed(2)
         : (+retailerPirce - (discount?.margin / 100) * +retailerPirce).toFixed(2);
       found.salesPrice = salesPrice;
@@ -355,7 +346,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
                   let productDetails = getProductData(item["Product Code"] || item['ProductCode'] || null);
                   if (item?.Quantity) {
                     let error = !item?.Quantity || !Number.isInteger(item?.Quantity) || item?.Quantity < (productDetails.Min_Order_QTY__c || 0) || !productDetails?.Name || productDetails.Min_Order_QTY__c ? item?.Quantity % productDetails.Min_Order_QTY__c !== 0 : false;
-                    orderType == "preorder" ? (error == false) ? error = productDetails?.Category__c?.toLowerCase() != orderType.toLowerCase() : error = error : (error == false) ? error = productDetails?.Category__c?.toLowerCase() == "preorder" : error = error
+                    (orderType == "preorder"||orderType == "tester"||orderType == "samples") ? (error == false) ? error = productDetails?.Category__c?.toLowerCase() != orderType.toLowerCase() : error = error : (error == false) ? error = (productDetails?.Category__c?.toLowerCase() == "preorder"||productDetails?.Category__c?.toLowerCase() == "tester"||productDetails?.Category__c?.toLowerCase() == "samples"||productDetails?.Category__c?.toLowerCase().match("event")) : error = error
                     return (
                       <tr key={index}>
                         <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.Name || "---"}</td>

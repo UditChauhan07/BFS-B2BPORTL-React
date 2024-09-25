@@ -97,12 +97,13 @@ function Product() {
           }
         } 
         else if (productTypeFilter === "SAMPLES") {
-          if (key.match("SAMPLES")) {
+          if (key.toUpperCase().match("SAMPLES")) {
             newData[key] = finalFilteredProducts[key];
           }
         } 
         else {
-          if (key !== "PREORDER"&&!key.match("TESTER")&&!key.match("EVENT")&&!key.match("SAMPLES")) {
+          if (key !== "PREORDER"&&!key.toUpperCase().match("TESTER")&&!key.toUpperCase().match("EVENT")&&!key.toUpperCase().match("SAMPLES")) {
+            
             newData[key] = finalFilteredProducts[key];
           }
         }
@@ -462,6 +463,10 @@ function Product() {
                       {
                         label: "EVENT",
                         value: "EVENT",
+                      },
+                      {
+                        label: "SAMPLES",
+                        value: "SAMPLES",
                       },
                       
                     ]}
