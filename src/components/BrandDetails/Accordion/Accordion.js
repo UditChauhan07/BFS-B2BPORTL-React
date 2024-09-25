@@ -7,32 +7,33 @@ import { useBag } from "../../../context/BagContext";
 import LoaderV2 from "../../loader/v2";
 import ProductDetails from "../../../pages/productDetails";
 
-const Accordion = ({ data, formattedData,productImage=[] }) => {
+const Accordion = ({ data, formattedData, productImage = [] }) => {
   let Img1 = "/assets/images/dummy.png";
   const { orders, setOrders, setOrderQuantity, addOrder, setOrderProductPrice } = useBag();
   const [replaceCartModalOpen, setReplaceCartModalOpen] = useState(false);
   const [replaceCartProduct, setReplaceCartProduct] = useState({});
   const [showName, setShowName] = useState(false);
-  const [ productDetailId, setProductDetailId] = useState(null)
+  const [productDetailId, setProductDetailId] = useState(null)
 
   const onQuantityChange = (product, quantity, salesPrice = null, discount = null) => {
     product.salesPrice = salesPrice;
-    if (Object.values(orders).length) {      
+    if (Object.values(orders).length) {
+      console.log({aa:Object.values(orders),e:product.Category__c?.toUpperCase().match("EVENT")});
+      
       if (
         Object.values(orders)[0]?.manufacturer?.name === localStorage.getItem("manufacturer") &&
         Object.values(orders)[0].account.name === localStorage.getItem("Account") &&
-        Object.values(orders)[0].productType === 
-        (product.Category__c === "PREORDER" 
-          ? "pre-order" 
-          : product.Category__c === "TESTER" 
-            ? "tester" 
-            : product.Category__c === "EVENTORDER" 
-              ? "event" 
-              :  product.Category__c.toUpperCase() === "SAMPLES" 
-              ? "samples" 
-              : "wholesale")
-      ) 
-      {
+        Object.values(orders)[0].productType ===
+        (product.Category__c === "PREORDER"
+          ? "pre-order"
+          : product.Category__c === "TESTER"
+            ? "tester"
+            : product.Category__c?.toUpperCase().match("EVENT")
+              ? "event"
+              : product.Category__c.toUpperCase() === "SAMPLES"
+                ? "samples"
+                : "wholesale")
+      ) {
         orderSetting(product, quantity);
         setReplaceCartModalOpen(false);
       } else {
@@ -61,7 +62,7 @@ const Accordion = ({ data, formattedData,productImage=[] }) => {
     addOrder(replaceCartProduct.product, replaceCartProduct.quantity, data.discount);
   };
 
-  const sendProductIdHandler = ({ productId,productName }) => {
+  const sendProductIdHandler = ({ productId, productName }) => {
     // navigate('/product/'+productName.replaceAll(" ","-").replaceAll("=","-"), { state: { productId } });
     setProductDetailId(productId)
   }
@@ -136,20 +137,20 @@ const Accordion = ({ data, formattedData,productImage=[] }) => {
                           }
                           return (
                             <tr className={`${styles.ControlTR} w-full `} key={indexed}>
-                              <td className={styles.ControlStyle} style={{cursor:'pointer'}}>
+                              <td className={styles.ControlStyle} style={{ cursor: 'pointer' }}>
                                 {
-                                  value.ContentDownloadUrl ? <img src={value.ContentDownloadUrl} className="zoomInEffect" alt="img"  width={50} onClick={()=>sendProductIdHandler({productId:value.Id,productName:value.Name})}/>:
-                                  !productImage.isLoaded?<LoaderV2/>:
-                                  productImage.images?.[value?.ProductCode] ?
-                                  productImage.images[value?.ProductCode]?.ContentDownloadUrl?
-                                  <img src={productImage.images[value?.ProductCode]?.ContentDownloadUrl} className="zoomInEffect" alt="img" width={35} onClick={()=>sendProductIdHandler({productId:value.Id,productName:value.Name})} />
-                                  :<img src={productImage.images[value?.ProductCode]} className="zoomInEffect" alt="img"  width={35} onClick={()=>sendProductIdHandler({productId:value.Id,productName:value.Name})}/>
-                                  :<img src={Img1} className="zoomInEffect" alt="img" onClick={()=>sendProductIdHandler({productId:value.Id,productName:value.Name})}  width={50}/>
+                                  value.ContentDownloadUrl ? <img src={value.ContentDownloadUrl} className="zoomInEffect" alt="img" width={50} onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })} /> :
+                                    !productImage.isLoaded ? <LoaderV2 /> :
+                                      productImage.images?.[value?.ProductCode] ?
+                                        productImage.images[value?.ProductCode]?.ContentDownloadUrl ?
+                                          <img src={productImage.images[value?.ProductCode]?.ContentDownloadUrl} className="zoomInEffect" alt="img" width={35} onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })} />
+                                          : <img src={productImage.images[value?.ProductCode]} className="zoomInEffect" alt="img" width={35} onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })} />
+                                        : <img src={Img1} className="zoomInEffect" alt="img" onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })} width={50} />
                                 }
                                 {/* {!productImage.isLoaded?<LoaderV2/>:productImage.images[value.ProductCode]?<img src={productImage.images[value.ProductCode]?.ContentDownloadUrl?productImage.images[value.ProductCode]?.ContentDownloadUrl:productImage.images[value.ProductCode]} alt="img" width={35} />:<img src={Img1} alt="img" />} */}
                               </td>
-                              <td className="text-capitalize linkEffect" style={{ fontSize: '13px',cursor:'pointer' }} onMouseEnter={() => setShowName({ index: indexed, type: true })}
-                                onMouseLeave={() => setShowName({ index: indexed })} onClick={()=>sendProductIdHandler({productId:value.Id,productName:value.Name})}>
+                              <td className="text-capitalize linkEffect" style={{ fontSize: '13px', cursor: 'pointer' }} onMouseEnter={() => setShowName({ index: indexed, type: true })}
+                                onMouseLeave={() => setShowName({ index: indexed })} onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })}>
                                 {indexed !== showName?.index && value.Name.length >= 23 ? `${value.Name.substring(0, 23)}...` : value.Name}
                               </td>
                               <td>{value.ProductCode}</td>
@@ -157,10 +158,10 @@ const Accordion = ({ data, formattedData,productImage=[] }) => {
                               <td>{value?.usdRetail__c?.includes("$") ? `$${listPrice}` : `$${Number(value.usdRetail__c).toFixed(2)}`}</td>
                               <td>
                                 <div className="d-flex">
-                                ${(qtyofItem > 0 && inputPrice || inputPrice == 0) ? (<><input type="number" value={inputPrice} placeholder={Number(inputPrice).toFixed(2)} className={`${styles.customPriceInput} ms-1`}
-                                  onChange={(e) => { onPriceChangeHander(value, e.target.value < 10 ? e.target.value.replace("0", "").slice(0, 4) : e.target.value.slice(0, 4) || 0) }} id="limit_input" minLength={0} maxLength={4}
-                                  name="limit_input" /></>) : salesPrice}
-                                  </div>
+                                  ${(qtyofItem > 0 && inputPrice || inputPrice == 0) ? (<><input type="number" value={inputPrice} placeholder={Number(inputPrice).toFixed(2)} className={`${styles.customPriceInput} ms-1`}
+                                    onChange={(e) => { onPriceChangeHander(value, e.target.value < 10 ? e.target.value.replace("0", "").slice(0, 4) : e.target.value.slice(0, 4) || 0) }} id="limit_input" minLength={0} maxLength={4}
+                                    name="limit_input" /></>) : salesPrice}
+                                </div>
                               </td>
                               <td>{value.Min_Order_QTY__c || 0}</td>
                               <td>
@@ -198,7 +199,7 @@ const Accordion = ({ data, formattedData,productImage=[] }) => {
           </table>
         </div>
       </div>
-      <ProductDetails productId={productDetailId} setProductDetailId={setProductDetailId} ManufacturerId={localStorage.getItem("ManufacturerId__c")} AccountId={localStorage.getItem("AccountId__c")}/>
+      <ProductDetails productId={productDetailId} setProductDetailId={setProductDetailId} ManufacturerId={localStorage.getItem("ManufacturerId__c")} AccountId={localStorage.getItem("AccountId__c")} />
     </>
   );
 };

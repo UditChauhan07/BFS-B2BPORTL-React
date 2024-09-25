@@ -99,18 +99,19 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
     const onQuantityChange = (element, quantity, salesPrice = null, discount = null) => {
         console.log(onQuantityChange)
         element.salesPrice = salesPrice;
+        
         if (Object.values(orders).length) {
             if (
                 Object.values(orders)[0]?.manufacturer?.name === localStorage.getItem("manufacturer") &&
                 Object.values(orders)[0].account.name === localStorage.getItem("Account") &&
                 Object.values(orders)[0].productType === 
-                (product.Category__c === "PREORDER" 
+                (element.Category__c === "PREORDER" 
                   ? "pre-order" 
-                  : product.Category__c === "TESTER" 
+                  : element.Category__c === "TESTER" 
                     ? "tester" 
-                    : product.Category__c === "EVENTORDER" 
+                    : element?.Category__c?.toUpperCase().match("EVENT") 
                       ? "event" 
-                      :  product?.Category__c?.toUpperCase() === "SAMPLES" 
+                      :  element?.Category__c?.toUpperCase() === "SAMPLES" 
                       ? "samples" 
                       : "wholesale")
               )
