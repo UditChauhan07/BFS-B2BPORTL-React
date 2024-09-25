@@ -1,7 +1,8 @@
 import { getPermissions } from "./permission";
 export const originAPi = process.env.REACT_APP_OA_URL || "https://temp.beautyfashionsales.com/"
-// export const originAPi = "https://dev.beautyfashionsales.com"
+// export const originAPi = "https://bfs.uditchauhan.com"
 // export const originAPi = "http://localhost:2611"
+
 
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
@@ -13,7 +14,7 @@ const accountKey = "manufacturer";
 const POCount = "woX5MkCSIOlHXkT";
 const support = "AP0HBuNwbNnuhKR";
 const shareKey = "R7Mmw2nG41y6MqI";
-export const salesRepIdKey = "BzQIEAjzCEHmlXc"; 
+export const salesRepIdKey = "BzQIEAjzCEHmlXc";
 export const admins = ["00530000005AdvsAAC", "0053b00000DgEVEAA3", "0051O00000CvAVTQA3", "0053b00000CwOnLAAV"]; //, "0053b00000CwOnLAAV" ,"0053b00000DgEVEAA3"
 
 export const months = [
@@ -67,64 +68,118 @@ export function PublicCheck() {
   }
 }
 
-export function POGenerator() {
-  let count = parseInt(localStorage.getItem(POCount)) || 1;
-  if (count == "NaN") {
-    localStorage.setItem(POCount, 1);
-    count = 1;
-  }
-  let date = new Date();
-  let currentMonth = padNumber(date.getMonth() + 1, true);
-  let currentDate = padNumber(date.getDate(), true);
-  let beg = fetchBeg();
-  let AcCode = getStrCode(beg?.Account?.name);
-  let MaCode = getStrCode(beg?.Manufacturer?.name);
+export function fetchBeg() {
+  let orderStr = localStorage.getItem("orders");
+  let orderDetails = {
+    orderList: [],
+    Account: {
+      name: null,
+      id: null,
+      address: null,
+      shippingMethod: null,
+    },
+    Manufacturer: {
+      name: null,
+      id: null,
+    },
+  };
 
-  let orderCount = padNumber(count, true);
-  if (beg?.orderList?.[0]?.productType === "pre-order") return `PRE-${AcCode + MaCode}${currentDate + currentMonth}${orderCount}`;
-  else return `${AcCode + MaCode}${currentDate + currentMonth}${orderCount}`;
+  if (orderStr) {
+    let orderList = Object.values(JSON.parse(orderStr));
+    if (orderList.length > 0) {
+      orderDetails.Account.id = orderList[0].account.id;
+      orderDetails.Account.name = orderList[0].account.name;
+      orderDetails.Account.shippingMethod = orderList[0].account.shippingMethod;
+      orderDetails.Account.address = JSON.parse(orderList[0].account.address);
+      orderDetails.Manufacturer.id = orderList[0].manufacturer.id;
+      orderDetails.Manufacturer.name = orderList[0].manufacturer.name;
+      orderDetails.orderList = orderList;
+    }
+  }
+
+  return orderDetails;
 }
 
+
+export async function POGenerator() {
+  try {
+
+    let orderDetails = fetchBeg();
+    let date = new Date();
+
+    //  const response = await fetch( "http://localhost:2611/PoNumber/generatepo"
+    const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepo", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accountName: orderDetails.Account?.name,
+        manufacturerName: orderDetails.Manufacturer?.name,
+        orderDate: date.toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+
+    const poData = await response.json();
+    console.log(poData);
+
+    if (poData.success) {
+      let generatedPONumber = poData.poNumber;
+
+      return await generatedPONumber;
+    } else {
+      console.error('Failed to generate PO number:', poData.message);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error generating PO number:', error.message);
+    return null;
+  }
+}
+
+// Helper function to generate codes
 export function getStrCode(str) {
   if (!str) return null;
   let codeLength = str.split(" ");
+
   if (codeLength.length >= 2) {
     return `${codeLength[0].charAt(0).toUpperCase() + codeLength[1].charAt(0).toUpperCase()}`;
   } else {
     return `${codeLength[0].charAt(0).toUpperCase() + codeLength[0].charAt(codeLength[0].length - 1).toUpperCase()}`;
   }
 }
+
+// Helper function to pad numbers
 function padNumber(n, isTwoDigit) {
   if (isTwoDigit) {
-    if (n < 10) {
-      return "0" + n;
-    } else {
-      return n;
-    }
+    return n < 10 ? "0" + n : n;
   } else {
-    if (n < 10) {
-      return "000" + n;
-    } else if (n < 100) {
-      return "00" + n;
-    } else if (n < 1000) {
-      return "0" + n;
-    } else {
-      return n;
-    }
+    if (n < 10) return "000" + n;
+    if (n < 100) return "00" + n;
+    if (n < 1000) return "0" + n;
+    return n;
   }
 }
 
 export function formatNumber(num) {
   if (num >= 0 && num < 1000000) {
-    return (num / 1000).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + "K";
+    return (num / 1000).toFixed(1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + "K";
   } else if (num >= 1000000) {
-    return (num / 1000000).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + "M";
+    return (num / 1000000).toFixed(1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + "M";
   } else if (num < 0) {
-    return (num / 1000).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + "K";
+    return (num / 1000).toFixed(1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + "K";
   } else {
     return num;
   }
 }
+
+
+
 export function supportDriveBeg() {
   let supportList = localStorage.getItem(support);
   return JSON.parse(supportList);
@@ -142,35 +197,7 @@ export function supportClear() {
   }
 }
 
-export function fetchBeg() {
-  let orderStr = localStorage.getItem(orderKey);
-  let orderDetails = {
-    orderList: [],
-    Account: {
-      name: null,
-      id: null,
-      address: null,
-      shippingMethod: null,
-    },
-    Manufacturer: {
-      name: null,
-      id: null,
-    },
-  };
-  if (orderStr) {
-    let orderList = Object.values(JSON.parse(orderStr));
-    if (orderList.length > 0) {
-      orderDetails.Account.id = orderList[0].account.id;
-      orderDetails.Account.name = orderList[0].account.name;
-      orderDetails.Account.shippingMethod = orderList[0].account.shippingMethod;
-      orderDetails.Account.address = JSON.parse(orderList[0].account.address);
-      orderDetails.Manufacturer.id = orderList[0].manufacturer.id;
-      orderDetails.Manufacturer.name = orderList[0].manufacturer.name;
-      orderDetails.orderList = orderList;
-    }
-  }
-  return orderDetails;
-}
+
 
 export async function OrderPlaced({ order }) {
   let orderinit = {
@@ -263,7 +290,7 @@ export async function getOrderCustomerSupport({ user, searchId }) {
   };
 
   let bodyContent = new FormData();
-  
+
   bodyContent.append("key", user.key);
   bodyContent.append("Sales_Rep__c", user.Sales_Rep__c);
   if (searchId) bodyContent.append("searchId", searchId);
@@ -435,7 +462,7 @@ export async function getOrderDetailsInvoice({ rawData }) {
   }
 }
 
-export async function getDashboardata({ user , saleRepId }) {
+export async function getDashboardata({ user, saleRepId }) {
   let headersList = {};
   if (user.headers) {
     headersList = user.headers || {};
@@ -950,7 +977,7 @@ export async function fetchNewsletterData({ token }) {
     throw err;
   }
 };
-export async function fetchNextMonthNewsletterBrand({ key, date = null,forMonth=1 }) {
+export async function fetchNextMonthNewsletterBrand({ key, date = null, forMonth = 1 }) {
   if (!key) {
     throw new Error('Access token is missing');
   }
@@ -963,13 +990,13 @@ export async function fetchNextMonthNewsletterBrand({ key, date = null,forMonth=
     let response = await fetch(originAPi + "/newsletter/Cfe5pdfgpUBjnw9", {
       method: "POST",
       body: JSON.stringify({
-        key, date,forMonth
+        key, date, forMonth
       }),
       headers: headersList,
     });
     let data = JSON.parse(await response.text());
 
-    
+
     if (data.status == 300) {
       DestoryAuth();
     } else {
@@ -1123,7 +1150,7 @@ export async function resentEmailBlast({ key, ids }) {
     return data.data;
   }
 }
-export async function storeDatesHandler({ key, dates,forMonth=1 }) {
+export async function storeDatesHandler({ key, dates, forMonth = 1 }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
@@ -1131,7 +1158,7 @@ export async function storeDatesHandler({ key, dates,forMonth=1 }) {
 
   let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/08fC7mUSNzUduyt", {
     method: "POST",
-    body: JSON.stringify({ key, dates: JSON.stringify(dates),forMonth }),
+    body: JSON.stringify({ key, dates: JSON.stringify(dates), forMonth }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());
