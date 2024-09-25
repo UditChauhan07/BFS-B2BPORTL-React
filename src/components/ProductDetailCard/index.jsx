@@ -31,6 +31,8 @@ const ProductDetailCard = ({
   const listPrice = Number(product?.data?.usdRetail__c?.replace("$", "").replace(",", ""));
   let salesPrice = 0;
   let discount = product?.discount?.margin;
+  console.log({discount});
+  
 
   let inputPrice = Object.values(orders)?.find(
     (order) =>

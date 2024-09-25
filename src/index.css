@@ -25,7 +25,8 @@
       display: none;
     }
     @media (max-width: 1350.98px) {
-      gap: 30px;
+      font-size: 9px;
+      gap: 10px;
     }
     @media (max-width: 1253.98px) {
       gap: 20px;
