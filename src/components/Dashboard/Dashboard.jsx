@@ -285,7 +285,7 @@ function Dashboard({ dashboardData }) {
         if(admins.includes(user.Sales_Rep__c)){
           setSalesRepAdmin(true)
         }
-        getDashboardata({ user , saleRepId:"00530000005AdvsAAC" })
+        getDashboardata({ user , saleRepId })
           .then((dashboard) => {
             let oldSalesAmount = dashboard?.oldSalesAmount || 0;
             let currentSalesAmount = dashboard.monthlySalesRepData?.[user.Sales_Rep__c]?.sale || 0
