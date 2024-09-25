@@ -300,7 +300,7 @@ function Dashboard({ dashboardData }) {
             setTargetValue(Number(dashboard.salesRepTarget));
             setAchievedSales(Number(dashboard?.totalPrice));
             setIsLoading(true)
-            if (dashboard.rawPerformance.length) {
+            if (dashboard.rawPerformance?.length) {
               setAccountPerformance({ isLoaded: true, data: dashboard?.rawPerformance || [] })
             } else {
               setAccountPerformance({ isLoaded: true, data: [] })

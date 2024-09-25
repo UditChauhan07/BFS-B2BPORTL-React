@@ -167,7 +167,7 @@ function LaunchCalendar({ productList, brand, month }) {
                                           setProductDetailId(product.Id);
                                         }} style={{ cursor: 'pointer', marginBottom: '10px' }} className="linkEffect">{product.Name}</h3>
                                         <div className="size">
-                                          <span>Size <span className="ProductQty">{product.Size_Volume_Weight__c}</span></span>
+                                          <span>Size <span className="ProductQty">{product.Size_Volume_Weight__c??"NA"}</span></span>
                                           <span>Price <span className="ProductQty">{price}</span></span>
                                         </div>
                                         <p>{product.Description}</p>
