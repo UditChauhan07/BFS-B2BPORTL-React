@@ -228,15 +228,14 @@ function Dashboard({ dashboardData }) {
   // navigation of manufacturer to product page 
   const handleBrandClick = (brand) => {
     
-    setModalOpen(true);
-    setBrandData(brand.ManufacturerList);
-    localStorage.setItem("Account", brand.Name); 
-    localStorage.setItem("AccountId__c", brand.AccountId); 
-    
+    // setModalOpen(true);
+    // setBrandData(brand.ManufacturerList);
+    // localStorage.setItem("Account", brand.Name); 
+    // localStorage.setItem("AccountId__c", brand.AccountId); 
+    // localStorage.setItem("address", JSON.stringify(brand.Address));
   };
   
   const handleManufacturerSelect = (selectedBrand) => {
-   
     localStorage.setItem("manufacturer", selectedBrand.ManufacturerName__c || selectedBrand.Name);
     localStorage.setItem("ManufacturerId__c", selectedBrand.ManufacturerId__c  || selectedBrand.Id);
     localStorage.setItem(salesRepIdKey, selectedSalesRepId); 
@@ -245,7 +244,6 @@ function Dashboard({ dashboardData }) {
       method: selectedBrand.Shipping_Method__c,
     }));
   
-    
     // navigate(`/product`);
   };
   const [manufacturerSalesYear, setManufacturerSalesYaer] = useState([]);
