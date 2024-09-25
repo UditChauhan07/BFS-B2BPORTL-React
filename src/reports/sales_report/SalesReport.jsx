@@ -39,6 +39,8 @@ const SalesReport = () => {
   const [hasPermission, setHasPermission] = useState(null); 
   const [permissions, setPermissions] = useState(null);
   const [dateFilter, setDateFilter] = useState("Created-Date")
+  console.log({salesRepList});
+  
   const filteredSalesReportData = useMemo(() => {
     let filtered = salesReportData.filter((ele) => {
       return !manufacturerFilter || !ele.ManufacturerName__c.localeCompare(manufacturerFilter);
@@ -248,8 +250,9 @@ const memoizedPermissions = useMemo(() => permissions, [permissions]);
       }
       if (manu.Orders.length) {
         manu.Orders.map((item) => {
-          if (!salesListName.includes(item.AccountRepo)) {
+          if (!salesListName.includes(item.AccountRepo)&&item.AccountRepo) {
             salesListName.push(item.AccountRepo);
+            
             salesList.push({
               label: item.AccountRepo,
               value: item.AccountRepo,

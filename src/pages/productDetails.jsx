@@ -17,11 +17,14 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
     const [accountId, setAccountId] = useState({ label: null, value: AccountId });
     const [storeSel, setStoreSet] = useState(false)
     const [autoSelectCheck, setAutoSelectCheck] = useState(false)
+    useEffect(()=>{},[AccountId])
     useEffect(() => {
         if (productId) {
             setIsModalOpen(true)
             GetAuthData().then((user) => {
                 setProduct({ isLoaded: false, data: [], discount: {} })
+                console.log({accountId});
+                
                 if ((!accountId?.value && !orders[productId])) {
                     getRetailerList({ key: user.x_access_token, userId: user?.Sales_Rep__c, manufacturerid: ManufacturerId }).then((accountRes) => {
                         setAccountList({ data: accountRes.data, isLoaded: true })
@@ -86,7 +89,6 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
         }
 
     }, [accountId, accountList, product])
-
 
 
     if (!productId) return null;
@@ -159,7 +161,7 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
                             position: 'sticky',
                             top: '-20px',
                             background: '#fff',
-                            zIndex: 1,
+                            zIndex: 2,
                             padding: '15px 0 0 0'
                         }}>
                             <div className="d-flex align-items-center justify-content-between" style={{ minWidth: '75vw' }}>
