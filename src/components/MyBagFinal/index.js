@@ -172,8 +172,9 @@ function MyBagFinal() {
               } else if (productCategory?.includes("TESTER")) {
                 orderType = "TESTER ORDER";
               } else if (productCategory?.includes("SAMPLES")) {
-                orderType = "SAMPLES ORDER";
+                orderType = "Wholesale Numbers";
               }
+// console.log("tuytuyu heuhioreupoirp xuh3uioxmfeoipoimxhuhruh2uhr")
 
               let temp = {
                 ProductCode: product.product.ProductCode,

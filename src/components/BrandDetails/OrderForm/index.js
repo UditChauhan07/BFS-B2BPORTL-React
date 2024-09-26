@@ -134,7 +134,18 @@ console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:
     data.map((element) => {
       if (element.Quantity && Number.isInteger(element?.Quantity)) {
         let product = getProductData(element["Product Code"] || element["ProductCode"]);
-        if (orderType == "preorder" ? product?.Category__c?.toLowerCase() == "preorder" : product?.Category__c?.toLowerCase() != "preorder") {
+        if (
+          orderType === "preorder" 
+            ? product?.Category__c?.toLowerCase() == "preorder" 
+            : orderType === "tester" 
+              ? product?.Category__c?.toLowerCase() == "tester" 
+              : orderType === "samples" 
+                ? product?.Category__c?.toLowerCase() == "samples" 
+                : orderType === "event" 
+                ? product?.Category__c?.toLowerCase().includes("event") 
+
+                : product?.Category__c?.toLowerCase() != "preorder" && product?.Category__c?.toLowerCase() != "tester" && product?.Category__c?.toLowerCase() != "samples"& product?.Category__c?.toLowerCase().includes("event") 
+        ) {
           if (product?.Id && element?.Quantity >= (product.Min_Order_QTY__c || 0) && (!product.Min_Order_QTY__c || element?.Quantity % product.Min_Order_QTY__c === 0)) {
             let salesPrice = null;
             if (product?.Category__c === "TESTER") {
@@ -164,7 +175,19 @@ console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:
       data.map((element) => {
         if (element.Quantity && Number.isInteger(element?.Quantity)) {
           let product = getProductData(element["Product Code"] || element["ProductCode"]);
-          if (orderType == "preorder" ? product?.Category__c?.toLowerCase() == "preorder" : product?.Category__c?.toLowerCase() != "preorder") {
+         if (
+            orderType === "preorder" 
+              ? product?.Category__c?.toLowerCase() == "preorder" 
+              : orderType === "tester" 
+                ? product?.Category__c?.toLowerCase() == "tester" 
+                : orderType === "samples" 
+                  ? product?.Category__c?.toLowerCase() == "samples" 
+                  : orderType === "event" 
+                  ? product?.Category__c?.toLowerCase().includes("event") 
+  
+                  : product?.Category__c?.toLowerCase() != "preorder" && product?.Category__c?.toLowerCase() != "tester" && product?.Category__c?.toLowerCase() != "samples"& product?.Category__c?.toLowerCase().includes("event") 
+          )
+            {
             if (product?.Id && element?.Quantity >= (product.Min_Order_QTY__c || 0) && (!product.Min_Order_QTY__c || element?.Quantity % product.Min_Order_QTY__c === 0)) {
               productCount++;
               let item = {};
