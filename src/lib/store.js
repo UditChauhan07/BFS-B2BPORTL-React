@@ -880,8 +880,8 @@ export async function generateBrandAuditTemplate({ key, Ids, currentPage }) {
   };
 
   // let response = await fetch(originAPi + "/audit/VggvfddCdQDQNo6", {
-    let response = await fetch(originAPi + "/audit/n0xkPhL3KI9mpIT", {
-      // let response = await fetch(originAPi + "/audit/8rM04B63RFDXH9Z", {
+  // let response = await fetch(originAPi + "/audit/n0xkPhL3KI9mpIT", {
+  let response = await fetch(originAPi + "/audit/8rM04B63RFDXH9Z", {
     method: "POST",
     body: JSON.stringify({ key, Ids, currentPage }),
     headers: headersList,
@@ -1231,7 +1231,7 @@ export async function getSessionStatus({ key, salesRepId }) {
   }
 }
 
-export async function getMarketingCalendar({ key, manufacturerId,year }) {
+export async function getMarketingCalendar({ key, manufacturerId, year }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
@@ -1239,7 +1239,7 @@ export async function getMarketingCalendar({ key, manufacturerId,year }) {
 
   let response = await fetch(url + "v3/eVC3IaiEEz3x7ym", {
     method: "POST",
-    body: JSON.stringify({ key, manufacturerId,year }),
+    body: JSON.stringify({ key, manufacturerId, year }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());
