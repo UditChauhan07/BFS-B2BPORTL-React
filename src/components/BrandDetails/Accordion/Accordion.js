@@ -18,19 +18,18 @@ const Accordion = ({ data, formattedData, productImage = [] }) => {
   const onQuantityChange = (product, quantity, salesPrice = null, discount = null) => {
     product.salesPrice = salesPrice;
     if (Object.values(orders).length) {
-      console.log({aa:Object.values(orders),e:product.Category__c?.toUpperCase().match("EVENT")});
       
       if (
         Object.values(orders)[0]?.manufacturer?.name === localStorage.getItem("manufacturer") &&
         Object.values(orders)[0].account.name === localStorage.getItem("Account") &&
         Object.values(orders)[0].productType ===
-        (product.Category__c === "PREORDER"
+        (product?.Category__c === "PREORDER"
           ? "pre-order"
-          : product.Category__c === "TESTER"
+          : product?.Category__c === "TESTER"
             ? "tester"
-            : product.Category__c?.toUpperCase().match("EVENT")
+            : product?.Category__c?.toUpperCase().match("EVENT")
               ? "event"
-              : product.Category__c.toUpperCase() === "SAMPLES"
+              : product?.Category__c?.toUpperCase() === "SAMPLES"
                 ? "samples"
                 : "wholesale")
       ) {
@@ -114,7 +113,7 @@ const Accordion = ({ data, formattedData, productImage = [] }) => {
                   {Object.keys(formattedData)?.map((key, index) => {
                     let categoryOrderQuantity = 0;
                     Object.values(orders)?.forEach((order) => {
-                      if ((order.account.name === localStorage.getItem("Account")) && (order.manufacturer.name === localStorage.getItem("manufacturer")) && (order.product.Category__c === key || `${order.product.Category__c}` === key)) {
+                      if ((order.account.name === localStorage.getItem("Account")) && (order.manufacturer.name === localStorage.getItem("manufacturer")) && (order.product?.Category__c === key || `${order.product?.Category__c}` === key)) {
                         categoryOrderQuantity += order.quantity;
                       }
                     });
@@ -126,10 +125,10 @@ const Accordion = ({ data, formattedData, productImage = [] }) => {
                           let discount = data?.discount?.margin;
                           let inputPrice = Object.values(orders)?.find((order) => order.product.Id === value.Id && order.manufacturer.name === value.ManufacturerName__c && order.account.name === localStorage.getItem("Account"))?.product?.salesPrice;
                           let qtyofItem = Object.values(orders)?.find((order) => order.product.Id === value.Id && order.manufacturer.name === value.ManufacturerName__c && order.account.name === localStorage.getItem("Account"))?.quantity;
-                          if (value.Category__c === "TESTER") {
+                          if (value?.Category__c === "TESTER") {
                             discount = data?.discount?.testerMargin
                             salesPrice = (+listPrice - (data?.discount?.testerMargin / 100) * +listPrice).toFixed(2)
-                          } else if (value.Category__c === "Samples") {
+                          } else if (value?.Category__c === "Samples") {
                             discount = data?.discount?.sample
                             salesPrice = (+listPrice - (data?.discount?.sample / 100) * +listPrice).toFixed(2)
                           } else {

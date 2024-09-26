@@ -113,7 +113,7 @@ console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:
         : (+retailerPirce - (discount?.testerMargin / 100) * +retailerPirce).toFixed(2);
       found.salesPrice = salesPrice;
       // found.discount = discount?.testerMargin;
-    } else if (found.Category__c === "Samples") {
+    } else if (found?.Category__c === "Samples") {
       let salesPrice = retailerPirce.includes("$")
         ? (+retailerPirce.substring(1) - (discount?.sample / 100) * +retailerPirce.substring(1)).toFixed(2)
         : (+retailerPirce - (discount?.sample / 100) * +retailerPirce).toFixed(2);
@@ -137,11 +137,11 @@ console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:
         if (orderType == "preorder" ? product?.Category__c?.toLowerCase() == "preorder" : product?.Category__c?.toLowerCase() != "preorder") {
           if (product?.Id && element?.Quantity >= (product.Min_Order_QTY__c || 0) && (!product.Min_Order_QTY__c || element?.Quantity % product.Min_Order_QTY__c === 0)) {
             let salesPrice = null;
-            if (product.Category__c === "TESTER") {
+            if (product?.Category__c === "TESTER") {
               salesPrice = product.usdRetail__c.includes("$")
                 ? (+product.usdRetail__c.substring(1) - (discount?.testerMargin / 100) * +product.usdRetail__c.substring(1)).toFixed(2)
                 : (+product.usdRetail__c - (discount?.testerMargin / 100) * +product.usdRetail__c).toFixed(2);
-            } else if (product.Category__c === "Samples") {
+            } else if (product?.Category__c === "Samples") {
               salesPrice = product.usdRetail__c.includes("$")
                 ? (+product.usdRetail__c.substring(1) - (discount?.sample / 100) * +product.usdRetail__c.substring(1)).toFixed(2)
                 : (+product.usdRetail__c - (discount?.sample / 100) * +product.usdRetail__c).toFixed(2);
@@ -170,14 +170,14 @@ console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:
               let item = {};
 
               let discountAmount = discount?.margin;
-              if (product.Category__c === "TESTER") {
+              if (product?.Category__c === "TESTER") {
                 let salesPrice = product.usdRetail__c.includes("$")
                   ? (+product.usdRetail__c.substring(1) - (discount?.testerMargin / 100) * +product.usdRetail__c.substring(1)).toFixed(2)
                   : (+product.usdRetail__c - (discount?.testerMargin / 100) * +product.usdRetail__c).toFixed(2);
                 item.price = salesPrice;
                 item.discount = discount?.testerMargin;
                 discountAmount = discount?.testerMargin;
-              } else if (product.Category__c === "Samples") {
+              } else if (product?.Category__c === "Samples") {
                 let salesPrice = product.usdRetail__c.includes("$")
                   ? (+product.usdRetail__c.substring(1) - (discount?.sample / 100) * +product.usdRetail__c.substring(1)).toFixed(2)
                   : (+product.usdRetail__c - (discount?.sample / 100) * +product.usdRetail__c).toFixed(2);
