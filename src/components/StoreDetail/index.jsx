@@ -208,7 +208,7 @@ const StoreDetailCard = ({ account, brandList,memoizedPermissions={} }) => {
                                 <div className={`${Styles.brandContainer} d-flex justify-between`}>
                                     <OwlCarousel {...options} style={{ position: 'absolute', top: '45px', left: '5%', width: '90%' }}>
                                         {account.Brands.map((element, index) => (
-                                            <p className={Styles.webLinkHolder} onClick={() => {memoizedPermissions?.auditReport?.create ? AuditHandler(element.ManufacturerId__c, account.Name, element.ManufacturerName__c) : doNothing() }} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', cursor: 'pointer' }} key={index}>{element.ManufacturerName__c}</p>
+                                            <p className={Styles.webLinkHolder} onClick={() => {memoizedPermissions?.auditReport?.specify ? AuditHandler(element.ManufacturerId__c, account.Name, element.ManufacturerName__c) : doNothing() }} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', cursor: 'pointer' }} key={index}>{element.ManufacturerName__c}</p>
                                         ))}
                                     </OwlCarousel>
                                 </div>
@@ -224,7 +224,7 @@ const StoreDetailCard = ({ account, brandList,memoizedPermissions={} }) => {
 
                                     <div className="m-auto d-flex">
                                         {account.Brands.map((element, index) => (
-                                            <p className={Styles.webLinkHolder} onClick={() => {memoizedPermissions?.auditReport?.create ? AuditHandler(element.ManufacturerId__c, account.Name, element.ManufacturerName__c):doNothing()}} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', marginRight: '2rem' }} key={index}>{element.ManufacturerName__c}</p>
+                                            <p className={Styles.webLinkHolder} onClick={() => {memoizedPermissions?.auditReport?.specify ? AuditHandler(element.ManufacturerId__c, account.Name, element.ManufacturerName__c):doNothing()}} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', marginRight: '2rem' }} key={index}>{element.ManufacturerName__c}</p>
                                         ))}
                                     </div>
                                 </div>

@@ -10,7 +10,7 @@ const SelectBrandModel = ({ brands, onClose = null, onChange = null }) => {
   const handleBrandChange = (brand) => {
     setSelectedBrand(brand); // Set selected brand when a brand is chosen
     if (onChange) { onChange(brand) }
-    // navigate(`/product`); 
+   
   };
 
   return (

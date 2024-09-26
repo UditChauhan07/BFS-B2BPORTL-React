@@ -68,7 +68,7 @@ const YearlyComparisonReportTable = ({ comparisonData, status }) => {
         <>
           <div className={`d-flex p-3 ${styles.tableBoundary} mb-5`}>
             <div className="" style={{ maxHeight: "73vh", minHeight: "40vh", overflow: "auto", width: "100%" }}>
-              <table id="salesReportTable" className="table table-responsive" style={{ minHeight: "400px" }}>
+              <table id="salesReportTable" className="table table-responsive " style={{ minHeight: "400px" }}>
                 <thead>
                   <tr>
                     <th className={`${styles.th} ${styles.stickyFirstColumnHeading} `} style={{ minWidth: "200px" }}>
@@ -103,10 +103,11 @@ const YearlyComparisonReportTable = ({ comparisonData, status }) => {
                     <th className={`${styles.th} ${styles.stickyMonth} `} style={{ minWidth: '250px' }}>Nov Wholesale Amount</th>
                     <th className={`${styles.th} ${styles.stickyMonth} `} style={{ minWidth: '200px' }}>Dec Retail Revenue</th>
                     <th className={`${styles.th} ${styles.stickyMonth} `} style={{ minWidth: '250px' }}>Dec Wholesale Amount</th>
+                    
                     <th className={`${styles.th} ${styles.stickyMonth} ${styles.stickySecondLastColumnHeading2}`} style={{ maxWidth: "200px" }}>
                       Total Retail Revenue
                     </th>
-                    <th className={`${styles.th} ${styles.stickyMonth} ${styles.stickyLastColumnHeading}`} style={{ maxWidth: "150px" }}>
+                    <th className={`${styles.th} ${styles.stickyMonth} ${styles.stickyLastColumnHeading} `} style={{ maxWidth: "150px"   }}>
                       Total Wholesale Amount
                     </th>
                     <th className={`${styles.th} `}></th>
