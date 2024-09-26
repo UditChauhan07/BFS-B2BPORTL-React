@@ -53,6 +53,12 @@ const HelpSection = () => {
     setCurrentLink('');
     setCurrentType('');
     setCurrentFileName('');
+    setIsModalOpen(false);
+    setCurrentLink('');
+    setCurrentType('');
+    setCurrentFileName('');
+    setIsDownloadConfirmOpen(false);  // Close download confirmation if open
+    setIsDownloading(false);          // Reset downloading state
   };
 
   const openDownloadConfirm = () => {
@@ -68,6 +74,7 @@ const HelpSection = () => {
     const a = document.createElement('a');
     a.href = `${originAPi}/api/download?fileName=${currentLink}`;
     a.click();
+    
     setIsDownloading(false);  // Stop the spinner
     closeDownloadConfirm();  // Close the download confirmation modal
   };
@@ -76,7 +83,8 @@ const HelpSection = () => {
     guide.Categoryname.toLowerCase().includes(searchTerm.toLowerCase()) ||
     guide.filename.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+ 
+  
   return (
     <AppLayout
       filterNodes={
@@ -94,6 +102,7 @@ const HelpSection = () => {
       {isModalOpen &&
         <ModalPage
           open
+          onClose={closeModal}
           content={
             <div ref={modalRef} className="d-flex flex-column gap-3" style={{ width: '75vw', maxWidth: '800px' }}>
               <div style={{ position: 'sticky', top: '0', background: '#fff', zIndex: 1, padding: "9px 8px 9px 10px", borderBottom: '1px solid #ddd' }}>

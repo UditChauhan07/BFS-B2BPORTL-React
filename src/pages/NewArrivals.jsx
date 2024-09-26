@@ -17,6 +17,7 @@ const NewArrivals = () => {
   const navigate = useNavigate()
   let brands = [
     { value: null, label: "All" },
+    { value: "111Skin", label: "111Skin" },
     { value: "Susanne Kaufmann", label: "Susanne Kaufmann" },
     { value: "AERIN", label: "AERIN" },
     { value: "ARAMIS", label: "ARAMIS" },
@@ -34,6 +35,7 @@ const NewArrivals = () => {
     { value: "Smashbox", label: "Smashbox" },
     { value: "Re-Nutriv", label: "Re-Nutriv" },
     { value: "Victoria Beckham Beauty", label: "Victoria Beckham Beauty" },
+    
   ];
   const [month, setMonth] = useState("");
   let months = [

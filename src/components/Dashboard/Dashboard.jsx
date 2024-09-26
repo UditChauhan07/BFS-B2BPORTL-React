@@ -228,23 +228,27 @@ function Dashboard({ dashboardData }) {
   // navigation of manufacturer to product page 
   const handleBrandClick = (brand) => {
     
-    // setModalOpen(true);
-    // setBrandData(brand.ManufacturerList);
-    // localStorage.setItem("Account", brand.Name); 
-    // localStorage.setItem("AccountId__c", brand.AccountId); 
-    // localStorage.setItem("address", JSON.stringify(brand.Address));
+    setModalOpen(true);
+    setBrandData(brand.ManufacturerList);
+    localStorage.setItem("Account", brand.Name); 
+    localStorage.setItem("AccountId__c", brand.AccountId); 
+    localStorage.setItem("address", JSON.stringify(brand.Address));
   };
   
   const handleManufacturerSelect = (selectedBrand) => {
+    GetAuthData()
+    .then((user) => {
+      setSelectedSalesRepId(user.Sales_Rep__c);
+  })
     localStorage.setItem("manufacturer", selectedBrand.ManufacturerName__c || selectedBrand.Name);
     localStorage.setItem("ManufacturerId__c", selectedBrand.ManufacturerId__c  || selectedBrand.Id);
-    localStorage.setItem(salesRepIdKey, selectedSalesRepId); 
+    localStorage.setItem(salesRepIdKey, salesRepId); 
     localStorage.setItem("shippingMethod", JSON.stringify({
       number: selectedBrand.Shipping_Account_Number__c,
       method: selectedBrand.Shipping_Method__c,
     }));
   
-    // navigate(`/product`);
+    navigate(`/product`);
   };
   const [manufacturerSalesYear, setManufacturerSalesYaer] = useState([]);
   const [salesRepAdmin,setSalesRepAdmin]=useState();

@@ -237,7 +237,7 @@ const AuditReport = () => {
         return (
             <div style={styles.comparisonContainer}>
                 {brandPages.isLoaded ?
-                    chunks.length ? <ChunkedReportDownload chunks={chunks} /> : "Not Part Available" :
+                    chunks.length ? <ChunkedReportDownload chunks={chunks} /> : "Not data found" :
                     <Loading height={'200px'} />}
             </div>
         );
