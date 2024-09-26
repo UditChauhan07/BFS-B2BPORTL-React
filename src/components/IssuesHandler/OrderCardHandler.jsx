@@ -9,7 +9,7 @@ import ModalPage from "../Modal UI";
 import { RxEyeOpen } from "react-icons/rx";
 import Loading from "../Loading";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-
+import Swal from 'sweetalert2';
 const OrderCardHandler = ({ orders, setOrderId, orderId, reason, orderConfirmedStatus, files = [], desc, errorListObj, manufacturerIdObj, accountIdObj, accountList, contactIdObj, setSubject, Actual_Amount__cObj, autoSelect = null }) => {
     const { setOrderConfirmed, orderConfirmed } = orderConfirmedStatus || null;
     const { accountId, setAccountId } = accountIdObj || null;
@@ -265,6 +265,13 @@ const OrderCardHandler = ({ orders, setOrderId, orderId, reason, orderConfirmedS
                             myElement.scrollIntoView({ behavior: "smooth", block: "center" });
                             myElement.style.borderBottom = "1px solid red";
                             shakeHandler(`oP${id}`)
+                            Swal.fire({
+                                title: 'Product Overage!',
+                                text: `You have entered more than the allowed quantity`,
+                                icon: 'error',
+                                confirmButtonText: 'Ok',
+                                confirmButtonColor: '#000'
+                            });
                         }
                     } else {
                         const myElement = document.getElementById(`oP${id}`);
