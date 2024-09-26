@@ -135,7 +135,7 @@ const MarketingCalendar = () => {
       let manufacturerId = null;
       manufacturers.data.filter(item => { if (item?.Name?.toLowerCase() == brand?.toLowerCase()) { manufacturerId = item.Id } })
       if (version == 1) {
-        getMarketingCalendarPDFV2({ key: user.x_access_token, manufacturerId, month }).then((file) => {
+        getMarketingCalendarPDFV2({ key: user.x_access_token, manufacturerId, month,year:selectYear }).then((file) => {
           if (file) {
             const a = document.createElement('a');
             a.href = originAPi + "/download/" + file + "/1/index";
@@ -153,7 +153,7 @@ const MarketingCalendar = () => {
           console.log({ pdfErr });
         })
       } else if (version == 2) {
-        getMarketingCalendarPDFV3({ key: user.x_access_token, manufacturerId, month }).then((file) => {
+        getMarketingCalendarPDFV3({ key: user.x_access_token, manufacturerId, month,year:selectYear }).then((file) => {
           if (file) {
             const a = document.createElement('a');
             a.href = originAPi + "/download/" + file + "/1/index";
@@ -172,7 +172,7 @@ const MarketingCalendar = () => {
         })
       }
       else {
-        getMarketingCalendarPDF({ key: user.x_access_token, manufacturerId, month }).then((file) => {
+        getMarketingCalendarPDF({ key: user.x_access_token, manufacturerId, month,year:selectYear }).then((file) => {
           if (file) {
             const a = document.createElement('a');
             a.href = originAPi + "/download/" + file + "/1/index";
