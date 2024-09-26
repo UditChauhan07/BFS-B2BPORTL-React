@@ -40,9 +40,8 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
           item?.Quantity < (productDetails.Min_Order_QTY__c || 0) ||
           !productDetails?.Name ||
           (productDetails.Min_Order_QTY__c > 0 && item?.Quantity % productDetails.Min_Order_QTY__c !== 0);
-console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:productDetails?.Category__c?.toLowerCase() === "tester",samp:productDetails?.Category__c?.toLowerCase() === "samples",event:productDetails?.Category__c?.toLowerCase().match("event")});
 
-        if (orderType.toLowerCase() === "wholesale" && (productDetails?.Category__c?.toLowerCase() === "preorder"||productDetails?.Category__c?.toLowerCase() === "tester"||productDetails?.Category__c?.toLowerCase() === "samples"||productDetails?.Category__c?.toLowerCase().match("event"))) {
+        if (orderType.toLowerCase() === "wholesale" && (productDetails?.Category__c?.toLowerCase() === "preorder" || productDetails?.Category__c?.toLowerCase() === "tester" || productDetails?.Category__c?.toLowerCase() === "samples" || productDetails?.Category__c?.toLowerCase().includes("event"))) {
           error = true;
         }
         checkLimit++;
@@ -343,10 +342,35 @@ console.log({pre:productDetails?.Category__c?.toLowerCase() === "preorder",test:
               </thead>
               <tbody>
                 {data.map((item, index) => {
+
                   let productDetails = getProductData(item["Product Code"] || item['ProductCode'] || null);
                   if (item?.Quantity) {
                     let error = !item?.Quantity || !Number.isInteger(item?.Quantity) || item?.Quantity < (productDetails.Min_Order_QTY__c || 0) || !productDetails?.Name || productDetails.Min_Order_QTY__c ? item?.Quantity % productDetails.Min_Order_QTY__c !== 0 : false;
-                    (orderType == "preorder"||orderType == "tester"||orderType == "samples") ? (error == false) ? error = productDetails?.Category__c?.toLowerCase() != orderType.toLowerCase() : error = error : (error == false) ? error = (productDetails?.Category__c?.toLowerCase() == "preorder"||productDetails?.Category__c?.toLowerCase() == "tester"||productDetails?.Category__c?.toLowerCase() == "samples"||productDetails?.Category__c?.toLowerCase().match("event")) : error = error
+                    // (orderType == "preorder" || orderType == "tester" || orderType == "samples") ? (error == false) ? error = productDetails?.Category__c?.toLowerCase() != orderType.toLowerCase() : error = error : (error == false) ? error = (productDetails?.Category__c?.toLowerCase() == "preorder" || productDetails?.Category__c?.toLowerCase() == "tester" || productDetails?.Category__c?.toLowerCase() == "samples") :orderType == "event"?(productDetails?.Category__c?.toLowerCase().match("event")?.length>0?error = error:error = false): error = error
+                    if (orderType == "preorder" || orderType == "tester" || orderType == "samples") {
+                      if (error == false) {
+                        error = productDetails?.Category__c?.toLowerCase() != orderType.toLowerCase();
+                      } else {
+                        error = error;
+                      }
+                    }
+
+                    else if (orderType == "event") {
+                      console.log("boooo");
+                      
+                      if (productDetails?.Category__c?.toLowerCase().match("event")?.length > 0) {
+                        error = false;
+                      } else {
+                        error = true;
+                      }
+                    } else {
+                      if (error == false) {
+                        error = (productDetails?.Category__c?.toLowerCase() == "preorder" ||
+                          productDetails?.Category__c?.toLowerCase() == "tester" ||
+                          productDetails?.Category__c?.toLowerCase() == "samples"||productDetails?.Category__c?.toLowerCase().match("event")?.length);
+                      }
+                    }
+
                     return (
                       <tr key={index}>
                         <td style={error ? { background: "red", color: "#fff" } : {}}>{productDetails?.Name || "---"}</td>
