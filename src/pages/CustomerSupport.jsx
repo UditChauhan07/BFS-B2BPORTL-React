@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import CustomerSupportPage from "../components/CustomerSupportPage/CustomerSupportPage";
 import { FilterItem } from "../components/FilterItem";
 import FilterSearch from "../components/FilterSearch";
-import { DestoryAuth, GetAuthData, admins, getBrandList, getRetailerList, getSalesRepList, getSupportList } from "../lib/store";
+import { DestoryAuth, GetAuthData, admins, getBrandList, getRetailerList, getSalesRepList, getSupportList, sortArrayHandler } from "../lib/store";
 import Loading from "../components/Loading";
 import Pagination from "../components/Pagination/Pagination";
 import AppLayout from "../components/AppLayout";
@@ -77,8 +77,8 @@ const CustomerSupport = () => {
   const supportHandler = ({ key, salesRepId }) => {
     getSupportList({ key, salesRepId })
       .then((supports) => {
-        console.log({ supports });
-        setSupportList(supports);
+        let sorting  = sortArrayHandler(supports,g=>g.CreatedDate,'desc')
+        setSupportList(sorting);
         setLoaded(true);
       })
       .catch((error) => {
