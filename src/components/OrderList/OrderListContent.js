@@ -329,7 +329,9 @@ console.log({accountId});
           No data found
         </div>
       )}
-      <ProductDetails productId={productDetailId} setProductDetailId={setProductDetailId} AccountId={accountId} ManufacturerId={manufacturerId} isAddtoCart={false} />
+      {/* {console.log({accountId})
+      } */}
+      <ProductDetails productId={productDetailId} setProductDetailId={setProductDetailId} AccountId={accountId} ManufacturerId={manufacturerId} />
     </>
   );
 }
