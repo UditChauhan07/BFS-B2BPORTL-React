@@ -8,25 +8,32 @@ import { CloseButton } from "../lib/svg";
 import Select from 'react-select';
 
 const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, AccountId = null, ManufacturerId = null, toRedirect = "/my-retailers" }) => {
+    console.log({AccountId});
+    
     const { orders, setOrders, setOrderQuantity, addOrder, setOrderProductPrice } = useBag();
     const [product, setProduct] = useState({ isLoaded: false, data: [], discount: {} });
     const [replaceCartModalOpen, setReplaceCartModalOpen] = useState(false);
     const [replaceCartProduct, setReplaceCartProduct] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [accountList, setAccountList] = useState({ isLoaded: false, data: [] });
-    const [accountId, setAccountId] = useState({ label: null, value: AccountId });
+    const [accountId, setAccountId] = useState({ label: null, value: null });
     const [storeSel, setStoreSet] = useState(false)
     const [autoSelectCheck, setAutoSelectCheck] = useState(false)
-    useEffect(()=>{},[AccountId])
+    useEffect(() => {
+        if(AccountId){
+            setAccountId({label: null, value: AccountId})
+        }
+     }, [AccountId])
     useEffect(() => {
         if (productId) {
             setIsModalOpen(true)
             GetAuthData().then((user) => {
                 setProduct({ isLoaded: false, data: [], discount: {} })
-                console.log({accountId});
-                
+
                 if ((!accountId?.value && !orders[productId])) {
                     getRetailerList({ key: user.x_access_token, userId: user?.Sales_Rep__c, manufacturerid: ManufacturerId }).then((accountRes) => {
+                        console.log({accountRes});
+                        
                         setAccountList({ data: accountRes.data, isLoaded: true })
                         if (accountRes.data.length == 1) {
                             setAccountId({ label: accountRes.data[0].Name, value: accountRes.data[0].Id })
@@ -42,9 +49,12 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
 
                     })
                 } else {
+                    setAccountList({ data: [], isLoaded: true })
                     let actId = accountId?.value
                     if (orders[productId] && !actId) {
                         actId = orders[productId]?.account?.id;
+                        console.log("boooo");
+                        
                         setAccountId({ label: orders[productId]?.account?.name, value: orders[productId]?.account?.id })
                     }
                     let rawData = { productId: productId, key: user.x_access_token, salesRepId: user?.Sales_Rep__c, accountId: actId }
@@ -58,7 +68,6 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
                 console.log({ err });
             })
         }
-        console.log({ productId, accountId });
 
     }, [productId, accountId])
 
@@ -101,23 +110,22 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
     const onQuantityChange = (element, quantity, salesPrice = null, discount = null) => {
         console.log(onQuantityChange)
         element.salesPrice = salesPrice;
-        
+
         if (Object.values(orders).length) {
             if (
                 Object.values(orders)[0]?.manufacturer?.name === localStorage.getItem("manufacturer") &&
                 Object.values(orders)[0].account.name === localStorage.getItem("Account") &&
-                Object.values(orders)[0].productType === 
-                (element.Category__c === "PREORDER" 
-                  ? "pre-order" 
-                  : element.Category__c === "TESTER" 
-                    ? "tester" 
-                    : element?.Category__c?.toUpperCase().match("EVENT") 
-                      ? "event" 
-                      :  element?.Category__c?.toUpperCase() === "SAMPLES" 
-                      ? "samples" 
-                      : "wholesale")
-              )
-            {
+                Object.values(orders)[0].productType ===
+                (element.Category__c === "PREORDER"
+                    ? "pre-order"
+                    : element.Category__c === "TESTER"
+                        ? "tester"
+                        : element?.Category__c?.toUpperCase().match("EVENT")
+                            ? "event"
+                            : element?.Category__c?.toUpperCase() === "SAMPLES"
+                                ? "samples"
+                                : "wholesale")
+            ) {
                 orderSetting(element, quantity);
                 setReplaceCartModalOpen(false);
             } else {
@@ -161,7 +169,7 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
                             position: 'sticky',
                             top: '-20px',
                             background: '#fff',
-                            zIndex: 2,
+                            zIndex: 11,
                             padding: '15px 0 0 0'
                         }}>
                             <div className="d-flex align-items-center justify-content-between" style={{ minWidth: '75vw' }}>
@@ -182,7 +190,7 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
                                             {accountList.data.length ?
                                                 <Select
                                                     value={accountId}
-                                                    onChange={(value) => { setAccountId(value); setStoreSet(false);  setOrders({});  addOrder(product.data, product?.data?.Min_Order_QTY__c, product.discount);}}
+                                                    onChange={(value) => { setAccountId(value); setStoreSet(false); setOrders({}); addOrder(product.data, product?.data?.Min_Order_QTY__c, product.discount); }}
                                                     options={accountList.data.map((value) => {
                                                         return { value: value.Id, label: value.Name };
                                                     })}
@@ -231,7 +239,6 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
                         ) : null}
                         {!product?.isLoaded ? <Loading /> :
                             <ProductDetailCard product={product} orders={orders} onQuantityChange={onQuantityChange} onPriceChangeHander={onPriceChangeHander} isAddtoCart={accountId.value ? true : false} AccountId={AccountId} toRedirect={toRedirect} setStoreSet={setStoreSet} accountId={accountId} accounts={accountList.isLoaded ? accountList.data.length : 'load'} autoSelectCheck={autoSelectCheck} />}
-                        {/* */}
                     </div>
                 }
                 onClose={ModalCloseHandler}
