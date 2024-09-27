@@ -48,7 +48,7 @@ const Header = () => {
               onClick={() => handleRestrictedAccess('Top Products')}
               style={{ cursor: 'not-allowed', color: 'grey' }}
             >
-              Top Products
+              Popular selling products
             </span>
           </p>
         )}

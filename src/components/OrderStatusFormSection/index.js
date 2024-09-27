@@ -324,7 +324,7 @@ const OrderStatusFormSection = ({ setSubmitLoad }) => {
                 <div className={`${stylesV2.dFlex} ${stylesV2.noWarp} ${stylesV2.spaceBetween}`}>
                   <div className={stylesV2.detailsCardTitleHolder}>
                     <b>Total</b>
-                    <p className="mb-2 mt-1">{formentAcmount(orderDetails.Amount)}</p>
+                    <p className="mb-2 mt-1">${formentAcmount(orderDetails.Amount)}</p>
                   </div>
                   <div className={`${stylesV2.detailsCardTitleHolder} text-end`}>
                     <b>Products</b>
