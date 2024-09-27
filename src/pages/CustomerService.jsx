@@ -207,7 +207,7 @@ const CustomerService = () => {
             orderStatusForm: {
               typeId: "0123b0000007z9pAAA",
               reason: reason,
-              salesRepId: user.Sales_Rep__c,
+              salesRepId: SalesRepId??user.Sales_Rep__c,
               contactId,
               accountId,
               opportunityId: orderId,
