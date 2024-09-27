@@ -29,10 +29,7 @@ function TrackingStatus({ data, onClose = null }) {
                                 <div className={Styles.ProtuctInnerBoxPara}>
                                     <div className={Styles.ProtuctInnerBoxInner}>
                                         <h4 style={{ marginBottom: '30px', textAlign: 'start' }}>
-                                            {
-                                                data?.AccountName
-                                            }
-
+                                            {data?.AccountName}
                                         </h4>
                                         <p><b className={Styles.Span1}>PO Number :</b>   <span className={Styles.Span2}>{data.PO_Number__c}</span></p>
                                         <p><b className={Styles.Span1}>Brand :</b>   <span className={Styles.Span2}>{data.ManufacturerName__c}</span></p>
