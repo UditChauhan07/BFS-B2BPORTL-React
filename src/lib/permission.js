@@ -87,7 +87,8 @@ export const permissionsArray = [
           },
           auditReport: {
             view: true, //check
-            create: true //check
+            create: true ,  //check
+            specify : true
           },
         },
       },
@@ -178,7 +179,8 @@ export const permissionsArray = [
           },
           auditReport: {
             view: false, //check
-            create: false //check
+            create: false , 
+            specify : true //check
           },
         },
       },
@@ -360,7 +362,8 @@ export const permissionsArray = [
           },
           auditReport: {
             view: false, //check
-            create: false //check
+            create: false  , //check
+            specify : true
           },
         },
       },
