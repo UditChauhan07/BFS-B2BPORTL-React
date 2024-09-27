@@ -216,7 +216,7 @@ const MobileHeader = () => {
 
                       <li>
                         <Link to="/top-products" className={`p-1 px-2 linkStyle ${styles.text}`}>
-                          Top Products
+                        Popular selling products
                         </Link>
                       </li>
                     

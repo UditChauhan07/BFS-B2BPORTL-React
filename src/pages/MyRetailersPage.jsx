@@ -62,7 +62,10 @@ const MyRetailersPage = () => {
   const getRetailerListHandler = ({ key, userId }) => {
     setRetailerList({ data: [], isLoading: true });
     getRetailerList({ key, userId })
-      .then((retailerRes) => setRetailerList({ data: retailerRes?.data.length ? retailerRes?.data : [], isLoading: false }))
+      .then((retailerRes) => {
+        console.log({retailerRes});
+        
+        setRetailerList({ data: retailerRes?.data.length ? retailerRes?.data : [], isLoading: false })})
       .catch(e => console.error(e));
   };
 
