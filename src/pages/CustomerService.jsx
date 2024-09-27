@@ -207,7 +207,7 @@ const CustomerService = () => {
             orderStatusForm: {
               typeId: "0123b0000007z9pAAA",
               reason: reason,
-              salesRepId: user.Sales_Rep__c,
+              salesRepId: selectedSalesRepId??user.Sales_Rep__c,
               contactId,
               accountId,
               opportunityId: orderId,
@@ -249,6 +249,8 @@ const CustomerService = () => {
       });
   }
 
+  
+
   const memoizedPermissions = useMemo(() => permissions, [permissions]);
 
   if (sumitForm) return <AppLayout><Loading height={'50vh'} /></AppLayout>;
@@ -279,7 +281,7 @@ const CustomerService = () => {
         {reason != "Update Account Info" && <OrderCardHandler orders={orders} orderId={orderId} setOrderId={setOrderId} reason={reason} orderConfirmedStatus={{ setOrderConfirmed, orderConfirmed }} accountIdObj={{ accountId, setAccountId }} manufacturerIdObj={{ manufacturerId, setManufacturerId }} errorListObj={{ errorList, setErrorList }} contactIdObj={{ contactId, setContactId }} accountList={accountList} setSubject={setSubject} sendEmailObj={{ sendEmail, setSendEmail }} Actual_Amount__cObj={{ Actual_Amount__c, setActual_Amount__c }} searchPoOBJ={{ searchPo, setSearchPO }} autoSelect={OrderId} />}
         {/*  files={files} desc={desc} */}
         {reason != "Update Account Info" && <Attachements setFile={setFile} files={files} setDesc={setDesc} orderConfirmed={orderConfirmed} SubmitHandler={SubmitHandler} />}
-        {reason == "Update Account Info" && <AccountInfo reason={reason} Accounts={accountList} postSupportAny={postSupportAny} GetAuthData={GetAuthData} setSubmitForm={setSubmitForm} typeId={"0123b0000007z9pAAA"} />}
+        {reason == "Update Account Info" && <AccountInfo reason={reason} Accounts={accountList} postSupportAny={postSupportAny} GetAuthData={GetAuthData} setSubmitForm={setSubmitForm} typeId={"0123b0000007z9pAAA"} salesRepId={selectedSalesRepId} />}
       </section>}
   </CustomerSupportLayout>)
 }
