@@ -21,34 +21,44 @@ const ProductDetailCard = ({
   autoSelectCheck = false,
 }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  
 
-  useEffect(() => {}, [orders]);
+
+  useEffect(() => { }, [orders]);
 
   if (!product) {
     return null;
   }
 
-  const listPrice = Number(product?.data?.usdRetail__c?.replace("$", "").replace(",", ""));
   let salesPrice = 0;
-  let discount = product?.discount?.margin;
-  console.log({discount});
+  let discount = product?.discount?.margin||0;
   
+  const usdRetail = product?.data?.usdRetail__c;
+  let listPrice = usdRetail;
 
+  // Check if usdRetail contains any non-numeric characters (including slashes, text like "TBD", etc.)
+  if (usdRetail && /[^$0-9.]/.test(usdRetail)) {
+    // It contains non-numeric characters, handle accordingly
+    console.log('Contains non-numeric characters:', usdRetail);
+  } else {
+    listPrice = Number(product?.data?.usdRetail__c?.replace("$", "").replace(",", ""))
+  }
+
+  
+  
   let inputPrice = Object.values(orders)?.find(
     (order) =>
       order.product.Id === product?.data?.Id &&
-      order.manufacturer.name === product?.data?.ManufacturerName__c &&
-      order.account.id === (accountId.value==AccountId?accountId.value:accountId.value||AccountId)
+    order.manufacturer.name === product?.data?.ManufacturerName__c &&
+    order.account.id === (accountId.value == AccountId ? accountId.value : accountId.value || AccountId)
   )?.product?.salesPrice;
-
   
-
+  
+  
   if (product?.data?.Category__c === "TESTER") {
-    discount = product?.discount?.testerMargin;
+    discount = product?.discount?.testerMargin||0;
     salesPrice = (listPrice - (discount / 100) * listPrice).toFixed(2);
   } else if (product?.data?.Category__c === "Samples") {
-    discount = product?.discount?.sample;
+    discount = product?.discount?.sample||0;
     salesPrice = (listPrice - (discount / 100) * listPrice).toFixed(2);
   } else {
     salesPrice = (listPrice - (discount / 100) * listPrice).toFixed(2);
@@ -63,6 +73,9 @@ const ProductDetailCard = ({
   const autoSelectQty = () => {
     onQuantityChange(product?.data, product?.data?.Min_Order_QTY__c, inputPrice || parseFloat(salesPrice), discount);
   };
+
+  console.log({ listPrice });
+
 
   return (
     <div className="container mt-4 product-card-element">
@@ -84,7 +97,7 @@ const ProductDetailCard = ({
           <h2 className={Styles.nameHolder}>{product?.data?.Name}</h2>
           <p className={Styles.priceHolder}>
             ${parseFloat(salesPrice).toFixed(2)}&nbsp;
-            {parseFloat(salesPrice).toFixed(2)==product?.data?.usdRetail__c?<span className={Styles.crossed}>{product?.data?.usdRetail__c}</span>:null}
+            {parseFloat(salesPrice).toFixed(2) == product?.data?.usdRetail__c ? <span className={Styles.crossed}>{product?.data?.usdRetail__c}</span> : null}
           </p>
 
           {product?.data?.Description && (
@@ -123,7 +136,7 @@ const ProductDetailCard = ({
                   type="number"
                   className={Styles.priceInputHolder}
                   value={inputPrice}
-                  placeholder={Number(inputPrice||0)?.toFixed(2)??''}
+                  placeholder={Number(inputPrice || 0)?.toFixed(2) ?? ''}
                   onChange={(e) => {
                     onPriceChangeHander(
                       product?.data,

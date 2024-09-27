@@ -12,7 +12,7 @@ import LoaderV2 from "../loader/v2";
 import ProductDetails from "../../pages/productDetails";
 import Loading from "../Loading";
 
-function MyBagFinal() {
+function MyBagFinal({showOrderFor}) {
   let Img1 = "/assets/images/dummy.png";
   const navigate = useNavigate();
   const [orderDesc, setOrderDesc] = useState(null);
@@ -489,7 +489,7 @@ function MyBagFinal() {
                           <p>No Shipping Address</p>
                         )}
                       </div>
-                      {(admins.includes(userData?.Sales_Rep__c) && salesRepData?.Id && buttonActive) && <>
+                      {(showOrderFor && salesRepData?.Id && buttonActive) && <>
                         <h2>Order For</h2>
                         <div className={Styles.ShipAdress}>
                           {userData?.Sales_Rep__c == salesRepData?.Id ? 'Me' : salesRepData?.Name}
