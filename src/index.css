@@ -28,8 +28,9 @@
       font-size: 9px;
       gap: 10px;
     }
-    @media (max-width: 1253.98px) {
-      gap: 20px;
+    @media (max-width: 1279.98px) {
+      /* font-size: 8px; */
+      gap: 7px;
     }
     @media (max-width: 1160.98px) {
       height: auto;

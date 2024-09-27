@@ -21,6 +21,7 @@ const ProductDetailCard = ({
   autoSelectCheck = false,
 }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  
 
   useEffect(() => {}, [orders]);
 
@@ -38,8 +39,10 @@ const ProductDetailCard = ({
     (order) =>
       order.product.Id === product?.data?.Id &&
       order.manufacturer.name === product?.data?.ManufacturerName__c &&
-      order.account.id === (AccountId || accountId.value)
+      order.account.id === (accountId.value==AccountId?accountId.value:accountId.value||AccountId)
   )?.product?.salesPrice;
+
+  
 
   if (product?.data?.Category__c === "TESTER") {
     discount = product?.discount?.testerMargin;
@@ -81,7 +84,7 @@ const ProductDetailCard = ({
           <h2 className={Styles.nameHolder}>{product?.data?.Name}</h2>
           <p className={Styles.priceHolder}>
             ${parseFloat(salesPrice).toFixed(2)}&nbsp;
-            <span className={Styles.crossed}>{product?.data?.usdRetail__c}</span>
+            {parseFloat(salesPrice).toFixed(2)==product?.data?.usdRetail__c?<span className={Styles.crossed}>{product?.data?.usdRetail__c}</span>:null}
           </p>
 
           {product?.data?.Description && (
@@ -120,7 +123,7 @@ const ProductDetailCard = ({
                   type="number"
                   className={Styles.priceInputHolder}
                   value={inputPrice}
-                  placeholder={Number(inputPrice).toFixed(2)}
+                  placeholder={Number(inputPrice||0)?.toFixed(2)??''}
                   onChange={(e) => {
                     onPriceChangeHander(
                       product?.data,
@@ -150,11 +153,11 @@ const ProductDetailCard = ({
               </div>
 
               <p className="mt-3" style={{ textAlign: "start" }}>
-                Total: <b>{(inputPrice * orders[product?.data?.Id]?.quantity).toFixed(2)}</b>
+                Total: <b>${(inputPrice * orders[product?.data?.Id]?.quantity).toFixed(2)}</b>
               </p>
             </div>
           ) : accounts ? (
-            accounts !== "load" ? (
+            accounts === "load" ? (
               <Loading />
             ) : isAddtoCart && product?.discount ? (
               <button
