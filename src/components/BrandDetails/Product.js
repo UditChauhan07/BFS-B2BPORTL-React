@@ -255,10 +255,11 @@ function Product() {
         Object.values(begValue.orderList).map((product) => {
           let productPriceStr = product.product.salesPrice;
           let productQuantity = product.quantity;
-          let productPrice = parseInt(productPriceStr || 0);
+          let productPrice = parseFloat(productPriceStr || 0);
           bagPrice += productPrice * productQuantity;
         });
         setAlert(0);
+        
         if (productList.discount.MinOrderAmount > bagPrice) {
           setAlert(1);
         } else {
