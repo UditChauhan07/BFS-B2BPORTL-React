@@ -38,7 +38,8 @@ function TrackingStatus({ data, onClose = null }) {
                                         <p><b className={Styles.Span1}>Brand :</b>   <span className={Styles.Span2}>{data.ManufacturerName__c}</span></p>
                                         <p><b className={Styles.Span1}>Order Placed :</b>   <span className={Styles.Span2}>{DateConvert(data.CreatedDate, true)}</span></p>
                                         <p><b className={Styles.Span1}>Tracking Id :</b>   <span className={Styles.Span2}>{data.Tracking_URL__c ? <Link to={data.Tracking_URL__c} target='_blank' className={Styles.linkHolder}>{data.Tracking__c}</Link> : data.Tracking__c}</span></p>
-                                        <p><b className={Styles.Span1}>Shipment Method :</b>   <span className={Styles.Span2}>{data.Shipping_method__c}</span></p>
+                                        {data?.Shipping_method__c?
+                                        <p><b className={Styles.Span1}>Shipment Method :</b>   <span className={Styles.Span2}>{data?.Shipping_method__c}</span></p>:null}
 
                                     </div>
 
