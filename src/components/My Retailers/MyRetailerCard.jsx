@@ -22,8 +22,8 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address,selectedS
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const showProductHandler=(brand)=>{
-    localStorage.setItem("manufacturer", brand.ManufacturerName__c|| brand.Name);
-    localStorage.setItem("ManufacturerId__c", brand.ManufacturerId__c||  brand.Id);
+    localStorage.setItem("manufacturer", brand.ManufacturerName__c?? brand.Name);
+    localStorage.setItem("ManufacturerId__c", brand.ManufacturerId__c??  brand.Id);
     localStorage.setItem(salesRepIdKey, selectedSalesRepId);
     localStorage.setItem("shippingMethod", JSON.stringify({number:brand.Shipping_Account_Number__c,method:brand.Shipping_Method__c}));
     navigate(`/product`);
