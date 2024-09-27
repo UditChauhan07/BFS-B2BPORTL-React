@@ -27,7 +27,6 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
     { value: "samples", label: "Samples" },
 
   ]
-
   const navigate = useNavigate();
   const CheckError = (data) => {
     let totalQty = 0;
@@ -154,6 +153,8 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
         }
       }
     })
+
+    
     setAlert('-');
     if (rawData.discount.MinOrderAmount >= bagPrice) {
       setAlert(bagPrice);
@@ -395,7 +396,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
                 <div className="mt-3">No Data Found.</div>
               </div>
             ) : null}
-            <div className="d-flex justify-content-center" style={{ position: 'sticky', bottom: '-120px', background: '#fff', padding: '1rem 0' }}>
+            <div className="d-flex justify-content-center" style={{ position: 'sticky', bottom: '-4%', background: '#fff', padding: '1rem 0' }}>
               <button className={btnClassName} onClick={() => { !isLimitPass ? submitForm() : setLimitCheck(true) }}>
                 Submit
               </button>
