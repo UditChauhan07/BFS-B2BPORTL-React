@@ -14,6 +14,7 @@ const AccountInfo = ({ reason, typeId, Accounts, postSupportAny, GetAuthData, se
     const [brandList, setBrandList] = useState([]);
     const [confirm, setConfirm] = useState(false);
     let [files, setFile] = useState([])
+    useEffect(()=>{},[salesRepId])
 
     const initialValues = {
         description: "",
