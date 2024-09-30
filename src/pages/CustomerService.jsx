@@ -190,9 +190,10 @@ const CustomerService = () => {
         if (user) {
           let errorlistObj = Object.keys(errorList);
           let systemStr = "";
+          
           if (errorlistObj.length) {
             errorlistObj.map((id) => {
-              systemStr += `${errorList[id].Name}(${errorList[id].ProductCode}) having ${reason} for ${errorList[id].issue} out of ${errorList[id].Quantity} Qty.\n`
+              systemStr += `${errorList[id].Name}(${errorList[id].ProductCode}) having ${reason} for ${errorList[id].issue} ${errorList[id]?.Quantity ? 'out of '+errorList[id].Quantity+' Qty':''} .\n`
             })
           }
           let newDesc = "";
@@ -202,6 +203,7 @@ const CustomerService = () => {
           } else {
             newDesc = desc
           }
+          
 
           let rawData = {
             orderStatusForm: {
