@@ -116,10 +116,6 @@ a {
   margin: auto;
 }
 /* Search bar of nav start */
-/* Search bar of nav start */
-/* Search bar of nav start */
-/* Search bar of nav start */
-/* Search bar of nav start */
 
 input#searchright {
   border-bottom: 1px solid;
@@ -265,7 +261,9 @@ input#searchright {
   left: 46px;
   /* vertical-align: bottom; */
 }
-
+.xyz{
+  display: block;
+}
 .mglass {
   display: inline-block;
   pointer-events: none;
