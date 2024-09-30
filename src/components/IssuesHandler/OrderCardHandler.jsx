@@ -266,7 +266,7 @@ const OrderCardHandler = ({ orders, setOrderId, orderId, reason, orderConfirmedS
                             myElement.style.borderBottom = "1px solid red";
                             shakeHandler(`oP${id}`)
                             Swal.fire({
-                                title: 'Product Overage!',
+                                title: `${reason}!`,
                                 text: `You have entered more than the allowed quantity`,
                                 icon: 'error',
                                 confirmButtonText: 'Ok',
@@ -377,7 +377,7 @@ const OrderCardHandler = ({ orders, setOrderId, orderId, reason, orderConfirmedS
                                                         searchItem?.toLowerCase()))) {
                                                 return (
                                                     <ErrorProductCard Styles1={Styles1} productErrorHandler={productSelectHandler} errorList={productList} setProductDetailId={setProductDetailId} product={ele} productImage={productImage} reason={reason} AccountName={""} ErrorProductQtyHandler={ErrorProductQtyHandler}
-                                                        readOnly={orderConfirmed} style={{ cardHolder: { backgroundColor: '#67f5f533', borderBottom: '1px solid #fff' }, nameHolder: { width: '300px', textAlign: 'start' } }} showQTyHandler={false} />
+                                                        readOnly={orderConfirmed} style={{ cardHolder: { backgroundColor: '#67f5f533', borderBottom: '1px solid #fff' }, nameHolder: { width: '200px', textAlign: 'start' } }} showQTyHandler={false} />
                                                 )
                                             }
                                         }) : null}
@@ -489,7 +489,7 @@ const OrderCardHandler = ({ orders, setOrderId, orderId, reason, orderConfirmedS
                                                                                         searchItem?.toLowerCase()))) {
                                                                                 return (
                                                                                     <ErrorProductCard Styles1={Styles1} productErrorHandler={productErrorHandler} errorList={errorList} setProductDetailId={setProductDetailId} product={ele} productImage={productImage} reason={reason} AccountName={item.AccountName} ErrorProductQtyHandler={ErrorProductQtyHandler}
-                                                                                        readOnly={orderConfirmed} style={{ cardHolder: { backgroundColor: '#67f5f533', borderBottom: '1px solid #fff' }, nameHolder: { width: '300px' } }} />
+                                                                                        readOnly={orderConfirmed} style={{ cardHolder: { backgroundColor: '#67f5f533', borderBottom: '1px solid #fff' }, nameHolder: { width: '200px' } }} />
                                                                                 )
                                                                             }
                                                                         }
