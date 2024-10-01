@@ -95,10 +95,21 @@ const ProductDetailCard = ({
             </Link>
           </p>
           <h2 className={Styles.nameHolder}>{product?.data?.Name}</h2>
-          <p className={Styles.priceHolder}>
-            ${parseFloat(salesPrice).toFixed(2)}&nbsp;
-            {parseFloat(salesPrice).toFixed(2) == product?.data?.usdRetail__c ? <span className={Styles.crossed}>{product?.data?.usdRetail__c}</span> : null}
-          </p>
+          {product?.discount ? (
+              <p className={Styles.priceHolder}>
+              {isNaN(salesPrice) || salesPrice === null || salesPrice === undefined ? (
+                <>{product?.data?.usdRetail__c}</>
+              ) : (
+                <>
+                  ${parseFloat(salesPrice).toFixed(2)} <span className={Styles.crossed}>{product?.data?.usdRetail__c}</span>
+                </>
+              )}
+            </p>
+          ) : (
+            <p className={Styles.priceHolder}>
+              <b>{product?.data?.usdRetail__c}</b>
+            </p>
+          )}
 
           {product?.data?.Description && (
             <p className={Styles.descHolder}>
