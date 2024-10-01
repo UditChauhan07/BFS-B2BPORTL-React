@@ -108,7 +108,7 @@ export async function POGenerator() {
     let date = new Date();
 
     //  const response = await fetch( "http://localhost:2611/PoNumber/generatepo"
-    const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepo", {
+    const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepov2", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,6 +117,8 @@ export async function POGenerator() {
         accountName: orderDetails.Account?.name,
         manufacturerName: orderDetails.Manufacturer?.name,
         orderDate: date.toISOString(),
+        accountId: orderDetails.Account?.id,  // Make sure this is passed
+        manufacturerId: orderDetails.Manufacturer?.id // Ensure this is passed
       }),
     });
 
