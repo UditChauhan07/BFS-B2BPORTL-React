@@ -12,7 +12,7 @@ import LoaderV2 from "../loader/v2";
 import ProductDetails from "../../pages/productDetails";
 import Loading from "../Loading";
 
-function MyBagFinal({showOrderFor}) {
+function MyBagFinal({ showOrderFor }) {
   let Img1 = "/assets/images/dummy.png";
   const navigate = useNavigate();
   const [orderDesc, setOrderDesc] = useState(null);
@@ -34,8 +34,10 @@ function MyBagFinal({showOrderFor}) {
   const [isLoading, setIsLoading] = useState(true);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const fetchBag = fetchBeg({});
+const productLists = Object.values(fetchBag.orderList ?? {}); 
   const handleNameChange = (event) => {
-    const limit = 10;
+    const limit = 11;
     setLimitInput(event.target.value.slice(0, limit));
   };
 
@@ -161,12 +163,14 @@ function MyBagFinal({showOrderFor}) {
           let productLists = Object.values(fetchBag.orderList);
           if (productLists.length) {
             productLists.forEach((product) => {
-              // Trim the category string to avoid issues with extra spaces
               let productCategory = product?.product?.Category__c?.toUpperCase()?.trim();
 
-              // Use .includes() for category checks
+              // Set orderType based on product category and prepend "PRE" to PONumber if "PREORDER"
               if (productCategory?.includes("PREORDER")) {
                 orderType = "Pre Order";
+                if (!PONumber.startsWith("PRE")) {
+                  PONumber = `PRE${PONumber}`; // Prepend "PRE" to the PO number
+                }
               } else if (productCategory?.includes("EVENT ")) {
                 orderType = "Event Order";
               } else if (productCategory?.includes("TESTER")) {
@@ -174,7 +178,6 @@ function MyBagFinal({showOrderFor}) {
               } else if (productCategory?.includes("SAMPLES")) {
                 orderType = "Wholesale Numbers";
               }
-// console.log("tuytuyu heuhioreupoirp xuh3uioxmfeoipoimxhuhruh2uhr")
 
               let temp = {
                 ProductCode: product.product.ProductCode,
@@ -190,10 +193,10 @@ function MyBagFinal({showOrderFor}) {
             AccountId: fetchBag?.Account?.id,
             Name: fetchBag?.Account?.name,
             ManufacturerId__c: fetchBag?.Manufacturer?.id,
-            PONumber: PONumber,
+            PONumber: PONumber, // Now includes "PRE" if it was a preorder
             desc: orderDesc,
             SalesRepId,
-            Type: orderType, // The correct order type based on product categories
+            Type: orderType,
             ShippingCity: fetchBag?.Account?.address?.city,
             ShippingStreet: fetchBag?.Account?.address?.street,
             ShippingState: fetchBag?.Account?.address?.state,
@@ -201,8 +204,9 @@ function MyBagFinal({showOrderFor}) {
             ShippingZip: fetchBag?.Account?.address?.postalCode,
             list,
             key: user.x_access_token,
-            shippingMethod: fetchBag.Account.shippingMethod
+            shippingMethod: fetchBag.Account.shippingMethod,
           };
+
           OrderPlaced({ order: begToOrder })
             .then((response) => {
               if (response) {
@@ -226,6 +230,7 @@ function MyBagFinal({showOrderFor}) {
         console.error({ error });
       });
   };
+
 
 
   const handleRemoveProductFromCart = (ele) => {
@@ -367,18 +372,41 @@ function MyBagFinal({showOrderFor}) {
                   <h5>
                     PO Number{" "}
                     {!isPOEditable ? (
-                      <b> {buttonActive ? PONumber : "---"}</b>
+                      <b>
+                        {buttonActive ? (
+                          // If it's a Pre Order and PONumber doesn't already start with "PRE", prepend "PRE"
+                          productLists.some(product => product.product.Category__c?.toUpperCase()?.includes("PREORDER")) && !PONumber.startsWith("PRE")
+                            ? `PRE-${PONumber}`
+                            : PONumber
+                        ) : (
+                          "---"
+                        )}
+                      </b>
                     ) : (
-                      <input type="text" defaultValue={PONumber} onKeyUp={(e) => setPONumber(e.target.value)} placeholder=" Enter PO Number" style={{ borderBottom: "1px solid black" }}
+                      <input
+                        type="text"
+                        defaultValue={PONumber}
+                        onKeyUp={(e) => setPONumber(e.target.value)}
+                        placeholder=" Enter PO Number"
+                        style={{ borderBottom: "1px solid black" }}
                         id="limit_input"
                         name="limit_input"
                         value={limitInput}
-                        onChange={handleNameChange} />
-
+                        onChange={handleNameChange}
+                      />
                     )}
                   </h5>
+
                   {!isPOEditable && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none" onClick={() => setIsPOEditable(true)} style={{ cursor: "pointer" }}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="20"
+                      viewBox="0 0 21 20"
+                      fill="none"
+                      onClick={() => setIsPOEditable(true)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <path
                         d="M19.3078 10.6932V19.2841C19.3078 19.6794 18.9753 20 18.5652 20H0.742642C0.332504 20 0 19.6794 0 19.2841V2.10217C0 1.70682 0.332504 1.38627 0.742642 1.38627H9.65389C10.064 1.38627 10.3965 1.70682 10.3965 2.10217C10.3965 2.49754 10.064 2.81809 9.65389 2.81809H1.48519V18.5682H17.8226V10.6932C17.8226 10.2979 18.1551 9.97731 18.5652 9.97731C18.9753 9.97731 19.3078 10.2979 19.3078 10.6932ZM17.9926 5.11422L15.6952 2.89943L7.72487 10.5832L7.09297 13.4072L10.0223 12.7981L17.9926 5.11422ZM21 2.2148L18.7027 0L16.8541 1.78215L19.1515 3.99692L21 2.2148Z"
                         fill="black"
@@ -386,6 +414,8 @@ function MyBagFinal({showOrderFor}) {
                     </svg>
                   )}
                 </div>
+
+
               </div>
 
               <div className={Styles.MyBagFinalMain}>
