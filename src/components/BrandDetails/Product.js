@@ -97,7 +97,7 @@ function Product() {
           }
         } 
         else if (productTypeFilter === "SAMPLES") {
-          if (key.toUpperCase().match("SAMPLES")) {
+          if (key.toUpperCase().match("Samples")) {
             newData[key] = finalFilteredProducts[key];
           }
         } 
