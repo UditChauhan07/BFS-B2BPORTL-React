@@ -29,7 +29,7 @@ const Accordion = ({ data, formattedData, productImage = [] }) => {
             ? "tester"
             : product?.Category__c?.toUpperCase().match("EVENT")
               ? "event"
-              : product?.Category__c?.toUpperCase() === "SAMPLES"
+              : product?.Category__c?.toUpperCase() === "Samples"
                 ? "samples"
                 : "wholesale")
       ) {
