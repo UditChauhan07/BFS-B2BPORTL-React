@@ -122,7 +122,7 @@ const ProductDetails = ({ productId, setProductDetailId, isAddtoCart = true, Acc
                         ? "tester"
                         : element?.Category__c?.toUpperCase().match("EVENT")
                             ? "event"
-                            : element?.Category__c?.toUpperCase() === "SAMPLES"
+                            : element?.Category__c?.toUpperCase() === "Samples"
                                 ? "samples"
                                 : "wholesale")
             ) {
