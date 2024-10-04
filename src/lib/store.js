@@ -15,7 +15,7 @@ const POCount = "woX5MkCSIOlHXkT";
 const support = "AP0HBuNwbNnuhKR";
 const shareKey = "R7Mmw2nG41y6MqI";
 export const salesRepIdKey = "BzQIEAjzCEHmlXc";
-export const admins = ["00530000005AdvsAAC", "0053b00000DgEVEAA3", "0051O00000CvAVTQA3", "0053b00000CwOnLAAV"]; //, "0053b00000CwOnLAAV" ,"0053b00000DgEVEAA3"
+export const admins = ["00530000005AdvsAAC", "0053b00000DgEVEAA3", "0051O00000CvAVTQA3", "0053b00000CwOnLAAV" ,  "0053b00000C75e8AAB" , "0053b00000DgEvqAAF"]; //, "0053b00000CwOnLAAV" ,"0053b00000DgEVEAA3"
 
 export const months = [
   "January",
@@ -108,7 +108,7 @@ export async function POGenerator() {
     let date = new Date();
 
     //  const response = await fetch( "http://localhost:2611/PoNumber/generatepo"
-    const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepo", {
+    const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepov2", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,6 +117,8 @@ export async function POGenerator() {
         accountName: orderDetails.Account?.name,
         manufacturerName: orderDetails.Manufacturer?.name,
         orderDate: date.toISOString(),
+        accountId: orderDetails.Account?.id,  // Make sure this is passed
+        manufacturerId: orderDetails.Manufacturer?.id // Ensure this is passed
       }),
     });
 

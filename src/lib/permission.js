@@ -4,7 +4,7 @@ let userType = "saleRep";
 export const permissionsArray = [
   {
     userType: "superadmin",
-    allows: ["00530000005AdvsAAC", "0051O00000CvAVTQA3", "0053b00000DgEVEAA3"],
+    allows: ["00530000005AdvsAAC", "0051O00000CvAVTQA3", "0053b00000DgEVEAA3" , "0053b00000C75e8AAB" , "0053b00000DgEvqAAF"],
     permissions: {
       modules: {
         godLevel: true, //check
@@ -80,7 +80,7 @@ export const permissionsArray = [
             view: true, //check
           },
           contactDetailedReport: {
-            view: false, //off
+            view: true, //off
           },
           accountTier: {
             view: true, //check
@@ -172,7 +172,7 @@ export const permissionsArray = [
             view: true, //check
           },
           contactDetailedReport: {
-            view: false, //off
+            view: true, //off
           },
           accountTier: {
             view: false, //check
@@ -188,7 +188,7 @@ export const permissionsArray = [
   },
   {
     userType: "Report manage c1",
-    allows: ["0053b00000C75e8AAB", "0053b00000DgGqOAAV"],
+    allows: ["0053b00000DgGqOAAV"],
     permissions: {
       modules: {
         godLevel: true, //check

@@ -127,12 +127,12 @@ function FilterPage({ data, formattedData, setCategoryFilters, categoryFilters, 
                       // Return only categories that include 'EVENT'
                       return category.includes('EVENT');
                     } 
-                    else if (productTypeFilter === 'SAMPLES') {
+                    else if (productTypeFilter === 'Samples') {
                       // Return only categories that include 'EVENT'
-                      return category.includes('SAMPLES');
+                      return category.includes('Samples');
                     }else if (productTypeFilter === 'Wholesale') {
                       // Remove categories that include 'PREORDER', 'TESTER', or 'EVENT'
-                      if(!category.includes('PREORDER') && !category.includes('TESTER') && !category.includes('EVENT')){
+                      if(!category.includes('PREORDER') && !category.includes('TESTER') && !category.includes('Samples') && !category.includes('EVENT')){
                         return true;
                       }
                     }
