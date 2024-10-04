@@ -5,7 +5,7 @@ import { FilterItem } from '../../components/FilterItem';
 import Loading from '../../components/Loading';
 import styles from "../../components/newness report table/table.module.css"; // Preserving your table styles
 import * as XLSX from 'xlsx';
-import { CloseButton } from "../../lib/svg";
+
 import { MdOutlineDownload } from "react-icons/md";
 import { getPermissions } from "../../lib/permission";
 import FilterSearch from '../../components/FilterSearch';
@@ -13,6 +13,7 @@ import PermissionDenied from '../../components/PermissionDeniedPopUp/PermissionD
 import { useNavigate } from 'react-router-dom';
 import { fetchAccountDetails } from '../../lib/contactReport';
 import { useManufacturer } from "../../api/useManufacturer";
+import { CloseButton, SearchIcon } from "../../lib/svg";
 function ContactDetailedReport() {
     const navigate = useNavigate();
     const [accountManufacturerRecords, setAccountManufacturerRecords] = useState([]);
@@ -30,7 +31,7 @@ function ContactDetailedReport() {
     const [manufacturers, setManufacturers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [permissions, setPermissions] = useState(null);
-
+    const [selectedManufacturer, setSelectedManufacturer] = useState('');
     // Debounce Filter Updates
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -101,11 +102,13 @@ function ContactDetailedReport() {
     };
 
     const handleClearFilters = async () => {
+        setSelectedManufacturer('')
         setFilters({
             accountFilter: '',
             saleRepFilter: '',
             manufacturerFilter: 'Bobbi Brown',
             accountStatusFilter: 'Active Account',
+            
         });
        
     };
@@ -154,17 +157,33 @@ function ContactDetailedReport() {
     return (
         <AppLayout
         filterNodes={
-            <>
-            <FilterItem
-    minWidth="200px"
-    label="BOBBI BROWN"
-    
-    value={filters.manufacturerFilter} // Ensure value is connected to state
-    name="BOBBI BROWN"
-    options={manufacturers}
-    onChange={(value) => handleFilterChange('manufacturerFilter', value)}
-    onFocus={() => setFilters((prev) => ({ ...prev, saleRepFilter: '' }))}
-/>
+          
+              <div className="d-flex justify-content-between m-auto" style={{ width: '99%' }}>
+              <div className="d-flex justify-content-start gap-4 col-4">
+ <FilterItem
+        minWidth="200px"
+        label="BOBBI BROWN"
+        value={selectedManufacturer}  // Use temporary state
+        name="BOBBI BROWN"
+        options={manufacturers}
+        onChange={(value) => {
+          // Update the temporary state only
+          setSelectedManufacturer(value);
+        }}
+        onFocus={() => setFilters((prev) => ({ ...prev, saleRepFilter: '' }))} // Optional
+      />
+      
+<button  onClick={() => {
+         
+          handleFilterChange('manufacturerFilter', selectedManufacturer);
+          // Also update the actual filter state
+          setFilters((prev) => ({ ...prev, manufacturerFilter: selectedManufacturer }));
+        }}  className="border px-2 py-1 leading-tight d-grid"> <SearchIcon fill="#fff" width={20} height={20} />
+              <small style={{ fontSize: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>search</small>
+            </button>
+          
+</div>
+            <div className="d-flex justify-content-end col-1"><hr className={Styles.breakHolder} /></div>
                {memoizedPermissions?.modules?.godLevel && (
                     <FilterItem
                         minWidth="200px"
@@ -205,7 +224,8 @@ function ContactDetailedReport() {
                     <MdOutlineDownload size={16} className="m-auto" />
                     <small style={{ fontSize: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>export</small>
                 </button>
-            </>
+                </div>
+          
         }
         >
              <div className={Styles.inorderflex}>
