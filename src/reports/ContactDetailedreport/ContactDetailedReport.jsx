@@ -31,7 +31,7 @@ function ContactDetailedReport() {
     const [manufacturers, setManufacturers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [permissions, setPermissions] = useState(null);
-    const [selectedManufacturer, setSelectedManufacturer] = useState('');
+    const [selectedManufacturer, setSelectedManufacturer] = useState('BOBBI BROWN');
     // Debounce Filter Updates
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -102,7 +102,7 @@ function ContactDetailedReport() {
     };
 
     const handleClearFilters = async () => {
-        setSelectedManufacturer('')
+        setSelectedManufacturer('BOBBI BROWN')
         setFilters({
             accountFilter: '',
             saleRepFilter: '',
@@ -146,7 +146,8 @@ function ContactDetailedReport() {
         const ws = XLSX.utils.json_to_sheet(exportData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Contacts');
-        XLSX.writeFile(wb, 'ContactDetailedReport.xlsx');
+        XLSX.writeFile(wb, `Contact Detailed Report ${new Date().toDateString()}.xlsx`);
+     
     };
 
     // Memoize permissions to avoid unnecessary re-calculations
@@ -154,24 +155,33 @@ function ContactDetailedReport() {
    console.log("manufacturr name" , filters.manufacturerFilter
     
    )
+   const ensureBobbiBrown = (options) => {
+    const isBobbiBrownIncluded = options.some(option => option.value === 'BOBBI BROWN');
+    
+    if (!isBobbiBrownIncluded) {
+      return [{ label: 'BOBBI BROWN', value: 'BOBBI BROWN' }, ...options];
+    }
+    
+    return options;
+  };
     return (
         <AppLayout
         filterNodes={
           
               <div className="d-flex justify-content-between m-auto" style={{ width: '99%' }}>
               <div className="d-flex justify-content-start gap-4 col-4">
- <FilterItem
-        minWidth="200px"
-        label="BOBBI BROWN"
-        value={selectedManufacturer}  // Use temporary state
-        name="BOBBI BROWN"
-        options={manufacturers}
-        onChange={(value) => {
-          // Update the temporary state only
-          setSelectedManufacturer(value);
-        }}
-        onFocus={() => setFilters((prev) => ({ ...prev, saleRepFilter: '' }))} // Optional
-      />
+              <FilterItem
+  minWidth="200px"
+  label="BOBBI BROWN"
+  value={selectedManufacturer} // Use temporary state
+  name="BOBBI BROWN"
+  options={ensureBobbiBrown(manufacturers)} // Ensure 'BOBBI BROWN' is in the options
+  onChange={(value) => {
+    // Update the temporary state only
+    setSelectedManufacturer(value);
+  }}
+  onFocus={() => setFilters((prev) => ({ ...prev, saleRepFilter: '' }))} // Optional
+/>
       
 <button  onClick={() => {
          
