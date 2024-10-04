@@ -155,21 +155,21 @@ const productLists = Object.values(fetchBag.orderList ?? {});
     GetAuthData()
       .then((user) => {
         let SalesRepId = localStorage.getItem(salesRepIdKey) ?? user.Sales_Rep__c;
-
         if (fetchBag) {
           let list = [];
           let orderType = "Wholesale Numbers"; // Default order type
+          let oPONumber = PONumber;
+          let oProductLists = Object.values(fetchBag.orderList);
 
-          let productLists = Object.values(fetchBag.orderList);
-          if (productLists.length) {
-            productLists.forEach((product) => {
-              let productCategory = product?.product?.Category__c?.toUpperCase()?.trim();
+          if (oProductLists.length) {
+            oProductLists.forEach((eProduct) => {
+              let productCategory = eProduct?.product?.Category__c?.toUpperCase()?.trim();
 
               // Set orderType based on product category and prepend "PRE" to PONumber if "PREORDER"
               if (productCategory?.includes("PREORDER")) {
                 orderType = "Pre Order";
                 if (!PONumber.startsWith("PRE")) {
-                  PONumber = `PRE${PONumber}`; // Prepend "PRE" to the PO number
+                  oPONumber = `PRE-${PONumber}`; // Prepend "PRE" to the PO number
                 }
               } else if (productCategory?.includes("EVENT ")) {
                 orderType = "Event Order";
@@ -178,22 +178,20 @@ const productLists = Object.values(fetchBag.orderList ?? {});
               } else if (productCategory?.includes("SAMPLES")) {
                 orderType = "Wholesale Numbers";
               }
-
               let temp = {
-                ProductCode: product.product.ProductCode,
-                qty: product.quantity,
-                price: product.product?.salesPrice,
-                discount: product.product?.discount,
+                ProductCode: eProduct.product.ProductCode,
+                qty: eProduct.quantity,
+                price: eProduct.product?.salesPrice,
+                discount: eProduct.product?.discount,
               };
               list.push(temp);
             });
           }
-
           let begToOrder = {
             AccountId: fetchBag?.Account?.id,
             Name: fetchBag?.Account?.name,
             ManufacturerId__c: fetchBag?.Manufacturer?.id,
-            PONumber: PONumber, // Now includes "PRE" if it was a preorder
+            PONumber: oPONumber, // Now includes "PRE" if it was a preorder
             desc: orderDesc,
             SalesRepId,
             Type: orderType,
@@ -206,7 +204,6 @@ const productLists = Object.values(fetchBag.orderList ?? {});
             key: user.x_access_token,
             shippingMethod: fetchBag.Account.shippingMethod,
           };
-
           OrderPlaced({ order: begToOrder })
             .then((response) => {
               if (response) {
