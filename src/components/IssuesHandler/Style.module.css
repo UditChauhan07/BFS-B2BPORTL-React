@@ -85,7 +85,11 @@
   margin: 5px 5px 0 0;
   font-size: 11px;
 }
-
+@media (max-width: 1300.98px) {
+  .reasonTitle {
+    font-size: 18px;
+  }
+}
 @media (max-width: 1024.98px) {
   .reasonHolder{
     grid-template-columns: repeat(3,auto);
