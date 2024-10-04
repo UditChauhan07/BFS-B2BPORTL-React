@@ -168,9 +168,7 @@ const productLists = Object.values(fetchBag.orderList ?? {});
               // Set orderType based on product category and prepend "PRE" to PONumber if "PREORDER"
               if (productCategory?.includes("PREORDER")) {
                 orderType = "Pre Order";
-                if (!PONumber.startsWith("PRE")) {
-                  PONumber = `PRE${PONumber}`; // Prepend "PRE" to the PO number
-                }
+               
               } else if (productCategory?.includes("EVENT ")) {
                 orderType = "Event Order";
               } else if (productCategory?.includes("TESTER")) {
