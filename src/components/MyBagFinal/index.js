@@ -124,60 +124,68 @@ function MyBagFinal() {
     })
   }
   const orderPlaceHandler = () => {
+    setIsOrderPlaced(1);
+    let fetchBag = fetchBeg({});
 
-    if (localStorage.getItem("Sales_Rep__c")) {
-      let fetchBag = fetchBeg();
-      setIsOrderPlaced(1);
-      setIsDisabled(true)
-      GetAuthData()
-        .then((user) => {
-          // let bagValue = fetchBeg()
-          if (fetchBag) {
-            // setButtonActive(true)
-            let list = [];
-            let orderType = "Wholesale Numbers";
-            let productLists = Object.values(fetchBag.orderList);
-            if (productLists.length) {
-              productLists.map((product) => {
-            
-                if (product.product.Category__c?.includes("PREORDER")) {
-                  orderType = "Pre Order";
-                } else if (product.product.Category__c?.includes("EVENT ")) {
-                  orderType = "Event Order";
-                } else if (product.product.Category__c?.includes("TESTER")) {
-                  orderType = "TESTER ORDER";
-                } else if (product.product.Category__c?.includes("SAMPLES")) {
-                  orderType = "Wholesale Numbers";
+    GetAuthData()
+      .then((user) => {
+        let SalesRepId = localStorage.getItem(salesRepIdKey) ?? user.Sales_Rep__c;
+        if (fetchBag) {
+          let list = [];
+          let orderType = "Wholesale Numbers"; // Default order type
+          let oPONumber = PONumber;
+          let oProductLists = Object.values(fetchBag.orderList);
+
+          if (oProductLists.length) {
+            oProductLists.forEach((eProduct) => {
+              let productCategory = eProduct?.product?.Category__c?.toUpperCase()?.trim();
+
+              // Set orderType based on product category and prepend "PRE" to PONumber if "PREORDER"
+              if (productCategory?.includes("PREORDER")) {
+                orderType = "Pre Order";
+                if (!PONumber.startsWith("PRE")) {
+                  oPONumber = `PRE-${PONumber}`; // Prepend "PRE" to the PO number
                 }
-                let temp = {
-                  ProductCode: product.product.ProductCode,
-                  qty: product.quantity,
-                  price: product.product?.salesPrice,
-                  discount: product.product?.discount,
-                };
-                list.push(temp);
-              });
-            }
-            let begToOrder = {
-              AccountId: fetchBag?.Account?.id,
-              Name: fetchBag?.Account?.name,
-              ManufacturerId__c: fetchBag?.Manufacturer?.id,
-              PONumber: PONumber,
-              desc: orderDesc,
-              SalesRepId: localStorage.getItem("Sales_Rep__c"),
-              Type: orderType,
-              ShippingCity: fetchBag?.Account?.address?.city,
-              ShippingStreet: fetchBag?.Account?.address?.street,
-              ShippingState: fetchBag?.Account?.address?.state,
-              ShippingCountry: fetchBag?.Account?.address?.country,
-              ShippingZip: fetchBag?.Account?.address?.postalCode,
-              list,
-              key: user.data.x_access_token,
-              shippingMethod: fetchBag.Account.shippingMethod
-            };
-            OrderPlaced({ order: begToOrder })
-              .then((response) => {
-                if (response) {
+              } else if (productCategory?.includes("EVENT ")) {
+                orderType = "Event Order";
+              } else if (productCategory?.includes("TESTER")) {
+                orderType = "TESTER ORDER";
+              } else if (productCategory?.includes("SAMPLES")) {
+                orderType = "Wholesale Numbers";
+              }
+              let temp = {
+                ProductCode: eProduct.product.ProductCode,
+                qty: eProduct.quantity,
+                price: eProduct.product?.salesPrice,
+                discount: eProduct.product?.discount,
+              };
+              list.push(temp);
+            });
+          }
+          let begToOrder = {
+            AccountId: fetchBag?.Account?.id,
+            Name: fetchBag?.Account?.name,
+            ManufacturerId__c: fetchBag?.Manufacturer?.id,
+            PONumber: oPONumber, // Now includes "PRE" if it was a preorder
+            desc: orderDesc,
+            SalesRepId,
+            Type: orderType,
+            ShippingCity: fetchBag?.Account?.address?.city,
+            ShippingStreet: fetchBag?.Account?.address?.street,
+            ShippingState: fetchBag?.Account?.address?.state,
+            ShippingCountry: fetchBag?.Account?.address?.country,
+            ShippingZip: fetchBag?.Account?.address?.postalCode,
+            list,
+            key: user.x_access_token,
+            shippingMethod: fetchBag.Account.shippingMethod,
+          };
+          OrderPlaced({ order: begToOrder })
+            .then((response) => {
+              if (response) {
+                if (response.length) {
+                  setIsOrderPlaced(0);
+                  setorderStatus({ status: true, message: response[0].message });
+                } else {
                   fetchBag.orderList.map((ele) => addOrder(ele.product, 0, ele.discount));
                   localStorage.removeItem("orders");
                   setIsDisabled(false)
