@@ -41,7 +41,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
           }
         } else {
           if (error == false) {
-            error = productDetails?.Category__c?.toLowerCase() == "preorder";
+            error = productDetails?.Category__c?.toLowerCase() == "preorder" ||productDetails?.Category__c?.toLowerCase()?.match("event").length>0 ?true:false;
           }
         }
 
