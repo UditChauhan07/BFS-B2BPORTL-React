@@ -7,7 +7,8 @@ function FilterPage({ data, formattedData, setCategoryFilters, categoryFilters, 
   // console.log(productTypeFilter);
   const onTitleClick1 = (index) => {
     setActiveIndex1(index === activeIndex1 ? null : index);
-  };  
+  };
+
 
   return (
     <div>
@@ -31,6 +32,17 @@ function FilterPage({ data, formattedData, setCategoryFilters, categoryFilters, 
           </svg>
           Discount Offer: {data?.discount?.margin || 0}%
         </h2>
+        <div className="mt-4">
+          <div className="pt-1 pb-1">
+            <input type="radio" name="catType" checked={productTypeFilter == "Wholesale" ? categoryFilters?.length == 0 ? true : false : false} onClick={(e) => { setCategoryFilters([]) }} id="catType1"/><label for="catType1" className="ml-2 text-uppercase cursor-pointer">All</label>
+          </div>
+          <div className="pt-1 pb-1">
+            <input type="radio" name="catType" checked={productTypeFilter == "Wholesale" ? categoryFilters?.includes("Samples") ? true : false : false} onClick={(e) => { setCategoryFilters(["Samples"]) }} id="catType2"/><label for="catType2" className="ml-2 text-uppercase cursor-pointer">Samples</label>
+          </div>
+          <div className="pt-1 pb-1">
+            <input type="radio" name="catType" checked={productTypeFilter == "Wholesale" ? categoryFilters?.includes("TESTER") ? true : false : false} onClick={(e) => { setCategoryFilters(["TESTER"]) }} id="catType3"/><label for="catType3" className="ml-2 text-uppercase cursor-pointer">Testers</label>
+          </div>
+        </div>
         {/* dropDown */}
 
         {/* <div className={styles.Filterdropdownsection}>
@@ -109,65 +121,65 @@ function FilterPage({ data, formattedData, setCategoryFilters, categoryFilters, 
 
             <Accordion.Item className={styles.AcciIten} eventKey="0">
               <Accordion.Header className={styles.HeaderAccor}>Category</Accordion.Header>
-              <Accordion.Body className={` overflow-auto ${styles.bodyAccor}`} style={{height:"44vh"}}>
-                {/* {productTypeFilter==="Pre-order"?<>
-                <div className={`${styles.title} ${styles.borderRad} text-uppercase`}> No Category</div>
-               </>:<> */}
-                
-                {Object.keys(formattedData)
-                  // ?.filter((category) => category !== "PREORDER")
-                  ?.filter((category) => {
-                    if (productTypeFilter === 'Pre-order') {
-                      // Return only categories that include 'PREORDER'
-                      return category.includes('PREORDER');
-                    } else if (productTypeFilter === 'TESTER') {
-                      // Return only categories that include 'TESTER'
-                      return category.includes('TESTER');
-                    } else if (productTypeFilter === 'EVENT') {
-                      // Return only categories that include 'EVENT'
-                      return category.includes('EVENT');
-                    } 
-                    else if (productTypeFilter === 'Samples') {
-                      // Return only categories that include 'EVENT'
-                      return category.includes('Samples');
-                    }else if (productTypeFilter === 'Wholesale') {
-                      // Remove categories that include 'PREORDER', 'TESTER', or 'EVENT'
-                      if(!category.includes('PREORDER') && !category.includes('TESTER') && !category.includes('Samples') && !category.includes('EVENT')){
-                        return true;
+              <Accordion.Body className={` overflow-auto ${styles.bodyAccor}`} style={{ height: "44vh" }}>
+                {categoryFilters?.includes("Samples") || categoryFilters?.includes("TESTER") ? <>
+                  <div className={`${styles.title} ${styles.borderRad} text-uppercase text-[11px]`}> No Category</div>
+                </> : <>
+
+                  {Object.keys(formattedData)
+                    // ?.filter((category) => category !== "PREORDER")
+                    ?.filter((category) => {
+                      if (productTypeFilter === 'Pre-order') {
+                        // Return only categories that include 'PREORDER'
+                        return category.includes('EVENT') || category.includes('PREORDER');
+                        // } else if (productTypeFilter === 'TESTER') {
+                        //   // Return only categories that include 'TESTER'
+                        //   return category.includes('TESTER');
+                        // }
+                        // else if (productTypeFilter === 'Samples') {
+                        //   // Return only categories that include 'EVENT'
+                        //   return category.includes('Samples');
                       }
-                    }
-                  })
-                  ?.map((key,index) => (
-                    <div className={styles.accordion} key={index}>
-                      <div className={styles.Content}>
-                        <div className={styles.accordion}>
-                          <div className={`${styles.title} ${styles.borderRad} `} onClick={() => onTitleClick1(0)}>
-                            <input
-                              type="checkbox"
-                              checked={categoryFilters?.includes(key)}
-                              readOnly
-                              value={key}
-                              onChange={(e) => {
-                                setCategoryFilters((prev) => {
-                                  let newFilters = [...prev];
-                                  if (e.target.checked) {
-                                    newFilters.push(key);
-                                  } else {
-                                    newFilters = newFilters?.filter((val) => val !== key);
-                                  }
-                                  return newFilters;
-                                });
-                              }}
-                              id={`category-${key}`}
-                            />
-                            <label htmlFor={`category-${key}`} className="text-uppercase">{key != "null"? key:"No Category"}</label>
+                      else if (productTypeFilter === 'Wholesale') {
+                        // Remove categories that include 'PREORDER', 'TESTER', or 'EVENT'
+                        if (!category.includes('PREORDER') && !category.includes('EVENT') && !category.includes('Samples') && !category.includes('TESTER')) {
+                          return true;
+                        }
+                      }
+                    })
+                    ?.map((key, index) => (
+                      <div className={styles.accordion} key={index}>
+                        <div className={styles.Content}>
+                          <div className={styles.accordion}>
+                            <div className={`${styles.title} ${styles.borderRad} `} onClick={() => onTitleClick1(0)}>
+                              <input
+                                type="checkbox"
+                                checked={categoryFilters?.includes(key)}
+                                readOnly
+                                value={key}
+                                onChange={(e) => {
+                                  console.log({ key });
+
+                                  setCategoryFilters((prev) => {
+                                    let newFilters = [...prev];
+                                    if (e.target.checked) {
+                                      newFilters.push(key);
+                                    } else {
+                                      newFilters = newFilters?.filter((val) => val !== key);
+                                    }
+                                    return newFilters;
+                                  });
+                                }}
+                                id={`category-${key}`}
+                              />
+                              <label htmlFor={`category-${key}`} className="text-uppercase">{key != "null" ? key : "No Category"}</label>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                {/* </>} */}
-                
+                    ))}
+                </>}
+
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>

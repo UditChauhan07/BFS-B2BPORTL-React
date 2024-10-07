@@ -42,6 +42,10 @@ function Product() {
   const [orderFormModal, setOrderFromModal] = useState(false);
   const [productList, setProductlist] = useState({ isLoading: false, data: [], discount: {} });
   const brandName = productList?.data?.[0]?.ManufacturerName__c;
+  let productCartSchema = {
+    testerInclude: true,
+    sampleInclude: true,
+  }
 
   const groupProductDataByCategory = (productData) => {
     const groupedData = groupBy(productData || [], "Category__c");
@@ -61,7 +65,7 @@ function Product() {
     return groupedData;
   };
   useEffect(() => {
-    if (productTypeFilter === "Pre-order"||productTypeFilter === "TESTER"||productTypeFilter === "EVENT"||productTypeFilter === "SAMPLES") {
+    if (productTypeFilter === "Pre-order") {
       setCategoryFilters([])
     }
   }, [productTypeFilter])
@@ -78,6 +82,12 @@ function Product() {
       });
       finalFilteredProducts = { ...newData };
     }
+    if (categoryFilters.length == 0 && !productCartSchema.sampleInclude) {
+      delete finalFilteredProducts["Samples"];
+    }
+    if (categoryFilters.length == 0 && !productCartSchema.testerInclude) {
+      delete finalFilteredProducts["TESTER"];
+    }
 
     if (productTypeFilter) {
       let newData = {};
@@ -86,24 +96,12 @@ function Product() {
           if (key === "PREORDER") {
             newData[key] = finalFilteredProducts[key];
           }
-        }
-        else if (productTypeFilter === "TESTER") {
-          if (key.match("TESTER")) {
-            newData[key] = finalFilteredProducts[key];
-          }
-        } else if (productTypeFilter === "EVENT") {
           if (key.match("EVENT")) {
             newData[key] = finalFilteredProducts[key];
           }
-        } 
-        else if (productTypeFilter === "SAMPLES") {
-          if (key.toUpperCase().match("Samples")) {
-            newData[key] = finalFilteredProducts[key];
-          }
-        } 
+        }
         else {
-          if (key !== "PREORDER"&&!key.toUpperCase().match("TESTER")&&!key.toUpperCase().match("EVENT")&&!key.toUpperCase().match("SAMPLES")) {
-            
+          if (key !== "PREORDER" && !key.toUpperCase().match("EVENT")) {
             newData[key] = finalFilteredProducts[key];
           }
         }
@@ -259,7 +257,7 @@ function Product() {
           bagPrice += productPrice * productQuantity;
         });
         setAlert(0);
-        
+
         if (productList.discount.MinOrderAmount > bagPrice) {
           setAlert(1);
         } else {
@@ -456,20 +454,7 @@ function Product() {
                       {
                         label: "PREORDER",
                         value: "Pre-order",
-                      },
-                      {
-                        label: "TESTER",
-                        value: "TESTER",
-                      },
-                      {
-                        label: "EVENT",
-                        value: "EVENT",
-                      },
-                      {
-                        label: "SAMPLES",
-                        value: "SAMPLES",
-                      },
-                      
+                      }
                     ]}
                     onChange={(value) => {
                       setProductTypeFilter(value);
@@ -540,7 +525,7 @@ function Product() {
                             border: "1px dashed black",
                           }}
                         >
-                          <Accordion data={productList} formattedData={formattedFilterData} productImage={productImage}></Accordion>
+                          <Accordion data={productList} formattedData={formattedFilterData} productImage={productImage} productCartSchema={productCartSchema}></Accordion>
                         </div>
                         <div className={`${styles.TotalSide} `}>
                           <h4>Total Number of Products : {orderQuantity}</h4>
