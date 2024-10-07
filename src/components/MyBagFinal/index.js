@@ -35,7 +35,7 @@ function MyBagFinal({ showOrderFor }) {
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const fetchBag = fetchBeg({});
-const productLists = Object.values(fetchBag.orderList ?? {}); 
+  const productLists = Object.values(fetchBag.orderList ?? {});
   const handleNameChange = (event) => {
     const limit = 11;
     setLimitInput(event.target.value.slice(0, limit));
@@ -171,13 +171,8 @@ const productLists = Object.values(fetchBag.orderList ?? {});
                 if (!PONumber.startsWith("PRE")) {
                   oPONumber = `PRE-${PONumber}`; // Prepend "PRE" to the PO number
                 }
-              } else if (productCategory?.includes("EVENT ")) {
-                orderType = "Event Order";
-              } else if (productCategory?.includes("TESTER")) {
-                orderType = "TESTER ORDER";
-              } else if (productCategory?.includes("SAMPLES")) {
-                orderType = "Wholesale Numbers";
               }
+
               let temp = {
                 ProductCode: eProduct.product.ProductCode,
                 qty: eProduct.quantity,
