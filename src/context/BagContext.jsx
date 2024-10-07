@@ -39,22 +39,22 @@ const BagProvider = ({ children }) => {
       return obj;
     });
   };
-  const setOrderProductPrice = async (product, price, discount=null) => {
+  const setOrderProductPrice = async (product, price, discount = null) => {
     setOrders((prev) => {
       const obj = { ...prev };
-      if(obj[product.Id]){
+      if (obj[product.Id]) {
         obj[product.Id].product.salesPrice = price;
         obj[product.Id].product.discount = discount;
-        console.log({aa:obj[product.Id]});
+        console.log({ aa: obj[product.Id] });
         return obj;
-      }else{
+      } else {
         return true
       }
     });
     return true
   };
   const parseOrderObjectWithDiscount = (product, quantity, discount) => {
-    
+
     return {
       quantity: quantity,
       product,
@@ -75,9 +75,9 @@ const BagProvider = ({ children }) => {
         name: localStorage.getItem("manufacturer"),
         id: localStorage.getItem("ManufacturerId__c"),
       },
-      productType : product.Category__c === "PREORDER" ? "pre-order" :
-                    product?.Category__c?.toUpperCase().match("EVENT") ? "event" :
-                    product.Category__c === "TESTER" ? "tester": product.Category__c?.toUpperCase() === "Samples" ? "samples"  :"wholesale",
+      productType: product.Category__c === "PREORDER" ? "pre-order" :
+        product?.Category__c?.toUpperCase().match("EVENT") ? "pre-order" :
+          product.Category__c === "TESTER" ? "tester" : product.Category__c?.toUpperCase() === "Samples" ? "samples" : "wholesale",
     };
   };
   // deletion of orders with quantity 0
