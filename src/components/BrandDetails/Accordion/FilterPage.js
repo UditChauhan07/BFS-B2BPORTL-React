@@ -32,6 +32,7 @@ function FilterPage({ data, formattedData, setCategoryFilters, categoryFilters, 
           </svg>
           Discount Offer: {data?.discount?.margin || 0}%
         </h2>
+        {productTypeFilter=="Wholesale"?
         <div className="mt-4">
           <div className="pt-1 pb-1">
             <input type="radio" name="catType" checked={productTypeFilter == "Wholesale" ? categoryFilters?.length == 0 ? true : false : false} onClick={(e) => { setCategoryFilters([]) }} id="catType1"/><label for="catType1" className="ml-2 text-uppercase cursor-pointer">All</label>
@@ -42,7 +43,7 @@ function FilterPage({ data, formattedData, setCategoryFilters, categoryFilters, 
           <div className="pt-1 pb-1">
             <input type="radio" name="catType" checked={productTypeFilter == "Wholesale" ? categoryFilters?.includes("TESTER") ? true : false : false} onClick={(e) => { setCategoryFilters(["TESTER"]) }} id="catType3"/><label for="catType3" className="ml-2 text-uppercase cursor-pointer">Testers</label>
           </div>
-        </div>
+        </div>:null}
         {/* dropDown */}
 
         {/* <div className={styles.Filterdropdownsection}>

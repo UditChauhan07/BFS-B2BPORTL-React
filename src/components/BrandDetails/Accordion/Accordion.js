@@ -16,35 +16,6 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
   const [showName, setShowName] = useState(false);
   const [productDetailId, setProductDetailId] = useState(null)
 
-  const onQuantityChange1 = (product, quantity, salesPrice = null, discount = null) => {
-    product.salesPrice = salesPrice;
-    if (Object.values(orders).length) {
-      if (
-        Object.values(orders)[0]?.manufacturer?.name === localStorage.getItem("manufacturer") &&
-        Object.values(orders)[0].account.name === localStorage.getItem("Account") &&
-        Object.values(orders)[0]?.productType ===
-        (product?.Category__c === "PREORDER"
-          ? "pre-order"
-          : product?.Category__c === "TESTER" ?
-            testerInclude ? "wholesale" : "tester"
-            : product?.Category__c?.toUpperCase().match("EVENT")
-              ? "event"
-              : product?.Category__c?.toUpperCase() === "SAMPLES" ?
-                sampleInclude ? "wholesale"
-                  : "samples"
-                : "wholesale")
-      ) {
-        orderSetting(product, quantity);
-        setReplaceCartModalOpen(false);
-      } else {
-        setReplaceCartModalOpen(true);
-        setReplaceCartProduct({ product, quantity });
-      }
-    } else {
-      orderSetting(product, quantity);
-    }
-  };
-
   const onQuantityChange = (
     product,
     quantity,
@@ -117,6 +88,10 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
           }
   
           // Allow adding pre-order or event products
+          orderSetting(product, quantity);
+          setReplaceCartModalOpen(false);
+        } else if (currentOrderType == "tester" && productType == "wholesale" && testerInclude) {
+          // Check pass, proceed with adding the product
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
         } else {
