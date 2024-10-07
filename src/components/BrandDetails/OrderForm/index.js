@@ -41,7 +41,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
           }
         } else {
           if (error == false) {
-            error = productDetails?.Category__c?.toLowerCase() == "preorder";
+            error = productDetails?.Category__c?.toLowerCase() == "preorder" ||productDetails?.Category__c?.toLowerCase()?.match("event").length>0 ?true:false;
           }
         }
 
@@ -281,6 +281,7 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
           />
         </form>
         <div>{errorOnlist > 0 && errorOnlist !== data.length && <p className="text-start mt-2 text-danger">Highlighted rows have issues in their given quantity. Upload Again or Move further with correct rows.</p>}</div>
+        
         <div>{errorOnlist > 0 && errorOnlist === data.length && <p className="text-start mt-2 text-danger">No Data Found.</p>}</div>
         <div>
           {openModal && errorOnlist === data.length ? (
