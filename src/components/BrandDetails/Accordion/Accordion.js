@@ -94,6 +94,10 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
           // Check pass, proceed with adding the product
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
+        }else if (currentOrderType == "tester" && productType == "samples" && sampleInclude) {
+          // Check pass, proceed with adding the product
+          orderSetting(product, quantity);
+          setReplaceCartModalOpen(false);
         } else {
           // Handle other product type mismatches
           if (currentOrderType !== productType) {
