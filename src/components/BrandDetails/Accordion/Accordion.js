@@ -14,7 +14,8 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
   const [replaceCartModalOpen, setReplaceCartModalOpen] = useState(false);
   const [replaceCartProduct, setReplaceCartProduct] = useState({});
   const [showName, setShowName] = useState(false);
-  const [productDetailId, setProductDetailId] = useState(null)
+  const [productDetailId, setProductDetailId] = useState(null);
+  const [msg, setMsg] = useState('');
 
   const onQuantityChange = (
     product,
@@ -23,13 +24,13 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
     discount = null
   ) => {
     product.salesPrice = salesPrice;
-  
+
     const currentOrder = Object.values(orders)[0];
     const manufacturerName = localStorage.getItem("manufacturer");
     const accountName = localStorage.getItem("Account");
-  
+
     // Determine the product type
-    const productType = 
+    const productType =
       product?.Category__c === "PREORDER"
         ? "pre-order"
         : product?.Category__c === "TESTER"
@@ -39,24 +40,24 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
             : product?.Category__c?.toUpperCase() === "SAMPLES"
               ? "samples"
               : "wholesale"; // default to wholesale for anything else
-  
+
     if (Object.values(orders).length) {
       const isSameManufacturer = currentOrder?.manufacturer?.name === manufacturerName;
       const isSameAccount = currentOrder?.account.name === accountName;
       const currentOrderType = currentOrder?.productType;
-  
+
       const isTester = product?.Category__c === "TESTER";
       const isSample = product?.Category__c?.toUpperCase() === "SAMPLES";
       const isPreOrder = product?.Category__c === "PREORDER";
       const isEvent = product?.Category__c?.toUpperCase().includes("EVENT");
-  
+
       // Check if manufacturer and account match
       if (isSameManufacturer && isSameAccount) {
         if (currentOrderType === "wholesale") {
           // Logic for wholesale order
           if (
-            !isTester && 
-            !isSample && 
+            !isTester &&
+            !isSample &&
             productType !== "wholesale"
           ) {
             // alert("You can only add Wholesale, Tester (if allowed), or Sample (if allowed) products to this order.");
@@ -64,17 +65,20 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
             setReplaceCartProduct({ product, quantity });
             return;
           }
-  
+
           // Check if trying to add a tester or sample without permissions
           if ((!testerInclude && isTester) || (!sampleInclude && isSample)) {
             // alert(`You cannot add ${
             //   isTester ? "Tester" : "Sample"
             // } items to this Wholesale order unless allowed.`);
+            setMsg(`This brand requires you to add ${isTester ? "Tester" : "Sample"
+              } Products in a separate Order <br/> and cannot be mixed with Wholesale products.
+`)
             setReplaceCartModalOpen(true);
             setReplaceCartProduct({ product, quantity });
             return;
           }
-  
+
           // Allow adding testers or samples if flags are true, or regular wholesale products
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
@@ -86,7 +90,7 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
             setReplaceCartProduct({ product, quantity });
             return;
           }
-  
+
           // Allow adding pre-order or event products
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
@@ -94,7 +98,7 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
           // Check pass, proceed with adding the product
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
-        }else if (currentOrderType == "tester" && productType == "samples" && sampleInclude) {
+        } else if (currentOrderType == "tester" && productType == "samples" && sampleInclude) {
           // Check pass, proceed with adding the product
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
@@ -106,7 +110,7 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
             setReplaceCartProduct({ product, quantity });
             return;
           }
-  
+
           // Check pass, proceed with adding the product
           orderSetting(product, quantity);
           setReplaceCartModalOpen(false);
@@ -124,7 +128,7 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
       setReplaceCartModalOpen(false);
     }
   };
-  
+
 
 
   const onPriceChangeHander = (product, price = '0') => {
@@ -149,6 +153,7 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
     // navigate('/product/'+productName.replaceAll(" ","-").replaceAll("=","-"), { state: { productId } });
     setProductDetailId(productId)
   }
+
   return (
     <>
       {replaceCartModalOpen ? (
@@ -157,21 +162,20 @@ const Accordion = ({ data, formattedData, productImage = [], productCartSchema =
           content={
             <div className="d-flex flex-column gap-3">
               <h2 className={`${styles.warning} `}>Warning</h2>
-              <p className={`${styles.warningContent} `}>
-                Adding this item will replace <br></br> your current cart
+              <p className={`${styles.warningContent} `} dangerouslySetInnerHTML={{ __html: msg ? msg : "Adding this item will replace </br> your current cart" }}>
               </p>
               <div className="d-flex justify-content-around ">
-                <button className={`${styles.modalButton}`} onClick={replaceCart}>
-                  OK
+                <button className={`${styles.modalButton}`} style={msg?{width:'150px'}:{}} onClick={replaceCart}>
+                  {msg ? "Replace cart" : "OK"}
                 </button>
-                <button className={`${styles.modalButton}`} onClick={() => setReplaceCartModalOpen(false)}>
+                <button className={`${styles.modalButton}`} onClick={() => {setReplaceCartModalOpen(false);setMsg('')}}>
                   Cancel
                 </button>
               </div>
             </div>
           }
           onClose={() => {
-            setReplaceCartModalOpen(false);
+            setReplaceCartModalOpen(false);setMsg('')
           }}
         />
       ) : null}

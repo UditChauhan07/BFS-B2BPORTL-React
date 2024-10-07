@@ -39,7 +39,7 @@ const Header = () => {
       <div id={`${styles.main}`} className="d-flex justify-content-between align-items-center gap-1">
         {memoizedPermissions?.modules?.topProducts?.view ? (
           <p className={`m-0 ${styles.text}`}>
-            <Link to="/top-products" className="linkStyle">Popular selling products</Link>
+            <Link to="/top-products" className="linkStyle">Top selling products</Link>
           </p>
         ) : (
           <p className={`m-0 ${styles.text}`}>
@@ -48,7 +48,7 @@ const Header = () => {
               onClick={() => handleRestrictedAccess('Top Products')}
               style={{ cursor: 'not-allowed', color: 'grey' }}
             >
-              Popular selling products
+              Top selling products
             </span>
           </p>
         )}
