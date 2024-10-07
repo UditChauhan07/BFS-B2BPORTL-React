@@ -42,10 +42,10 @@ function Product() {
   const [orderFormModal, setOrderFromModal] = useState(false);
   const [productList, setProductlist] = useState({ isLoading: false, data: [], discount: {} });
   const brandName = productList?.data?.[0]?.ManufacturerName__c;
-  let productCartSchema = {
+  const [productCartSchema,setProductCartSchema] = useState({
     testerInclude: true,
     sampleInclude: true,
-  }
+  })
 
   const groupProductDataByCategory = (productData) => {
     const groupedData = groupBy(productData || [], "Category__c");
@@ -195,6 +195,8 @@ function Product() {
           }
         })
         let discount = productRes.discount;
+        
+        setProductCartSchema({testerInclude:productRes.discount.testerInclude,sampleInclude:productRes.discount.sampleInclude})
         setProductlist({ data: productData, isLoading: true, discount })
 
         //version 1
