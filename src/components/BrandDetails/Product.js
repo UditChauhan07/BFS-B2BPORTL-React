@@ -187,7 +187,6 @@ function Product() {
         AccountId__c: localStorage.getItem("AccountId__c"),
       }
       getProductList({ rawData }).then((productRes) => {
-        console.log({ productRes });
         let productData = productRes.data.records || []
         productData.map((element) => {
           if (element.AttachedContentDocuments) {
@@ -196,7 +195,8 @@ function Product() {
         })
         let discount = productRes.discount;
         
-        setProductCartSchema({testerInclude:productRes.discount.testerInclude,sampleInclude:productRes.discount.sampleInclude})
+        
+        setProductCartSchema({testerInclude:productRes.discount?.testerInclude,sampleInclude:productRes.discount?.sampleInclude})
         setProductlist({ data: productData, isLoading: true, discount })
 
         //version 1
@@ -241,6 +241,8 @@ function Product() {
     })
   }, []);
 
+  console.log({productCartSchema});
+  
   const redirecting = () => {
     setTimeout(() => {
       navigate("/my-retailers");
