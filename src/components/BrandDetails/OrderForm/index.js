@@ -132,7 +132,9 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
     data.map((element) => {
       if (element.Quantity && Number.isInteger(element?.Quantity)) {
         let product = getProductData(element["Product Code"] || element["ProductCode"]);
-        if (orderType == "preorder" ? (product?.Category__c?.toLowerCase() == "preorder"||product?.Category__c?.toLowerCase()?.match("event")) : (product?.Category__c?.toLowerCase() != "preorder"||product?.Category__c?.toLowerCase()?.match("event"))) {
+        
+        const category = product?.Category__c?.toLowerCase();
+        if (orderType == "preorder" ? (category === "preorder" || (category?.match("event")?.length > 0)) : (category !== "preorder" && !category?.match("event"))) {
           if (product?.Id && element?.Quantity >= (product.Min_Order_QTY__c || 0) && (!product.Min_Order_QTY__c || element?.Quantity % product.Min_Order_QTY__c === 0)) {
             let salesPrice = null;
             if (product.Category__c === "TESTER") {
@@ -162,7 +164,8 @@ const SpreadsheetUploader = ({ rawData, showTable = false, setOrderFromModal, or
       data.map((element) => {
         if (element.Quantity && Number.isInteger(element?.Quantity)) {
           let product = getProductData(element["Product Code"] || element["ProductCode"]);
-          if (orderType == "preorder" ? (product?.Category__c?.toLowerCase() == "preorder"||product?.Category__c?.toLowerCase()?.match("event")) : (product?.Category__c?.toLowerCase() != "preorder"||product?.Category__c?.toLowerCase()?.match("event"))) {
+          const category = product?.Category__c?.toLowerCase();
+          if (orderType == "preorder" ? (category === "preorder" || (category?.match("event")?.length > 0)) : (category !== "preorder" && !category?.match("event"))) {
             if (product?.Id && element?.Quantity >= (product.Min_Order_QTY__c || 0) && (!product.Min_Order_QTY__c || element?.Quantity % product.Min_Order_QTY__c === 0)) {
               productCount++;
               let item = {};
