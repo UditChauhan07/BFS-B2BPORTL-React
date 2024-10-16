@@ -223,22 +223,31 @@ const StoreDetailCard = ({ account, brandList,memoizedPermissions={} }) => {
                                     <p className={Styles.accountLabel}>{memoizedPermissions?.auditReport?.create ? "Brand Audit Report":"Brands"}</p>
 
                                     <div className="m-auto d-flex">
-                                        {account.Brands.map((element, index) => (
+                                        {account.Brands.length?account.Brands.map((element, index) => (
                                             <p className={Styles.webLinkHolder} onClick={() => {memoizedPermissions?.auditReport?.specify ? AuditHandler(element.ManufacturerId__c, account.Name, element.ManufacturerName__c):doNothing()}} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', marginRight: '2rem' }} key={index}>{element.ManufacturerName__c}</p>
-                                        ))}
+                                        )):null}
                                     </div>
                                 </div>
                             </div>
                             : null}
                 </div>
-                {memoizedPermissions?.order?.create?
+                {(memoizedPermissions?.order?.create && brandList.length)?
                 <div className={`${Styles.detailsContainer} pb-4`} style={{ borderBottom: '1px solid #ccc' }}>
                     <h3 className={Styles.detailTitleHolder}>Order Now</h3>
+                    {brandList.length<10 ?
                     <div className="d-flex mt-4 gap-4 m-auto">
                         {brandList.map((brand) => {
                             return <div key={brand.id} onClick={() => { orderHandler(brand) }} className={Styles.webLinkHolder} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', cursor: 'pointer' }}  >{brand.ManufacturerName__c}</div>
                         })}
+                    </div>:
+                       <div className="d-flex mt-4 gap-4 m-auto">
+                    <OwlCarousel {...options}>
+                        {brandList.map((brand) => {
+                            return <div key={brand.id} onClick={() => { orderHandler(brand) }} className={Styles.webLinkHolder} style={{ textAlign: 'center', color: '#3296ED', textDecoration: 'underline', cursor: 'pointer' }}  >{brand.ManufacturerName__c}</div>
+                        })}
+                    </OwlCarousel>
                     </div>
+}
                 </div>:null}
                 <div className={Styles.detailsContainer}>
                     <h3 className={Styles.detailTitleHolder}>Details</h3>
