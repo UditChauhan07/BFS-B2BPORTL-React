@@ -1,6 +1,6 @@
 import { getPermissions } from "./permission";
 // live link
-export const originAPi = process.env.REACT_APP_OA_URL || "https://temp.beautyfashionsales.com/"
+export const originAPi = process.env.REACT_APP_OA_URL || "https://staging.beautyfashionsales.com/"
 // export const originAPi = "https://bfs.uditchauhan.com"
 
 // local LINk 
