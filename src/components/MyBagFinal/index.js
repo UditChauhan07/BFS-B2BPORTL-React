@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Styles from "./Styles.module.css";
 import QuantitySelector from "../BrandDetails/Accordion/QuantitySelector";
 import { Link, useNavigate } from "react-router-dom";
-import { GetAuthData, OrderPlaced, POGenerator, ShareDrive, admins, defaultLoadTime, fetchBeg, getProductImageAll, salesRepIdKey } from "../../lib/store";
+import { GetAuthData, OrderPlaced, POGenerator, ShareDrive, admins, defaultLoadTime, fetchBeg, getProductImageAll, salesRepIdKey, getBrandPaymentDetails , originAPi , generatePaymentLink} from "../../lib/store";
 import { useCart } from "../../context/CartContext";
 import OrderLoader from "../loader";
 import ModalPage from "../Modal UI";
@@ -14,6 +14,7 @@ import Loading from "../Loading";
 import { DeleteIcon } from "../../lib/svg";
 import useBackgroundUpdater from "../../utilities/Hooks/useBackgroundUpdater";
 import ImageHandler from "../loader/ImageHandler";
+import ShipmentHandler from "./ShipmentHandler";
 function MyBagFinal({ showOrderFor }) {
   let Img1 = "/assets/images/dummy.png";
   const { order, updateProductQty, removeProduct, deleteOrder, keyBasedUpdateCart, getOrderTotal } = useCart();
@@ -24,6 +25,7 @@ function MyBagFinal({ showOrderFor }) {
   const [buttonActive, setButtonActive] = useState(false);
   const [bagValue, setBagValue] = useState(fetchBeg({}));
   const [isOrderPlaced, setIsOrderPlaced] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [isPOEditable, setIsPOEditable] = useState(false);
   const [PONumberFilled, setPONumberFilled] = useState(true);
   const [clearConfim, setClearConfim] = useState(false)
@@ -38,6 +40,16 @@ function MyBagFinal({ showOrderFor }) {
   const { getOrderQuantity, updateProductPrice } = useCart();
   const [alert, setAlert] = useState(0);
   const [limitCheck, setLimitCheck] = useState(false);
+  const [isPlayAble, setIsPlayAble] = useState(0);
+  const [paymentType, setPaymentType] = useState();
+  const [intentRes, setIntentRes] = useState();
+  const [greenStatus, setGreenStatus] = useState();
+  const [paymentValue, setPaymentValue] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState({ PK_KEY: null, SK_KEY: null, Amount: 0 });
+  const [orderShipment, setOrderShipment] = useState([]);
+  const [isSelect, setIsSelect] = useState(false);
+  const [paymentLink , setPaymentLink] = useState()
+  const [orderId , setOrderId] = useState()
   const handleNameChange = (event) => {
     const limit = 11;
     const value = event.target.value.slice(0, limit); // Restrict to 11 characters
@@ -49,40 +61,57 @@ function MyBagFinal({ showOrderFor }) {
   console.log({order});
   
   const FetchPoNumber = async () => {
-    if (order?.Account?.id && order?.Manufacturer?.id) {
-      try {
-        const res = await POGenerator();
-        
-        if (res?.poNumber) {
-          if(res?.address || res.shippingMethod){
-            let tempOrder = order.Account;
-            if(res?.address){
-              tempOrder.address = res.address;
-            }
-            if(res?.shippingMethod){
-              tempOrder.shippingMethod = res.shippingMethod
-            }
-            keyBasedUpdateCart({ Account: tempOrder })
-          }
-          let isPreOrder = order.items.some(product => (product.Category__c?.toUpperCase()?.includes("PREORDER") || product.Category__c?.toUpperCase()?.includes("EVENT")))
-          let poInit = res.poNumber;
-          if (isPreOrder) {
-            poInit = `PRE-${poInit}`
-          }
-          keyBasedUpdateCart({ PoNumber: poInit });
-          setPONumber(poInit);
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching PO number:", error);
-        setIsLoading(false);
-      } finally {
+    try {
+      await order?.Account?.id;
+      const res = await POGenerator({ orderDetails: order });
+      let data = await fetchBrandPaymentDetails();
 
+      if (res) {
+        console.log({res})
+        if (res?.address || res?.brandShipping) {
+          let tempOrder = order.Account;
+          if (res?.address) {
+            tempOrder = { ...tempOrder, address: res?.address };
+          }
+          if (res.checkBrandAllow) {
+            if (res?.shippingMethod) {
+              tempOrder = { ...tempOrder, shippingMethod: res?.shippingMethod };
+            } else {
+              if (!isSelect) {
+                tempOrder = { ...tempOrder, shippingMethod: null };
+              }
+            }
+          } else {
+            if (!isSelect) {
+              tempOrder = { ...tempOrder, shippingMethod: null };
+            }
+          }
+          keyBasedUpdateCart({ Account: tempOrder });
+          if (res?.brandShipping) {
+            if (res?.brandShipping?.length) {
+              setOrderShipment(res?.brandShipping);
+              console.log({orderShipment})
+            }
+          }
+        }
+        let isPreOrder = order?.items?.some((product) => product?.Category__c?.toUpperCase()?.includes("PREORDER") || product?.Category__c?.toUpperCase()?.includes("EVENT"));
+        let poInit = res?.poNumber;
+        if (isPreOrder) {
+          poInit = `PRE-${poInit}`;
+        }
+        setPONumber(poInit);
       }
-    } else {
       setIsLoading(false);
-      setPONumber(null)
+    } catch (error) {
+      console.error("Error fetching PO number:", error);
+      setIsLoading(false);
     }
+  };
+
+ 
+  const bgUpdateHandler = () => {
+    FetchPoNumber();
+    fetchBrandPaymentDetails();
   };
   useEffect(() => {
 
@@ -118,7 +147,7 @@ function MyBagFinal({ showOrderFor }) {
           if (!data[order?.Manufacturer?.id]) {
             data[order?.Manufacturer?.id] = {};
           }
-          if (Object.values(data[order.Manufacturer.id]).length > 0) {
+          if (Object.values(data[order.Manufacturer.id])?.length > 0) {
             setProductImage({ isLoaded: true, images: data[order.Manufacturer.id] })
           } else {
             setProductImage({ isLoaded: false, images: {} })
@@ -126,11 +155,11 @@ function MyBagFinal({ showOrderFor }) {
         }
       }
       if (order.items) {
-        if (order.items.length > 0) {
+        if (order.items?.length > 0) {
           let productCode = "";
           order.items.map((element, index) => {
             productCode += `'${element.product?.ProductCode}'`
-            if (order.items.length - 1 != index) productCode += ', ';
+            if (order.items?.length - 1 != index) productCode += ', ';
           })
           getProductImageAll({ rawData: { codes: productCode } }).then((res) => {
             if (res) {
@@ -165,11 +194,78 @@ function MyBagFinal({ showOrderFor }) {
   //   })
   // }
 
-  const orderPlaceHandler = () => {
 
+  const fetchBrandPaymentDetails = async () => {
+    try {
+      let id = order?.Manufacturer?.id;
+      let AccountID = order?.Account?.id;
+      const user = await GetAuthData();
+
+      const brandRes = await getBrandPaymentDetails({
+        key: user?.x_access_token,
+        Id: id,
+        AccountId: AccountID,
+      });
+
+      setIntentRes(brandRes);
+      console.log({intentRes})
+
+      brandRes.accountManufacturerData.map((item) => setPaymentType(item.Payment_Type__c));
+
+      // Check for null keys
+      if (!brandRes?.brandDetails.Stripe_Secret_key_test__c || !brandRes?.brandDetails.Stripe_Publishable_key_test__c) {
+        setIsPlayAble(0);
+        console.log("Brand payment details are missing, skipping payment processing.");
+        return {
+          PK_KEY: null,
+          SK_KEY: null,
+        };
+      }
+
+      let paymentIntent = await fetch(`${originAPi}/stripe/payment-intent`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: "100",
+          paymentId: brandRes?.brandDetails.Stripe_Secret_key_test__c,
+        }),
+      });
+
+      setGreenStatus(paymentIntent.status);
+      if (paymentIntent.status === 200 && paymentDetails.PK_KEY !==  paymentDetails.SK_KEY) {
+        setIsPlayAble(1);
+      } else if (paymentIntent.status === 400 ||  paymentDetails.PK_KEY !==  paymentDetails.SK_KEY) {
+        setIsPlayAble(0);
+        console.log(isPlayAble, "is play able ");
+      }
+
+      setPaymentDetails({
+        PK_KEY: brandRes?.brandDetails.Stripe_Publishable_key_test__c,
+        SK_KEY: brandRes?.brandDetails.Stripe_Secret_key_test__c,
+      });
+      console.log({paymentDetails})
+
+      return {
+        PK_KEY: brandRes?.brandDetails.Stripe_Publishable_key_test__c,
+        SK_KEY: brandRes?.brandDetails.Stripe_Secret_key_test__c,
+      };
+    } catch (error) {
+      console.log("Error fetching brand payment details:", error);
+      return null;
+    }
+  };
+  const hasPaymentType = intentRes?.accountManufacturerData?.some((item) => item.Payment_Type__c);
+  useEffect(()=>{
+    fetchBrandPaymentDetails()
+  },[])
+
+
+  const orderPlaceHandler = () => {
     if (order?.Account?.SalesRepId) {
       setIsOrderPlaced(1);
-
+      setIsDisabled(true);
       GetAuthData()
         .then((user) => {
           // let bagValue = fetchBeg()
@@ -177,9 +273,8 @@ function MyBagFinal({ showOrderFor }) {
             // setButtonActive(true)
             let list = [];
             let orderType = "Wholesale Numbers";
-            if (order.items.length) {
+            if (order.items?.length) {
               order.items.map((product) => {
-
                 let productCategory = product?.Category__c?.toUpperCase()?.trim();
 
                 // Set orderType based on product category and prepend "PRE" to PONumber if "PREORDER"
@@ -201,7 +296,7 @@ function MyBagFinal({ showOrderFor }) {
               Name: order?.Account?.name,
               ManufacturerId__c: order?.Manufacturer?.id,
               PONumber: PONumber,
-              desc: order?.Note,
+              desc: order?.Note  +  paymentLink,
               SalesRepId: order?.Account?.SalesRepId,
               Type: orderType,
               ShippingCity: order?.Account?.address?.city,
@@ -210,25 +305,35 @@ function MyBagFinal({ showOrderFor }) {
               ShippingCountry: order?.Account?.address?.country,
               ShippingZip: order?.Account?.address?.postalCode,
               list,
-              key: user.x_access_token,
+              key: user?.x_access_token,
               shippingMethod: order.Account.shippingMethod,
+              Payment_Type__c: paymentValue,
+              SK_KEY  : intentRes?.brandDetails?.Stripe_Secret_key_test__c
             };
             OrderPlaced({ order: begToOrder, cartId: order.id })
-              .then((response) => {
-                if (response) {
-                  // console.log("response" , response.length)
-                  if (response.error) {
+            .then((response) => {
+              if (response) {
+                setOrderId(response.orderId)
+                // console.log("response" , response.length)
+                if (response.err) {
 
-                    setIsOrderPlaced(0);
-                    setorderStatus({ status: true, message: response[0].message });
+                  setIsOrderPlaced(0);
+                  setorderStatus({ status: true, message: response.err[0].message });
+                } else {
+
+                  let status = deleteOrder();
+                  setIsOrderPlaced(2);
+                  if (response?.orderId && typeof response.orderId == "string") {
+                    localStorage.setItem("OpportunityId", JSON.stringify(response.orderId));
+                    // window.location.href = window.location.origin + "/orderDetails"; 
+                  
+                   
                   } else {
-
-                    let status = deleteOrder();
                     navigate("/order-list");
-                    setIsOrderPlaced(2);
                   }
                 }
-              })
+              }
+            })
               .catch((err) => {
                 console.error({ err });
               });
@@ -238,7 +343,7 @@ function MyBagFinal({ showOrderFor }) {
           console.error({ error });
         });
     } else {
-      alert("no sales rep.")
+      alert("no sales rep.");
     }
   };
 
@@ -251,6 +356,54 @@ function MyBagFinal({ showOrderFor }) {
       }
     }).catch(err => console.error({ err }))
   }
+
+
+  // const getPaymentLINK = async () => {
+  //   try {
+  //     const currency = "usd";
+  //     const SK_KEY = intentRes?.brandDetails?.Stripe_Secret_key_test__c;
+
+  //     // Validate required data
+  //     if (!order?.items?.length || !SK_KEY || !orderId) {
+  //       console.error("Missing essential details: Order Items, Stripe Secret Key, or Order ID");
+  //       return;
+  //     }
+
+  //     // Prepare the items array
+  //     const items = order.items.map((item) => ({
+  //       productName: item?.Name,
+  //       price: item?.price,
+  //       quantity: item?.qty,
+  //     }));
+
+  //     const success_url = "https://portal.beautyfashionsales.com/";
+
+  //     // Generate the payment link
+  //     const paymentLink = await generatePaymentLink({
+  //       items,
+  //       currency,
+  //       SK_KEY,
+  //       orderId,
+  //       success_url,
+  //     });
+
+  //     console.log("Payment Link generated:", paymentLink);
+  //     setPaymentLink(paymentLink);
+  //   } catch (error) {
+  //     console.error("Error in getPaymentLINK:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (order && intentRes && orderId) {
+  //     getPaymentLINK();
+  //   }
+  // }, [order, intentRes, orderId]);
+
+
+
+
+
 
 
   const OrderQuantity = () => {
@@ -567,7 +720,7 @@ function MyBagFinal({ showOrderFor }) {
 
                                   <div className={Styles.Mainbox2M}>
                                     <div className={Styles.Mainbox4} onClick={() => {
-                                      if (order.items.length == 1) {
+                                      if (order.items?.length == 1) {
                                         setClearConfim(true);
                                       } else {
                                         removeProduct(ele.Id)
@@ -597,12 +750,34 @@ function MyBagFinal({ showOrderFor }) {
                           )}
                         </div>
                         <div className={Styles.TotalPricer}>
-                          <div>
-                            <h2>Total</h2>
+                          <div className="d-flex justify-content-between">
+                            <div>
+                              <h2>{order?.Account?.shippingMethod?.cal ? "Sub-" : null}Total</h2>
+                            </div>
+                            <div>
+                              <h2>${Number(total).toFixed(2)}</h2>
+                            </div>
                           </div>
-                          <div>
-                            <h2>${Number(total).toFixed(2)}</h2>
-                          </div>
+                          {order.Account?.shippingMethod?.cal ? (
+                            <div className="d-flex justify-content-between">
+                              <div>
+                                <h2 className="text-capitalize">Shipping ({order.Account.shippingMethod?.name})</h2>
+                              </div>
+                              <div>
+                                <h2>${order.Account.shippingMethod?.cal ? Number(total * order.Account.shippingMethod?.cal).toFixed(2) : 0}</h2>
+                              </div>
+                            </div>
+                          ) : null}
+                          {order.Account?.shippingMethod?.cal ? (
+                            <div className="d-flex justify-content-between">
+                              <div>
+                                <h2>Total</h2>
+                              </div>
+                              <div>
+                                <h2>${Number(total + total * order.Account.shippingMethod?.cal).toFixed(2)}</h2>
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -624,6 +799,41 @@ function MyBagFinal({ showOrderFor }) {
                           <p>No Shipping Address</p>
                         )}
                       </div>
+                      {hasPaymentType && paymentDetails.PK_KEY != null && paymentDetails.SK_KEY != null && total > 0 && greenStatus === 200 ?
+                      
+                      <div className={Styles.PaymentType}>
+                      <label className={Styles.shipLabelHolder}>Payment Type:</label>
+                      {intentRes?.accountManufacturerData?.[0]?.Payment_Type__c !== null ?
+                      
+                      
+                      <div className={Styles.PaymentTypeHolder}>
+                      {intentRes?.accountManufacturerData?.[0]?.Payment_Type__c?.split(";")?.map((item) => (
+                        <div
+                          className={`${Styles.templateHolder} ${isPlayAble == 0 ? (paymentValue ? (paymentValue == item ? Styles.selected : "") : Styles.selected) : ""}`}
+                          onClick={() => {
+                            setIsPlayAble(0);
+                            setPaymentValue(item);
+                          }}
+                        >
+                          <div className={Styles.labelHolder}>{item}</div>
+                        </div>
+                      ))}{" "}
+                      {/* <div className={`${Styles.templateHolder} ${isPlayAble == 1 ? Styles.selected : ""}`} onClick={() => setIsPlayAble(1)}>
+                        <div className={Styles.labelHolder}>Pay now</div>
+                      </div> */}
+                    </div>
+                      : null}
+                    </div>
+
+                      : null}
+                     
+                          {orderShipment?.length > 0 ? (
+                          <div className={Styles.PaymentType}>
+                            <label className={Styles.shipLabelHolder}>Select Shipping method:</label>
+                            <ShipmentHandler data={orderShipment} total={total} setIsSelect={setIsSelect} />
+                          </div>
+                        ) : null}
+
                       {(showOrderFor && salesRepData?.Id && buttonActive) && <>
                         <h2>Order For</h2>
                         <div className={Styles.ShipAdress}>
@@ -659,7 +869,7 @@ function MyBagFinal({ showOrderFor }) {
                             onClick={() => {
 
                               if (order?.items?.length) {
-                                if (PONumber.length) {
+                                if (PONumber?.length) {
                                   if (order?.items?.length > 100) {
                                     setLimitCheck(true);
                                   } else {
@@ -683,7 +893,7 @@ function MyBagFinal({ showOrderFor }) {
                             }}
                             disabled={!buttonActive}
                           >
-                            ${Number(total).toFixed(2)} PLACE ORDER
+                             ${Number(total + total * (order?.Account?.shippingMethod?.cal || 0)).toFixed(2)} PLACE ORDER
                           </button>
                           <p className={`${Styles.ClearBag}`} style={{ textAlign: 'center', cursor: 'pointer' }}
                             onClick={() => {

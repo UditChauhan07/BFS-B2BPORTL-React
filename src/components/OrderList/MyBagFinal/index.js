@@ -411,11 +411,19 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
                     <div className={Styles.ShipAdress2}>
                       {/* <label>NOTE</label> */}
                       <p
-                        className="placeholder:font-[Arial-500] text-[14px] tracking-[1.12px] m-0"
-                        style={{ minHeight: "119px" }}
-                      >
-                        {OrderData.Description}
-                      </p>
+  className="placeholder:font-[Arial-500] text-[14px] tracking-[1.12px] m-0"
+  style={{
+    minHeight: "119px",
+    maxHeight: "119px", // Restrict maximum height
+    overflowY: "auto", // Add vertical scrollbar if content overflows
+    overflowX: "hidden", // Hide horizontal overflow
+    whiteSpace: "pre-wrap", // Wrap text if needed
+    wordWrap: "break-word", // Handle long words gracefully
+    textOverflow: "ellipsis", // Add "..." if truncated
+  }}
+>
+  {OrderData.Description}
+</p>
                     </div>
                   </div>
                   <div className="row" data-html2canvas-ignore>

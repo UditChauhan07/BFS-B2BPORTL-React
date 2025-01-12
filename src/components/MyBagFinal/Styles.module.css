@@ -247,6 +247,81 @@
   border-bottom: 1px dashed #000;
   padding: 0 0 8px 0;
 }
+.PaymentType {
+  margin-top: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.089);
+  padding: 15px;
+}
+.PaymentType span {
+  font-weight: 470;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.PaymentTypeHolder{
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+.shipLabelHolder {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px; /* 228.571% */
+  letter-spacing: 1.12px;
+  text-transform: uppercase;
+  margin: 0;
+  margin-left: 5px;
+}
+.templateHolder {
+  width: 47%;
+  min-width: 100px;
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+  padding: 10px;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  background-color: #fff; /* Default background color */
+  display: grid;
+  place-content: center;
+  border: 1px solid #ccc;
+}
+
+.templateHolder:hover {
+  box-shadow: 0 0 10px rgba(13, 41, 71, 0.5);
+  /* transform: scale(1.05); */
+}
+.templateHolder .labelHolder {
+  margin: 0;
+  text-align: start;
+  font-size: 14px;
+  text-transform: uppercase;
+  border-bottom: 0;
+  padding: 0;
+  font-weight: bold;
+}
+.TotalPricer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 5px 0 5px;
+  position: sticky;
+  bottom: 5px;
+  background: #fff;
+  flex-direction: column;
+}
+
+.TotalPricer h2 {
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 25px; /* 177.778% */
+  letter-spacing: 1.12px;
+  margin: 0;
+}
 
 .ShipAdress2 {
   background-color: #f8f8f8;
