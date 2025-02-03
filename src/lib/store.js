@@ -3,7 +3,7 @@ import LZString from 'lz-string';
 import { getPermissions } from "./permission";
 import dataStore from "./dataStore";
 export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
-
+// export const originAPi =  "http://localhost:5001"
 export const defaultLoadTime = 1800000;
 let url2 = `${originAPi}/retailerv2/`;
 let url = `${originAPi}/beauty/`;
@@ -33,6 +33,7 @@ export const months = [
   "November",
   "December",
 ];
+
 
 export function ShareDrive(data, remove = false, keyValue = shareKey) {
   if (remove) {
@@ -178,16 +179,22 @@ export async function POGenerator() {
 
     let orderDetails = fetchBeg();
     let date = new Date();
-
-    //  const response = await fetch( "http://localhost:2611/PoNumber/generatepo"
+    const sanitizeString = (str) =>
+      str
+        .replace(/[^a-zA-Z0-9 ]/g, "") 
+        .replace(/\s+/g, " ")          
+        .trim(); 
+    const sanitizedAccountName = sanitizeString(orderDetails.Account?.name || "");
+    const sanitizedManufacturerName = sanitizeString(orderDetails.Manufacturer?.name || "");
+   
     const response = await fetch(originAPi + "/qX8COmFYnyAj4e2/generatepov2", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        accountName: orderDetails.Account?.name,
-        manufacturerName: orderDetails.Manufacturer?.name,
+        accountName: sanitizedAccountName,
+        manufacturerName: sanitizedManufacturerName,
         orderDate: date.toISOString(),
         accountId: orderDetails.Account?.id,  // Make sure this is passed
         manufacturerId: orderDetails.Manufacturer?.id // Ensure this is passed
@@ -205,9 +212,11 @@ export async function POGenerator() {
       let res = await poData;
       let poNumber = res.poNumber;
       let address = res.address;
-      let shippingMethod = res.shippingMethod;
+      let brandShipping = res?.brandShipping;
+      let shippingMethod = res?.shippingMethod;
+      let checkBrandAllow = res?.checkBrandAllow;
 
-      return  {poNumber,address,shippingMethod};
+      return { poNumber, address, brandShipping, shippingMethod, checkBrandAllow };
     } else {
       console.error('Failed to generate PO number:', poData.message);
       return null;
@@ -217,6 +226,7 @@ export async function POGenerator() {
     return null;
   }
 }
+
 
 // account details 
 
@@ -504,10 +514,12 @@ export async function getTargetReportAll({ user, year, preOrder }) {
     let headersList = {
       Accept: "*/*",
     };
+    let authData = await GetAuthData()
+    let  userPermissions= JSON.parse(authData.permission)
     let tried = false;
     let bodyContent = new FormData();
     bodyContent.append("key", user.x_access_token);
-    if (!admins.includes(user.Sales_Rep__c)) {
+    if (!userPermissions?.modules?.godLevel) {
       bodyContent.append("SalesRepId", user.Sales_Rep__c);
     }
     if (year) {
@@ -526,7 +538,8 @@ export async function getTargetReportAll({ user, year, preOrder }) {
       DestoryAuth();
     } else {
       let rawRes = { ownerPermission: false, list: data.data };
-      if (admins.includes(user.Sales_Rep__c)) {
+    
+      if (userPermissions?.modules?.godLevel) {
         rawRes.ownerPermission = true;
       }
       return rawRes;
@@ -1651,14 +1664,15 @@ export async function refreshTargetRollOver() {
     return false;
   }
 }
-export async function getBrandPaymentDetails({ key, Id }) {
+
+export async function getBrandPaymentDetails({ key, Id, AccountId }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
   };
   let response = await fetch(originAPi + "/stripe/e8IZytvGI1IJX74", {
     method: "POST",
-    body: JSON.stringify({ key, Id }),
+    body: JSON.stringify({ key, Id, AccountId }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());

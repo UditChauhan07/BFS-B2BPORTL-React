@@ -4,7 +4,7 @@ import Styles from "./Styles.module.css";
 import axios from "axios";
 import Loading from "../../Loading";
 import { Link, useNavigate } from "react-router-dom";
-import { DestoryAuth, ShareDrive, defaultLoadTime, getOrderDetailsInvoice, getOrderIdDetails, getProductImageAll, originAPi, supportShare } from "../../../lib/store";
+import { DestoryAuth, GetAuthData, ShareDrive, defaultLoadTime, getOrderDetailsInvoice, getOrderIdDetails, getProductImageAll, originAPi, supportShare } from "../../../lib/store";
 import { MdOutlineDownload } from "react-icons/md";
 import LoaderV2 from "../../loader/v2";
 import ProductDetails from "../../../pages/productDetails";
@@ -16,10 +16,12 @@ import { CustomerServiceIcon, OrderStatusIcon } from "../../../lib/svg";
 import useBackgroundUpdater from "../../../utilities/Hooks/useBackgroundUpdater";
 import dataStore from "../../../lib/dataStore";
 import ImageHandler from "../../loader/ImageHandler";
+import Swal from "sweetalert2";
 
 function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
   let Img1 = "/assets/images/dummy.png";
   const [OrderData, setOrderData] = useState([]);
+  const [buttonLoading, setIsButtonLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [showTracking, setShowTracking] = useState(false)
   const navigate = useNavigate();
@@ -27,7 +29,104 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
   const [helpId, setHelpId] = useState();
   const [reason, setReason] = useState();
   const [restrict, setRestrict] = useState();
+  const [canRegenerate, setCanRegenerate] = useState(false);
 
+  useEffect(() => {
+
+    const createdDate = new Date(OrderData?.PBL_generation_Date__c);
+    const currentDate = new Date();
+    const timeDifference = currentDate - createdDate; // in milliseconds
+
+    // Check if 10 minutes have passed (10 minutes = 10 * 60 * 1000 milliseconds)
+    if (OrderData?.Id) {
+      if ((!OrderData?.Payment_Status__c || OrderData?.Payment_Status__c != 'succeeded') && !OrderData?.Transaction_ID__c) {
+        if (timeDifference >= 24 * 60 * 60 * 1000 || !OrderData?.PBL_generation_Date__c) {
+          setCanRegenerate(true);
+        }
+      }
+    }
+  }, [OrderData]);
+
+
+  const handleRegenerateOrder = async () => {
+    setIsButtonLoading(true)
+    const orderId = JSON.parse(localStorage.getItem('OpportunityId'));
+    const Key = JSON.parse(localStorage.getItem('Api Data'));
+    const calValue = OrderData?.Shipment_cost__c / OrderData?.Amount
+    const payload = {
+      orderId,
+      info: {
+        ManufacturerId__c: OrderData?.ManufacturerId__c,
+        Account_Name : OrderData?.Name , 
+        key: Key?.data?.x_access_token,
+        currency: 'usd',
+        Po_Num : OrderData?.PO_Number__c,
+        Account_Num : OrderData?.Account_Number__c , 
+        list: OrderData?.OpportunityLineItems.map(product => ({
+          ProductCode: product.ProductCode,
+          price: product?.UnitPrice, // Convert to cents
+          qty: product.Quantity,
+        })),
+        shippingMethod: {
+          method: 'UPS',
+          cal: calValue, // Convert to cents
+        },
+      },
+    };
+
+    try {
+      const response = await fetch(`${originAPi}/beauty/4eIAaY2H/regenerate-payment-link`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Swal.fire({
+          title: "Success!",
+          text: "Payment link has been regenerated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton: 'swal-center-button', // Add a custom class to the button
+          },
+
+          allowOutsideClick: false,
+
+          preConfirm: () => {
+            setTimeout(() => {
+              window.location.reload()
+            }, [1500])
+              ; // Refresh the page on OK
+          },
+        });
+      } else {
+        Swal.fire({
+          title: "Failed!",
+          text: "You can Generated Payment Link after 24 hours",
+          icon: "Falied",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton: 'swal-center-button', // Add a custom class to the button
+          }
+        })
+        console.error('Error:', data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    finally {
+      setIsButtonLoading(false)
+    }
+  };
+
+
+  // useEffect(()=>{
+  //   handleRegenerateOrder()
+  // } , [])
   const OrderId = JSON.parse(localStorage.getItem("OpportunityId"));
 
   const Key = JSON.parse(localStorage.getItem("Api Data"));
@@ -119,7 +218,12 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
     // })
     getOrderDetails();
   }, []);
-  
+
+
+
+
+
+
   useBackgroundUpdater(getOrderDetails, defaultLoadTime);
 
   function downloadFiles(invoices) {
@@ -176,7 +280,6 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
       alert("do nothing")
     }
   }
-
   const SupportTransporter = ({ Type, Reason }) => {
     if (oldSupport?.[Type]?.[Reason]?.Id) {
       return (<Link to={"/CustomerSupportDetails?id=" + oldSupport[Type][Reason].Id} className={Styles.supportLinkHolder}>{oldSupport[Type][Reason]?.CaseNumber}</Link>)
@@ -198,6 +301,7 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
       return null;
     }
   }
+
   const caseChangeHandler = (type, reason) => {
     console.log({ type, reason, oldSupport });
 
@@ -215,6 +319,9 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
     }
     setConfirm("Invoice")
   }
+  console.log({ OrderData });
+
+
 
   return (
     <div>
@@ -297,7 +404,7 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
                 <h4>
                   {" "}
                   <span> {OrderData.ManufacturerName__c} | </span>
-                  {OrderData.Name}
+                  &nbsp;{OrderData.Name}
                 </h4>{" "}
               </div>
 
@@ -322,9 +429,9 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
                               return (
                                 <div className={Styles.Mainbox}>
                                   <div className={Styles.Mainbox1M}>
-                                    <div className={Styles.Mainbox2} style={{ cursor: 'pointer' }}>
-                                      <ImageHandler image={{src:item.ProductImage??item?.ContentDownloadUrl??productImage.images[item.ProductCode]?.ContentDownloadUrl??productImage.images[item.ProductCode]??'dummy.png'}} onClick={() => { setProductDetailId(item?.Product2Id) }} width={50}/>
-                                    </div>
+                                     <div className={Styles.Mainbox2} style={{ cursor: 'pointer' }}>
+                                      <ImageHandler image={{ src: item.ProductImage ?? item?.ContentDownloadUrl ?? productImage.images[item.ProductCode]?.ContentDownloadUrl ?? productImage.images[item.ProductCode] ?? 'dummy.png' }} onClick={() => { setProductDetailId(item?.Product2Id) }} width={50} />
+                                     </div>
                                     <div className={Styles.Mainbox3}>
                                       <h2 onClick={() => { setProductDetailId(item?.Product2Id) }} className="linkEffect" style={{ cursor: 'pointer' }}>{item.Name.split(OrderData.Name)}</h2>
                                       <p>
@@ -358,12 +465,20 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
                       </div>
 
                       <div className={Styles.TotalPricer}>
-                        <div>
-                          <h2>Total</h2>
-                        </div>
-                        <div>
+                        <div className="d-flex justify-content-between">
+                          <h2>{OrderData?.Shipment_cost__c ? 'Sub-' : null}Total</h2>
                           <h2>${Number(OrderData.Amount).toFixed(2)}</h2>
                         </div>
+                        {OrderData?.Shipment_cost__c ?
+                          <div className="d-flex justify-content-between">
+                            <h2 className="text-capitalize">Shipping by ({OrderData?.Shipping_method__c})</h2>
+                            <h2>${OrderData?.Shipment_cost__c ? Number(OrderData?.Shipment_cost__c).toFixed(2) : 0}</h2>
+                          </div> : null}
+                        {OrderData?.Shipment_cost__c ?
+                          <div className="d-flex justify-content-between">
+                            <h2>Total</h2>
+                            <h2>${Number(OrderData.Amount + Number(OrderData?.Shipment_cost__c)).toFixed(2)}</h2>
+                          </div> : null}
                       </div>
                     </div>
                   </div>
@@ -407,7 +522,35 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
                             {OrderData.Tracking__c}
                           </p>}
                       </div></>}
+                    {OrderData?.Payment_Status__c || OrderData?.Transaction_ID__c || OrderData?.PBL_Status__c || canRegenerate ?
+                      <>
+                        <h2 style={{ marginTop: '10px' }}>Payment Details</h2>
+                        <div className={Styles.paymentCheck}>
+                          {OrderData?.Payment_Status__c ? <p>Payment Status : {OrderData?.Payment_Status__c} </p> : null}
+                          {OrderData?.Transaction_ID__c ? <p>Transaction ID : {OrderData?.Transaction_ID__c} </p> : null}
+                          {OrderData?.Status__c !== "Order Cancelled" && OrderData.PBL_Status__c && ((!OrderData?.Payment_Status__c || OrderData?.Payment_Status__c != 'succeeded') && !OrderData?.Transaction_ID__c) ?
+                            <div className={Styles.ShipBut}>
+                              {!buttonLoading ? <button role="link"
+                                onClick={() => {
+                                  if (!buttonLoading) {
+                                    openInNewTab(OrderData.PBL_Status__c)
+                                  }
+                                }}>Payment Link</button> : null}
 
+                            </div>
+                            : null}
+                          {OrderData?.Status__c !== "Order Cancelled"  && OrderData.PBL_Status__c && OrderData?.Type === "Wholesale Numbers"  &&canRegenerate && ((!OrderData?.Payment_Status__c || OrderData?.Payment_Status__c != 'succeeded') && !OrderData?.Transaction_ID__c) ? (
+                            <div className={Styles.ShipBut}>
+                              <button
+                                role="link"
+                                onClick={handleRegenerateOrder}
+                                disabled={buttonLoading} // Disable button when loading
+                              >
+                                {buttonLoading ? 'Processing...' : 'Regenerate Payment Link'}
+                              </button> </div>
+                          ) : null}
+                        </div>
+                      </> : null}
                     <div className={Styles.ShipAdress2}>
                       {/* <label>NOTE</label> */}
                       <p

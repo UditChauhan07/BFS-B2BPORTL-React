@@ -83,7 +83,7 @@ const CustomerSupport = () => {
           supportHandler({ key: user.x_access_token, salesRepId: selectedSalesRepId ?? user.Sales_Rep__c })
           reatilerHandler({ key: user.x_access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c })
           brandhandler({ key: user.x_access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c })
-          if (admins.includes(user.Sales_Rep__c)) {
+          if (memoizedPermissions?.modules?.godLevel) {
             dataStore.getPageData("getSalesRepList", () => getSalesRepList({ key: user.x_access_token })).then((repRes) => {
               if(repRes){
                 setSalesRepList(repRes.data)
@@ -108,7 +108,7 @@ const CustomerSupport = () => {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [permissions]);
 
 
   // useBackgroundUpdater(() => reatilerHandler({ key: userData.x_access_token, userId: selectedSalesRepId ?? userData.Sales_Rep__c }), defaultLoadTime);
@@ -162,7 +162,7 @@ const CustomerSupport = () => {
               label="salesRep"
               name="salesRep"
               value={selectedSalesRepId}
-              options={salesRepList.map((salesRep) => ({
+              options={salesRepList.sort((a, b) => a.Name.localeCompare(b.Name)).map((salesRep) => ({
                 label: salesRep.Id == userData.Sales_Rep__c ? 'My Supports (' + salesRep.Name + ')' : salesRep.Name,
                 value: salesRep.Id,
               }))}
@@ -194,17 +194,20 @@ const CustomerSupport = () => {
               }))}
               onChange={(value) => setManufacturerFilter(value)}
             />}
-          <FilterItem
-            label="Status"
-            name="Status"
-            value={status.length ? status[0] : null}
-            options={statusList?.map((status) => ({
-              label: status,
-              value: status
-            }))}
-            minWidth={'200px'}
-            onChange={(value) => setStatus([value])}
-          />
+         <FilterItem
+  label="Status"
+  name="Status"
+  value={status.length ? status[0] : null}
+  options={statusList
+    .sort((a, b) => a.localeCompare(b))  // Sort alphabetically
+    .map((status) => ({
+      label: status,
+      value: status
+    }))
+  }
+  minWidth={'200px'}
+  onChange={(value) => setStatus([value])}
+/>
           <FilterSearch
             onChange={(e) => setSearchBy(e.target.value)}
             value={searchBy}

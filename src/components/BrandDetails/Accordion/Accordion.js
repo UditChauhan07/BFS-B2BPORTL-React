@@ -117,8 +117,8 @@ console.log(selectedsalesRep , "----accordian salesrep")
           <table className="table table-hover ">
             <thead>
               <tr>
-                <th>Image</th>
-                <th style={{ width: "200px" }}>Title</th>
+                {/* <th>Image</th> */}
+                <th style={{ width: "200px" , paddingLeft : "22px" }}>Title</th>
                 <th>Product Code</th>
                 <th>UPC</th>
                 <th>List Price</th>
@@ -163,16 +163,16 @@ console.log(selectedsalesRep , "----accordian salesrep")
                           salesPrice = (+listPrice - (discount / 100) * +listPrice).toFixed(2);
                           return (
                             <tr className={`${styles.ControlTR} w-full `} key={indexed}>
-                              <td className={styles.ControlStyle} style={{ cursor: "pointer" }}>
-                                <ImageHandler
+                              {/* <td className={styles.ControlStyle} style={{ cursor: "pointer" }}> */}
+                                {/* <ImageHandler
                                   image={{ src: value?.ContentDownloadUrl || productImage.images[value?.ProductCode]?.ContentDownloadUrl || productImage.images[value?.ProductCode] || "dummy.png" }}
                                   width={50}
                                   onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })}
-                                />
-                              </td>
+                                /> */}
+                              {/* </td> */}
                               <td
                                 className="text-capitalize linkEffect"
-                                style={{ fontSize: "13px", cursor: "pointer" }}
+                                style={{ fontSize: "13px", cursor: "pointer" , paddingLeft : "22px" }}
                                 onMouseEnter={() => setShowName({ index: indexed, type: true })}
                                 onMouseLeave={() => setShowName({ index: indexed })}
                                 onClick={() => sendProductIdHandler({ productId: value.Id, productName: value.Name })}
@@ -185,7 +185,7 @@ console.log(selectedsalesRep , "----accordian salesrep")
                               <td>
                                 <div className="d-flex">
                                   ${(inputPrice || inputPrice == 0) ? <input type="number" value={inputPrice} placeholder={Number(inputPrice).toFixed(2)} className={`${styles.customPriceInput} ms-1`}
-                                    onChange={(e) => { onPriceChangeHander(value.Id, e.target.value < 10 ? e.target.value.replace("0", "").slice(0, 4) : e.target.value.slice(0, 4) || 0) }} id="limit_input" minLength={0} maxLength={4}
+                                    onChange={(e) => { onPriceChangeHander(value.Id, e.target.value < 10 ? e.target.value.replace("0", "").slice(0, 5) : e.target.value.slice(0, 5) || 0) }} id="limit_input" minLength={0} maxLength={4}
                                     name="limit_input" /> : salesPrice}
                                 </div>
                               </td>

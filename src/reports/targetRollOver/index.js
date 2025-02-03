@@ -120,6 +120,7 @@ const TargetReport = () => {
     useEffect(() => {
         dataStore.subscribe("/Target-Report", handleTargetReady)
         GetTargetData();
+       
         setManufacturerFilter(target?.ownerPermission ? state?.manufacturerId : null);
         setSearchSaleBy(target?.ownerPermission ? state?.salesRepId : null);
         return () => {
@@ -448,7 +449,7 @@ const TargetReport = () => {
                                 minWidth="220px"
                                 label="All Sales Rep"
                                 value={searchSaleBy}
-                                options={salesRepList.map((salerep) => ({
+                                options={salesRepList.sort((a, b) => a.localeCompare(b)).sort((a, b) => a.localeCompare(b)).map((salerep) => ({
                                     label: salerep,
                                     value: salerep,
                                 }))}
