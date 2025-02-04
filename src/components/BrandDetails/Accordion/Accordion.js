@@ -142,8 +142,8 @@ const Accordion = ({ salesRepId, data, formattedData, productImage = [], product
                 <th style={{ width: "200px", paddingLeft: "22px" }}>Title</th>
                 <th>Product Code</th>
                 <th>UPC</th>
-                <th>List Price</th>
-                <th style={{ width: "175px" }}>Sale Price</th>
+                <th>MSRP</th>
+                <th style={{ width: "175px" }}>Cost</th>
                 <th>Min Qty</th>
                 <th>Qty</th>
                 <th>Total</th>
@@ -217,27 +217,17 @@ const Accordion = ({ salesRepId, data, formattedData, productImage = [], product
                                   onChange={(quantity) => {
                                     if (quantity) {
                                       if (data.discount.portalProductManage) {
-                                        if (value.Available_Quantity__c) {
-                                          if (quantity) {
-                                            onQuantityChange(value, quantity);
-                                          } else {
-                                            if (order?.Account?.id === localStorage.getItem("AccountId__c") && isProductCarted(value.Id)) {
-                                              removeProduct(value.Id);
-                                            }
-                                          }
-                                        } else {
-                                          Swal.fire({
+                                        if (!value.Available_Quantity__c) {
+                                          return Swal.fire({
                                             title: "Oops!",
                                             text: "The product you're trying to add to your cart is currently out of stock. Please check back soon",
                                             icon: "warning",
                                             confirmButtonColor: "#000", // Black
                                           });
                                         }
-                                      } else {
-
-                                        onQuantityChange(value, quantity);
-
                                       }
+                                      onQuantityChange(value, quantity);
+
                                     } else {
                                       if (order?.Account?.id === localStorage.getItem("AccountId__c") && isProductCarted(value.Id)) {
                                         removeProduct(value.Id);
