@@ -72,7 +72,7 @@ const TopProducts = () => {
         manuProdutcode[product.ProductCode] = product.ManufacturerId__c;
       })
       getProductImageAll({ rawData: { codes: productCode } }).then((res) => {
-        console.log({ res });
+        // console.log({ res });
 
         if (res) {
           if (manufacturerFilter) {

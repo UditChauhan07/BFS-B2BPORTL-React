@@ -533,7 +533,8 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
                               {!buttonLoading ? <button role="link"
                                 onClick={() => {
                                   if (!buttonLoading) {
-                                    openInNewTab(OrderData.PBL_Status__c)
+                                    // openInNewTab(OrderData.PBL_Status__c)
+                                    navigate(`${OrderData.PBL_Status__c}`)
                                   }
                                 }}>Payment Link</button> : null}
 

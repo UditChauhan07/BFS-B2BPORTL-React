@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Styles from "./Styles.module.css";
 import QuantitySelector from "../BrandDetails/Accordion/QuantitySelector";
 import { Link, useNavigate } from "react-router-dom";
-import { GetAuthData, OrderPlaced, POGenerator, ShareDrive, admins, defaultLoadTime, fetchBeg, getProductImageAll, salesRepIdKey, getBrandPaymentDetails, originAPi } from "../../lib/store";
+import { GetAuthData, OrderPlaced, POGenerator, ShareDrive,  fetchBeg, getProductImageAll , getBrandPaymentDetails, originAPi } from "../../lib/store";
 import { useCart } from "../../context/CartContext";
 import OrderLoader from "../loader";
 import ModalPage from "../Modal UI";
@@ -74,7 +74,7 @@ function MyBagFinal({ showOrderFor }) {
     try {
       let id = order?.Manufacturer?.id;
       let AccountID = order?.Account?.id;
-      console.log({ id, AccountID });
+      // console.log({ id, AccountID });
 
       const user = await GetAuthData();
       if (id && AccountID) {
@@ -83,7 +83,7 @@ function MyBagFinal({ showOrderFor }) {
           Id: id,
           AccountId: AccountID,
         });
-        console.log({ brandRes });
+        // console.log({ brandRes });
 
         setIntentRes(brandRes);
 
@@ -92,7 +92,7 @@ function MyBagFinal({ showOrderFor }) {
         // Check for null keys
         if (!brandRes?.brandDetails.Stripe_Secret_key_test__c || !brandRes?.brandDetails.Stripe_Publishable_key_test__c) {
           setIsPlayAble(0);
-          console.log("Brand payment details are missing, skipping payment processing.");
+          // console.log("Brand payment details are missing, skipping payment processing.");
           return {
             PK_KEY: null,
             SK_KEY: null,
@@ -184,7 +184,7 @@ function MyBagFinal({ showOrderFor }) {
         try {
           const res = await POGenerator();
 
-          console.log({ res, order });
+          // console.log({ res, order });
 
           if (res?.poNumber) {
          
@@ -269,7 +269,7 @@ function MyBagFinal({ showOrderFor }) {
           getProductImageAll({ rawData: { codes: productCode } })
             .then((res) => {
               if (res) {
-                console.log({ res });
+                // console.log({ res });
                 if (data[order.Manufacturer.id]) {
                   data[order.Manufacturer.id] = { ...data[order.Manufacturer.id], ...res };
                 } else {

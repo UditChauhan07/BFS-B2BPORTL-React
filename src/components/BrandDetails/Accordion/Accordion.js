@@ -10,11 +10,11 @@ import ImageHandler from "../../loader/ImageHandler";
 const Accordion = ({ salesRepId, data, formattedData, productImage = [], productCartSchema = {} }) => {
   const { testerInclude, sampleInclude } = productCartSchema || true;
 let selectedsalesRep = JSON.parse(localStorage.getItem('selectedSalesrepId'))
-console.log(selectedsalesRep , "----accordian salesrep")
+
   let Img1 = "/assets/images/dummy.png";
   const { order, updateProductQty, addOrder, removeProduct, deleteOrder, isProductCarted, isCategoryCarted, updateProductPrice } = useCart();
   const [replaceCartModalOpen, setReplaceCartModalOpen] = useState(false);
-  // console.log(productCartSchema)
+
   const [replaceCartProduct, setReplaceCartProduct] = useState({});
   const [showName, setShowName] = useState(false);
   const [productDetailId, setProductDetailId] = useState(null);
@@ -66,8 +66,7 @@ console.log(selectedsalesRep , "----accordian salesrep")
     let salesPrice = (+listPrice - ((discount || 0) / 100) * +listPrice).toFixed(2);
     element.price = salesPrice;
     element.qty = quantity;
-    // console.log(salesPrice, "salesprice")
-    // element.discount = discount;
+  
     let cartStatus = addOrder(element, account, manufacturer);
 
   };

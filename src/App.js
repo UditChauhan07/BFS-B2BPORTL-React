@@ -55,6 +55,7 @@ import { CartProvider } from "./context/CartContext";
 import ProductPage from "./components/ProductPage/ProductPage";
 import { AnimatePresence } from 'framer-motion';
 import ProductOrder from "./pages/ProductOrder";
+import PaymentLink from "./components/PaymentLink/PaymentLink";
 function App() {
   // const Redirect = ({ href }) => {
   //   window.location.href = href;
@@ -79,7 +80,7 @@ function App() {
               <Route path="/my-retailers" element={<MyRetailersPage />}></Route>
               <Route path="/dashboard" element={<Dashboard />}></Route>
               <Route path="/product" element={<Product />}></Route>
-              {/* <Route path="/product/:name" element={<ProductDetails/>}></Route> */}
+             
               <Route path="/my-bag" element={<MyBag />}></Route>
               <Route path="/brand" element={<BrandsPage />}></Route>
               <Route path="/order/complete" element={<OrderComplete />}></Route>
@@ -116,6 +117,7 @@ function App() {
               <Route path="/account-contact-detailed-Report" element={<ContactDetailedReport />} />
               <Route path='/productPage/:id' element={<ProductPage />} />
               <Route path='/public/product/order' element={<ProductOrder/>} />
+              <Route path = '/paymentLink/:order_Id/:randomToken'  element = {<PaymentLink/>} />
               <Route path="*" element={<PageNotFound />}></Route>
 
               {/* 1234 */}
