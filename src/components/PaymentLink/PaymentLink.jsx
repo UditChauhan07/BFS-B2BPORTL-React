@@ -13,15 +13,23 @@ function PaymentLink() {
      const [token , setToken ] = useState()
      const { order_Id, randomToken } = useParams()
      const fullUrl = window.location.href;
-    //  const checkUrl = ()=>{
-    //     if(fullUrl !== orderData?.PBL_Status__c){
-    //         console.log("This is not matched")
-    //     }
-    //  }
-    //  useEffect(()=>{
-    //  checkUrl = ()=>{
+    
+    console.log({fullUrl})
+     const checkUrl = ()=>{
+        if(fullUrl !== orderData?.PBL_Status__c){
+            console.log("This is not matched")
+        }
+        else if(fullUrl === JSON.stringify(orderData?.PBL_Status__c )){
+            console.log("stringify mai match hua ")
+        }
+        else{
+            console.log("url matched")
+        }
+     }
+     useEffect(()=>{
+     checkUrl()
 
-    //  })
+     }, [])
   
     const fetchBrandDetails = async () => {
         try {

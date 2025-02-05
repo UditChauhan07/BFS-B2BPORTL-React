@@ -58,7 +58,7 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
             <div className="bg-white shadow-md rounded-lg p-6 w-full md:w-1/3">
                 <h2 className="text-lg font-semibold mb-2">Checkout</h2>
                 <p className="text-2xl font-bold text-gray-700">${amount}</p>
-                {/* <p className="text-sm text-gray-500"></p> */}
+                {/* <p className="text-sm text-gray-500">Qty 2, $3,204.10 each</p> */}
 
                 <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                     {/* Card Number Input */}
