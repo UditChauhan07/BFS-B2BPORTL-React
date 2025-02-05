@@ -46,17 +46,19 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
 
             <div className="bg-white shadow-md rounded-lg p-6 w-full md:w-1/3 mb-6 md:mb-0 md:mr-6 h-1s00">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-                <p><strong>Account ID:</strong> {orderData?.Account_ID__c}</p>
+                <p><strong>Account Name:</strong> {orderData?.Account?.Name}</p>
                 <p><strong>Manufacturer:</strong> {orderData?.ManufacturerName__c}</p>
                 <p><strong>Shipping Method:</strong> {orderData?.Shipping_method__c}</p>
                 <p><strong>PO Number:</strong> {orderData?.PO_Number__c}</p>
+                <p><strong>Shipping Address:</strong> {orderData?.Shipping_Street__c} , {orderData?.Shipping_City__c} 
+                   , {orderData?.Shipping_State__c} {orderData?.Shipping_Country__c} {orderData?.Shipping_Zip__c} </p>
             </div>
 
             {/* Right Side: Checkout Form */}
             <div className="bg-white shadow-md rounded-lg p-6 w-full md:w-1/3">
                 <h2 className="text-lg font-semibold mb-2">Checkout</h2>
                 <p className="text-2xl font-bold text-gray-700">${amount}</p>
-                <p className="text-sm text-gray-500">Qty 2, $3,204.10 each</p>
+                {/* <p className="text-sm text-gray-500"></p> */}
 
                 <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                     {/* Card Number Input */}

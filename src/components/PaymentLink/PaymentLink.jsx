@@ -11,8 +11,32 @@ function PaymentLink() {
     const [clientSecret, setClientSecret] = useState(null);
     const [orderData , setOrderData] = useState()
      const [token , setToken ] = useState()
+    const[ isPageLoad , setIsPageLoad ] = useState(false)
      const { order_Id, randomToken } = useParams()
-  
+     const fullUrl = window.location.href;
+     const checkUrl = ()=>{
+        if(fullUrl !== orderData?.PBL_Status__c){
+            Swal.fire({
+                title: 'Error',
+                text: 'This URL does not exists for the payment!',
+                icon: 'Error',
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'swal2-confirm'
+                }
+            }).then(() => {
+                setIsPageLoad(false)
+                window.location.href = window.location.origin + "/";
+        });
+        }
+        else{
+            setIsPageLoad(true)
+        }
+     }
+     useEffect(()=>{
+     checkUrl()
+
+     },[])
   
     const fetchBrandDetails = async () => {
         try {
@@ -26,7 +50,7 @@ function PaymentLink() {
 
             const pk = brandRes?.brandDetails?.Stripe_Publishable_key_test__c;
             const sk = brandRes?.brandDetails?.Stripe_Secret_key_test__c;
-            console.log(pk , sk , "branddetails")
+            // console.log(pk , sk , "branddetails")
             setKeys({ pk, sk });
 
             if (pk) {
@@ -39,7 +63,7 @@ function PaymentLink() {
     const getOrderDetails = async ()=>{
         const user = await GetAuthData();
         let res = await getPaymentLinkDetails({ Id : order_Id  , key :  user?.x_access_token})
-        console.log({res})
+        // console.log({res})
         if(res?.success === false){
             Swal.fire({
                 title: 'Error',
@@ -64,7 +88,7 @@ function PaymentLink() {
     }, [])
     const shipping_cost = orderData?.Shipment_cost__c ? parseInt(orderData?.Shipment_cost__c) : 0 
     const totalAmount = orderData?.Amount + shipping_cost
-    console.log({totalAmount})
+    // console.log({totalAmount})
     const loadPaymentIntent = async (pk, sk) => {
         try {
             const response = await fetch(`${originAPi}/stripe/payment-intent`, {
@@ -79,7 +103,7 @@ function PaymentLink() {
             });
 
             const data = await response.json();
-            console.log({data})
+            // console.log({data})
             if (data.clientSecret) {
                 setClientSecret(data.clientSecret);
             }
@@ -89,7 +113,7 @@ function PaymentLink() {
     };
    
     const stripePromise = keys.pk ? loadStripe(keys.pk) : null;
-    console.log(stripePromise)
+    // console.log(stripePromise)
    
     useEffect(() => {
         if (orderData) {
@@ -100,7 +124,7 @@ function PaymentLink() {
     return (
         <div>
             
-            {stripePromise && clientSecret ? (
+            {stripePromise && clientSecret && isPageLoad? (
                 <Elements stripe={stripePromise} options={{ clientSecret }}>
                     <CheckoutForm clientSecret = {clientSecret} orderData = {orderData} amount = {totalAmount}/>
                 </Elements>
