@@ -12,38 +12,56 @@ function PaymentLink() {
     const [orderData , setOrderData] = useState()
      const [token , setToken ] = useState()
      const { order_Id, randomToken } = useParams()
+     const [isPageLoad ,  setIsPageLoad] = useState(false)
+     
      const fullUrl = window.location.href;
     
     console.log({fullUrl})
-     const checkUrl = ()=>{
-        if(fullUrl !== orderData?.PBL_Status__c){
-            console.log("This is not matched")
-        }
-        else if(fullUrl === JSON.stringify(orderData?.PBL_Status__c )){
-            console.log("stringify mai match hua ")
+    const checkUrl =  () => {
+        if(orderData){
+            if (fullUrl !== orderData?.PBL_Status__c?.trim()) {
+                Swal.fire({
+                    title: 'Error',
+                    text: `The URL you are trying to reach does not contains any payment details`,
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'swal2-confirm'
+                    }
+                }).then(() => {
+                    
+                    window.location.href = window.location.origin + "/";
+            });  
+              
+            } else {
+             
+              setIsPageLoad(true)
+            }
         }
         else{
-            console.log("url matched")
+            console.error("OrderData not retrieved")
         }
-     }
+      
+      };
+      
      useEffect(()=>{
      checkUrl()
 
-     }, [])
+     }, [orderData])
   
     const fetchBrandDetails = async () => {
         try {
-            const user = await GetAuthData();
-            setToken(user.x_access_token)
+          
+          
             const brandRes = await getBrandPaymentDetails({
-                key: user.x_access_token,
+                key: token,
                 Id: orderData?.ManufacturerId__c,
                 AccountId: orderData?.Account_ID__c,
             });
 
             const pk = brandRes?.brandDetails?.Stripe_Publishable_key_test__c;
             const sk = brandRes?.brandDetails?.Stripe_Secret_key_test__c;
-            console.log(pk , sk , "branddetails")
+          
             setKeys({ pk, sk });
 
             if (pk) {
@@ -54,9 +72,10 @@ function PaymentLink() {
         }
     };
     const getOrderDetails = async ()=>{
-        const user = await GetAuthData();
-        let res = await getPaymentLinkDetails({ Id : order_Id  , key :  user?.x_access_token})
-        console.log({res})
+       
+        let res = await getPaymentLinkDetails({ Id : order_Id  })
+        // console.log({res})
+        setToken(res.access_token)
         if(res?.success === false){
             Swal.fire({
                 title: 'Error',
@@ -79,9 +98,9 @@ function PaymentLink() {
     useEffect(()=>{
         getOrderDetails()
     }, [])
-    const shipping_cost = orderData?.Shipment_cost__c ? parseInt(orderData?.Shipment_cost__c) : 0 
+    const shipping_cost = orderData?.Shipment_cost__c ? JSON.parse(orderData?.Shipment_cost__c) : 0 
     const totalAmount = orderData?.Amount + shipping_cost
-    console.log({totalAmount})
+    // console.log({totalAmount})
     const loadPaymentIntent = async (pk, sk) => {
         try {
             const response = await fetch(`${originAPi}/stripe/payment-intent`, {
@@ -96,7 +115,7 @@ function PaymentLink() {
             });
 
             const data = await response.json();
-            console.log({data})
+            // console.log({data})
             if (data.clientSecret) {
                 setClientSecret(data.clientSecret);
             }
@@ -106,7 +125,7 @@ function PaymentLink() {
     };
    
     const stripePromise = keys.pk ? loadStripe(keys.pk) : null;
-    console.log(stripePromise)
+    // console.log(stripePromise)
    
     useEffect(() => {
         if (orderData) {
@@ -117,7 +136,7 @@ function PaymentLink() {
     return (
         <div>
             
-            {stripePromise && clientSecret ? (
+            {stripePromise && clientSecret && isPageLoad ? (
                 <Elements stripe={stripePromise} options={{ clientSecret }}>
                     <CheckoutForm clientSecret = {clientSecret} orderData = {orderData} amount = {totalAmount}/>
                 </Elements>
