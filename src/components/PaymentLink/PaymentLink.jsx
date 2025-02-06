@@ -14,9 +14,10 @@ function PaymentLink() {
      const { order_Id, randomToken } = useParams()
      const [isPageLoad ,  setIsPageLoad] = useState(false)
      
+     
      const fullUrl = window.location.href;
     
-    console.log({fullUrl})
+    // console.log({fullUrl})
     const checkUrl =  () => {
         if(orderData){
             if (fullUrl !== orderData?.PBL_Status__c?.trim()) {
@@ -86,6 +87,7 @@ function PaymentLink() {
                     confirmButton: 'swal2-confirm'
                 }
             }).then(() => {
+
                 
                 window.location.href = window.location.origin + "/";
         });
@@ -95,12 +97,28 @@ function PaymentLink() {
         setOrderData(res.data?.[0])
         
     }
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                getOrderDetails();
+            }
+        };
+    
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+    
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+    }, []);
     useEffect(()=>{
         getOrderDetails()
     }, [])
     const shipping_cost = orderData?.Shipment_cost__c ? JSON.parse(orderData?.Shipment_cost__c) : 0 
-    const totalAmount = orderData?.Amount + shipping_cost
-    // console.log({totalAmount})
+    const totalAmount = Number((orderData?.Amount + shipping_cost).toFixed(2));
+    console.log(orderData?.Amount)
+    console.log({totalAmount})
+    console.log({shipping_cost})
+    console.log(orderData?.Amount + shipping_cost)
     const loadPaymentIntent = async (pk, sk) => {
         try {
             const response = await fetch(`${originAPi}/stripe/payment-intent`, {
@@ -110,6 +128,9 @@ function PaymentLink() {
                     amount: totalAmount,
             paymentId: sk,
             orderId : order_Id , 
+            PoNumber :orderData?.PO_Number__c , 
+            accountNumber : orderData?.Account_Number__c , 
+            accountName : orderData?.Account?.Name, 
             access_token : token
                 }),
             });

@@ -2,24 +2,30 @@
     height: 100vh;
     width: 100%;
     display: flex;
-    align-items: center;
+    gap: 50px;
+    align-items: start;
+    margin: 30px 0 0 0;
     justify-content: center;
+    flex-wrap: wrap;
 }
 .detail-section{
     height: 100%;
-    width: 40%;
+    width: 50%;
   
     background-color: #dfd6d60a;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
+
+
 .detailed-sub-section{
-    height: 80%;
-    width:70%;
+    height: 100%;
+    width:1000%;
 }
 .pay-button{
-    color:  gray;
+    color:  rgb(0, 0, 0);
     font-size: 16px;
     font-weight: 500;
 }
@@ -29,4 +35,153 @@
     font-size: 14px;
     justify-content: space-between;
 
+}
+.payment-section{
+  box-shadow: 15px 0 30px 0 rgba(0,0,0,0.18);  
+  padding: 30px ;
+}
+.payment-section input[type='text']:focus{
+outline: none;
+box-shadow: 0 0 0 1px rgba(50,151,211,0.7),0 1px 1px 0 rgba(0,0,0,0.07),0 0 0 4px rgba(50,151,211,0.3) !important ;
+}
+
+
+
+.pay-green{
+    color:#011e0f ;
+    background-color: #00d66f;
+}
+
+.Divider{
+    position: relative;
+    text-align: center;
+}
+
+.Divider p{
+    position: absolute;
+    top: -13px;
+    left: 0;
+    right: 0;
+   
+
+}
+
+
+.Divider p span{
+    background-color: #fff;
+    padding: 5px 10px;
+
+}
+
+.paymentL label{
+color:#1a1a1ab3;
+font-size: 13px;
+font-weight: 500;
+width: 100%;
+}
+
+.CardElem{
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.CardElem .carBor{
+    border: 1px solid #dee2e6;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 5px;
+}
+
+.carBor1{
+    border: 1px solid #dee2e6;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.carBor2{
+    border: 1px solid #dee2e6;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 0px;
+}
+
+.labeREl{
+    position: relative;
+}
+
+.labeREl .imgControl{
+    display: flex;
+    position: absolute;
+    gap: 1px;
+    right: 10px;
+    top: 30px;
+}
+
+.countryBorder{
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.countryBorder select{
+    
+    height: 39px;
+    width: 100%;
+    outline: none;
+}
+
+.countryBorder select:focus{
+    box-shadow: 0 0 0 1px rgba(50,151,211,0.7),0 1px 1px 0 rgba(0,0,0,0.07),0 0 0 4px rgba(50,151,211,0.3) !important ;
+
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border: solid #000;
+
+}
+
+.TermAndCondition{
+    display: flex;
+    gap: 5px;
+}
+
+
+.TermAndCondition{
+box-shadow: 0 0 0 1px #e0e0e0,0 2px 4px 0 rgba(0,0,0,0.07),0 1px 1.5px 0 rgba(0,0,0,0.05);
+padding: 10px 10px;
+border-radius: 5px;
+}
+
+.accountNAME strong{
+    font-size: 30px;
+    font-weight: 500;
+
+}
+
+.manufacter1 strong{
+    font-size: 18px;
+    font-weight: 400;
+    color: #000;
+}
+
+.manufacter1{
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+@media (max-width :800px){
+    .payment-section  , .detail-section{
+        width: 80%;
+    }
+    .manufacter1{
+        font-size: 13px;
+    }
 }
