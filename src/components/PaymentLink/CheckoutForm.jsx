@@ -7,6 +7,7 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
     const [email, setEmail] = useState("");
     const [cardholderName, setCardholderName] = useState("");
     const [reload, setReload] = useState(false);
+    const [saveInfo, setSaveInfo] = useState(false);
 
     const stripe = useStripe();
     const elements = useElements();
@@ -71,6 +72,14 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
         }
     };
 
+    const handleCheckboxChange = () => {
+        setSaveInfo(!saveInfo);
+    };
+
+    const handleCheckboxLabelClick = () => {
+        setSaveInfo(!saveInfo);
+    };
+
     return (
         <div className="full-section">
             {/* Left Side: Order Summary */}
@@ -83,7 +92,7 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
 
                     <p className="pay-button">Pay</p>
                     <h1 className="">${amount}</h1>
-                    <p className="orderData-info"><strong>Order Shipment Cost via [{orderData?.Shipping_method__c}]</strong> <span> ${orderData?.Shipment_cost__c}</span> </p>
+                    <p className="orderData-info"><strong>Order Shipment Cost via [{orderData?.Shipping_method__c}]</strong> <span> ${orderData?.Shipment_cost__c ? orderData?.Shipment_cost__c : 0}</span> </p>
                 </div>
             </div>
 
@@ -138,11 +147,27 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
                     </select>
                     
                     <div className="flex items-center">
-                        <input type="checkbox" className="mr-2" />
-                        <label className="text-gray-600">Securely save my information for 1-click checkout</label>
+                        <input 
+                            type="checkbox" 
+                            className="mr-2"
+                            checked={saveInfo}
+                            onChange={handleCheckboxChange} 
+                        />
+                        <label 
+                            className="text-gray-600 cursor-pointer"
+                            onClick={handleCheckboxLabelClick}
+                        >
+                            Securely save my information for 1-click checkout
+                        </label>
                     </div>
                     
-                    <button type="submit" disabled={!stripe} className="w-full bg-blue-600 text-white py-2 rounded-lg">Pay</button>
+                    <button 
+                        type="submit" 
+                        disabled={!stripe} 
+                        className={`w-full ${!stripe ? 'bg-gray-400' : 'bg-blue-600'} text-white py-2 rounded-lg`}
+                    >
+                        Pay
+                    </button>
                 </form>
             </div>
         </div>

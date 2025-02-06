@@ -179,9 +179,9 @@ const CheckoutForm = ({ amount, clientSecretkKey, PONumber, orderDes }) => {
                                  deleteOrder();
                                deleteCartForever()
                                   localStorage.removeItem("isEditaAble")
-                            //   setTimeout(()=>{
-                               navigate('/orderDetails');
-                            //   },[600])
+                              setTimeout(()=>{
+                                window.location.href = window.location.origin + "/orderDetails";
+                              },[600])
                               
                                
                             });
