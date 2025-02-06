@@ -38,6 +38,8 @@ function CheckoutForm({ clientSecret, orderData, amount }) {
     //     };
     // }, []);
 
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!stripe || !elements) return;
