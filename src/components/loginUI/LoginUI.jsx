@@ -38,16 +38,15 @@ const LoginUI = () => {
         localStorage.setItem("passwordB2B", values.password);
       }
       localStorage.setItem("Name", apiData?.data?.Name);
-      localStorage.setItem("token", token)
+      // localStorage.setItem("token", token)
 
       localStorage.setItem("Api Data", JSON.stringify(apiData));
       const fetched = localStorage.getItem("Api Data");
       setUserValue(JSON.parse(fetched));
       navigate("/dashboard");
     } else if (apiData?.status === 400) {
-      console.log({ 'token required': apiData?.data?.error });
 
-      if (apiData?.data?.error == "invalid_grant") {
+      if (apiData?.data?.error == "invalid_grant" && false) {
         let storeToken = localStorage.getItem("token");
         console.log({ storeToken });
         if (storeToken) {
@@ -57,6 +56,7 @@ const LoginUI = () => {
             loginRetry(storeToken, values)
           }, 1000);
         } else {
+          setToken(null);
           setRetryCredentials(values);
           setTokenAccess(true);
         }
@@ -100,10 +100,11 @@ const LoginUI = () => {
         console.log({ 'token required': apiData?.data?.error });
         if (apiData?.data?.error == "invalid_grant") {
           let storeToken = localStorage.getItem("token");
-          
+
           if (storeToken) {
             localStorage.removeItem("token")
           }
+          setToken(null);
           setTokenAccess(true);
         } else {
           setModalOpen(true);
@@ -130,16 +131,14 @@ const LoginUI = () => {
   return (
     <>
       {loading ? (
-        <ModalPage
-          open
-          content={
-            <div>
-              <Loading />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="max-w-md p-4 shadow-lg rounded-2xl bg-white" style={{ width: '200px' }}>
+            <Loading />
+            <p className="flex justify-center">
               Loading ...
-            </div>
-          }
-          onClose={() => setLoading(false)}
-        />
+            </p>
+          </div>
+        </div>
       ) : null}
       {tokenAccess && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -148,9 +147,24 @@ const LoginUI = () => {
               <h2 className="text-xl font-bold mb-2">
                 Security Token Verification Needed by Salesforce
               </h2>
-              <p className="mb-2">
-                Salesforce now requires a security token for logging into integrated apps. Check your email for a message with the subject "Your new Salesforce security token" from "support@salesforce.com".
-              </p>
+              <div className="mb-2">
+                Salesforce now requires a security token for logging into integrated applications. Follow these steps to generate your own security token:
+                <ol style={{ listStyleType: 'circle', paddingLeft: '20px' }}>
+                  <li>Log in to Salesforce with your username and password.</li>
+                  <li>Go to your user settings:</li>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '40px' }}>
+                    <li>Click your profile picture in the top-right corner.</li>
+                    <li>Select <strong>Settings</strong>.</li>
+                  </ul>
+                  <li>In the left sidebar, under <strong>My Personal Information</strong>, click <strong>Reset My Security Token</strong>.</li>
+                  <li>Click the <strong>Reset Security Token</strong> button.</li>
+                  <li>Check your registered email for a message from Salesforce containing the new security token.</li>
+                </ol>
+                <div className="flex justify-end">
+                  <a href="/learn-more" target="_blank" className="text-blue-500 underline text-[10px]">Learn More</a>
+                </div>
+              </div>
+
               <p className="m-auto mb-4">
                 <input
                   type="text"
