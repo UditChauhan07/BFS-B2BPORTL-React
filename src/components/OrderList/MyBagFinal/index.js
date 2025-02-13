@@ -31,97 +31,8 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
   const [restrict, setRestrict] = useState();
   const [canRegenerate, setCanRegenerate] = useState(false);
 
-  useEffect(() => {
-
-    const createdDate = new Date(OrderData?.PBL_generation_Date__c);
-    const currentDate = new Date();
-    const timeDifference = currentDate - createdDate; // in milliseconds
-
-    // Check if 10 minutes have passed (10 minutes = 10 * 60 * 1000 milliseconds)
-    if (OrderData?.Id) {
-      if ((!OrderData?.Payment_Status__c || OrderData?.Payment_Status__c != 'succeeded') && !OrderData?.Transaction_ID__c) {
-        if (timeDifference >= 24 * 60 * 60 * 1000 || !OrderData?.PBL_generation_Date__c) {
-          setCanRegenerate(true);
-        }
-      }
-    }
-  }, [OrderData]);
 
 
-  const handleRegenerateOrder = async () => {
-    setIsButtonLoading(true)
-    const orderId = JSON.parse(localStorage.getItem('OpportunityId'));
-    const Key = JSON.parse(localStorage.getItem('Api Data'));
-    const calValue = OrderData?.Shipment_cost__c / OrderData?.Amount
-    const payload = {
-      orderId,
-      info: {
-        ManufacturerId__c: OrderData?.ManufacturerId__c,
-        Account_Name : OrderData?.Name , 
-        key: Key?.data?.x_access_token,
-        currency: 'usd',
-        Po_Num : OrderData?.PO_Number__c,
-        Account_Num : OrderData?.Account_Number__c , 
-        list: OrderData?.OpportunityLineItems.map(product => ({
-          ProductCode: product.ProductCode,
-          price: product?.UnitPrice, // Convert to cents
-          qty: product.Quantity,
-        })),
-        shippingMethod: {
-          method: 'UPS',
-          cal: calValue, // Convert to cents
-        },
-      },
-    };
-
-    try {
-      const response = await fetch(`${originAPi}/beauty/4eIAaY2H/regenerate-payment-link`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const data = await response.json();
-
-      if (response.ok) {
-        Swal.fire({
-          title: "Success!",
-          text: "Payment link has been regenerated successfully.",
-          icon: "success",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: 'swal-center-button', // Add a custom class to the button
-          },
-
-          allowOutsideClick: false,
-
-          preConfirm: () => {
-            setTimeout(() => {
-              window.location.reload()
-            }, [1500])
-              ; // Refresh the page on OK
-          },
-        });
-      } else {
-        Swal.fire({
-          title: "Failed!",
-          text: "You can Generated Payment Link after 24 hours",
-          icon: "Falied",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: 'swal-center-button', // Add a custom class to the button
-          }
-        })
-        console.error('Error:', data);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-    finally {
-      setIsButtonLoading(false)
-    }
-  };
 
 
   // useEffect(()=>{
@@ -539,16 +450,7 @@ function MyBagFinal({ setOrderDetail, generateXLSX, generatePdfServerSide }) {
 
                             </div>
                             : null}
-                          {OrderData?.Status__c !== "Order Cancelled"  && OrderData.PBL_Status__c && OrderData?.Type === "Wholesale Numbers"  &&canRegenerate && ((!OrderData?.Payment_Status__c || OrderData?.Payment_Status__c != 'succeeded') && !OrderData?.Transaction_ID__c) ? (
-                            <div className={Styles.ShipBut}>
-                              <button
-                                role="link"
-                                onClick={handleRegenerateOrder}
-                                disabled={buttonLoading} // Disable button when loading
-                              >
-                                {buttonLoading ? 'Processing...' : 'Regenerate Payment Link'}
-                              </button> </div>
-                          ) : null}
+                         
                         </div>
                       </> : null}
                     <div className={Styles.ShipAdress2}>

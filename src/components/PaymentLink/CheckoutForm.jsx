@@ -1,0 +1,289 @@
+import React, { useEffect, useState } from "react";
+import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
+import Swal from 'sweetalert2';
+import './style.css';
+import visa from './Images/visa.svg'
+import amex from'./Images/amex.svg'
+import mastercard from './Images/mastercard.svg'
+
+import { getPaymentLinkDetails } from "../../lib/store";
+function CheckoutForm({ clientSecret, orderData, amount  , productData}) {
+    const [email, setEmail] = useState("");
+    const [cardholderName, setCardholderName] = useState("");
+    const [reload, setReload] = useState(false);
+    const [saveInfo, setSaveInfo] = useState(false);
+
+const [isBtnLoading , setIsBtnLoading] = useState(false)
+    const stripe = useStripe();
+    const elements = useElements();
+
+    // useEffect(() => {
+    //     const handleBeforeUnload = (event) => {
+    //         if (!reload) {
+    //             event.preventDefault();
+    //             event.returnValue =
+    //                 "Page refresh is disabled during payment. Are you sure you want to leave?";
+    //         }
+    //     };
+
+    //     window.addEventListener("beforeunload", handleBeforeUnload);
+
+    //     return () => {
+    //         window.removeEventListener("beforeunload", handleBeforeUnload);
+    //     };
+    // }, [reload]);
+
+
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     if (!stripe || !elements) return;
+
+    //     const cardNumberElement = elements.getElement(CardNumberElement);
+
+    //     const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+    //         payment_method: {
+    //             card: cardNumberElement,
+    //             billing_details: {
+    //                 name: cardholderName,
+    //                 email: email,
+    //             },
+    //         },
+    //     });
+
+    //     if (error) {
+    //         console.error(error.message);
+    //     } else {
+    //         setReload(true);
+    //         Swal.fire({
+    //             title: 'Payment Successful!',
+    //             text: 'Your payment is successful for this order',
+    //             icon: 'success',
+    //             confirmButtonText: 'OK',
+    //         }).then(() => {
+    //             window.location.href = window.location.origin + "/dashboard";
+    //         });
+    //     }
+    // };
+
+
+    const handleSubmit = async (event) => {
+        setIsBtnLoading(true)
+        event.preventDefault();
+        if (!stripe || !elements) return;
+    
+        try {
+    
+  
+    
+           
+            const cardNumberElement = elements.getElement(CardNumberElement);
+    
+            const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardNumberElement,
+                    billing_details: {
+                        name: cardholderName,
+                        email: email,
+                    },
+                },
+            });
+    
+            if (error) {
+                console.error(error.message , "ye le rror");
+                if(error.message === "A processing error occurred."){
+                    Swal.fire({
+                        title: 'Payment Already Completed!',
+                        text: 'This order has already been paid.',
+                        icon: 'info',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        window.location.href = window.location.origin + "/dashboard";
+                    });
+                }
+            } else {
+                setReload(true);
+                Swal.fire({
+                    title: 'Payment Successful!',
+                    text: 'Your payment is successful for this order',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    window.location.href = "https://retailer.beautyfashionsales.com/thank-you";
+                });
+                
+                console.log({paymentIntent})
+            }
+        } catch (error) {
+            console.error("Error checking payment status:", error);
+        }
+    };
+console.log({orderData})
+    const  a = productData?.map((item)=>{
+        return item
+})
+    console.log({a})
+
+ 
+
+    return (
+        <div class="stripeCard">
+
+
+
+        <div className="full-section">
+
+            <div className="detail-section">
+            <div className="pay-button totpara  "><p className="totpara1">Pay</p> <p className="totpara2"> ${amount}</p></div>       
+
+
+         <div className="GridSperata">
+                <div className="detailed-sub-section">
+                {/* {productData?.map((item , index)=>{ */}
+                
+                <div>
+        {productData.map((item) => (
+            <>
+
+            <div className="NamePrice">
+              <p key={item.Id}>{item.Product2.Name}</p>
+
+              <p key={item.Id}>${item?.TotalPrice}</p>
+                
+            </div>
+
+            <div className="QuantySmall">
+              <p key={item.Id}>Qty {item?.Quantity}</p>
+              
+              <p key={item.Id}>${item?.UnitPrice} Each</p>
+
+              </div>
+            </>
+
+        
+        ))}
+      </div>
+         
+
+
+          {/* })} */}
+                  
+                   
+                                       </div>
+
+                                         {/* <div class="Divider"><hr></hr><p class="Divider-Text Text Text-color--gray400 Text-fontSize--14 Text-fontWeight--400"></p></div> */}
+
+   
+
+                    <div class="detailed-sub-section">
+                    
+
+                   
+                    <p className="NamePrice"><span>Order Shipment Cost via [ {orderData?.Shipping_method__c}]</span> <strong> ${orderData?.Shipment_cost__c ? orderData?.Shipment_cost__c : 0}</strong> </p>
+                
+                </div>
+                </div>
+
+            </div>
+ 
+           
+            <div className="  payment-section">
+
+<p className="accountNAME">{orderData?.Account.Name} </p>
+
+
+            <p className="NamePrice "> <p>Manufacturer</p><p>{orderData?.ManufacturerName__c}</p> </p>
+                    <p className="NamePrice  "> <p>PO Number</p><p>{orderData?.PO_Number__c}</p> </p>
+
+                    <p className="NamePrice">
+        <p>Shipping Address</p> 
+        <p>{orderData?.Shipping_Street__c}, {orderData?.Shipping_City__c}, {orderData?.Shipping_State__c} {orderData?.Shipping_Country__c} {orderData?.Shipping_Zip__c}</p>  </p>
+
+
+ <div class="Divider"><hr></hr><p class="Divider-Text Text Text-color--gray400 Text-fontSize--14 Text-fontWeight--400"></p></div>
+                {/* <button className="text-lg w-full  text-black py-2 rounded-lg mb-4 pay-green"><b>Pay with Card</b></button> */}
+
+                {/* <div class="Divider"><hr></hr><p class="Divider-Text Text Text-color--gray400 Text-fontSize--14 Text-fontWeight--400"><span class="DividerText">Pay securely</span></p></div> */}
+               
+<h5 className="paymentDetel">Payment Details</h5>
+
+                <form onSubmit={handleSubmit} className="mt-2 space-y-4 paymentL">
+                  
+                   
+                    
+                   
+                        <label className="block text-gray-600 mb-0 labeREl">Card information
+                        <CardNumberElement className="w-full p-2  carBor1 " options={{
+                            disabled :false,
+                            autocomplete :'off'
+                        }} /> 
+                    <div className="imgControl"> 
+                    <img src={visa}/><img src={amex}/><img src={mastercard}/>
+                    </div>
+                    </label>
+                    
+                        <div className="CardElem">
+                       
+                            <CardExpiryElement className="w-100 p-2 carBor" />
+                            
+                       
+                       
+                            <CardCvcElement className="w-100 p-2 carBor2" />
+                       
+                            </div>
+                            
+                        
+                   
+
+                    {/* Manage Cardholder Name Input */}
+
+                    <p className="PerINfo"> Personal information</p>
+
+                    {/* <label>Email
+                    <input style={{height:"40px"}}
+                        type="email" 
+                        placeholder="Email" 
+                        className="w-full px-4 py-2 border rounded-lg" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                    />
+                    </label> */}
+
+                    <label class="Card Holder Name"> Card Holder Name
+                    <input style={{height:"40px"}} 
+                        type="text" 
+                        placeholder="Card Holder name" 
+                        className="w-full px-4 py-2 border rounded-lg" 
+                        value={cardholderName} 
+                        onChange={(e) => setCardholderName(e.target.value)} 
+                        required 
+                    />
+                    </label>
+
+                    {/* <AllRegions/> */}
+
+                  {/* <label className="TermAndCondition">
+                    <input type="checkbox"/>
+                    Please agree with term and condition 
+                  </label> */}
+                    
+                   
+                    
+                    <button 
+                        type="submit" 
+                        disabled={!stripe} 
+                        className={`w-full ${!stripe ? 'bg-gray-400' : 'bg-blue-600'} text-white py-2 rounded-lg payBtn`}
+                    >
+                       {isBtnLoading ? "Processing...."  : "Pay" } 
+                    </button>
+                </form>
+            </div>
+
+          
+
+        </div>
+        </div>
+    );
+}
+
+export default CheckoutForm;
