@@ -17,54 +17,6 @@ const [isBtnLoading , setIsBtnLoading] = useState(false)
     const stripe = useStripe();
     const elements = useElements();
 
-    // useEffect(() => {
-    //     const handleBeforeUnload = (event) => {
-    //         if (!reload) {
-    //             event.preventDefault();
-    //             event.returnValue =
-    //                 "Page refresh is disabled during payment. Are you sure you want to leave?";
-    //         }
-    //     };
-
-    //     window.addEventListener("beforeunload", handleBeforeUnload);
-
-    //     return () => {
-    //         window.removeEventListener("beforeunload", handleBeforeUnload);
-    //     };
-    // }, [reload]);
-
-
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     if (!stripe || !elements) return;
-
-    //     const cardNumberElement = elements.getElement(CardNumberElement);
-
-    //     const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-    //         payment_method: {
-    //             card: cardNumberElement,
-    //             billing_details: {
-    //                 name: cardholderName,
-    //                 email: email,
-    //             },
-    //         },
-    //     });
-
-    //     if (error) {
-    //         console.error(error.message);
-    //     } else {
-    //         setReload(true);
-    //         Swal.fire({
-    //             title: 'Payment Successful!',
-    //             text: 'Your payment is successful for this order',
-    //             icon: 'success',
-    //             confirmButtonText: 'OK',
-    //         }).then(() => {
-    //             window.location.href = window.location.origin + "/dashboard";
-    //         });
-    //     }
-    // };
-
 
     const handleSubmit = async (event) => {
         setIsBtnLoading(true)
@@ -97,7 +49,7 @@ const [isBtnLoading , setIsBtnLoading] = useState(false)
                         icon: 'info',
                         confirmButtonText: 'OK',
                     }).then(() => {
-                        window.location.href = window.location.origin + "/dashboard";
+                        window.location.href = window.location.origin + "/";
                     });
                 }
             } else {
