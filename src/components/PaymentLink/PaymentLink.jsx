@@ -76,7 +76,7 @@ function PaymentLink() {
     const getOrderDetails = async ()=>{
        
         let res = await getPaymentLinkDetails({ Id : order_Id  })
-        // console.log({res})
+        console.log({res})
         setToken(res.access_token)
         if(res?.success === false){
             Swal.fire({
