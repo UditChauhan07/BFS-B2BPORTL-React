@@ -22,5 +22,6 @@ export async function getPermissions() {
     return null;
   }
 
+console.log(userPermissions)
   return userPermissions;
 }

@@ -2,8 +2,8 @@ import axios from "axios";
 import LZString from 'lz-string';
 import { getPermissions } from "./permission";
 import dataStore from "./dataStore";
-export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
-// export const originAPi =  "http://localhost:3004"
+export const originAPi = process.env.REACT_APP_OA_URL || "https://staging.beautyfashionsales.com/"
+// export const originAPi =  "http://localhost:3001"
 export const defaultLoadTime = 1800000;
 let url2 = `${originAPi}/retailerv2/`;
 let url = `${originAPi}/beauty/`;
@@ -11,7 +11,7 @@ let URL = `${originAPi}/beauty/0DS68FOD7s`;
 const orderKey = "orders";
 const accountIdKey = "AccountId__c";
 const brandIdKey = "ManufacturerId__c";
-const brandKey = "Account";
+const brandKey = "Account";   
 const accountKey = "manufacturer";
 const POCount = "woX5MkCSIOlHXkT";
 const support = "AP0HBuNwbNnuhKR";
