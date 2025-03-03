@@ -203,7 +203,7 @@ const LoginUI = () => {
                   <hr className={styles.hr} />
                 </div>
                 <div className="col-6">
-                  <a className={styles.tabNotActive} href="https://retailer.beautyfashionsales.com">
+                  <a className={styles.tabNotActive} href="https://staging-bfs-retailer-partial.vercel.app/">
                     Retailer Login
                   </a>
                   <hr />
