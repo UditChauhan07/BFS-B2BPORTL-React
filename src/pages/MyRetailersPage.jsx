@@ -13,6 +13,11 @@ import dataStore from "../lib/dataStore";
 import useBackgroundUpdater from "../utilities/Hooks/useBackgroundUpdater";
 const MyRetailersPage = () => {
   const { data: manufacturers } = useManufacturer();
+  useEffect(() => {
+    if (manufacturers) {
+      console.log("Manufacturers data:", manufacturers);
+    }
+  }, [manufacturers]);
   const [manufacturerList, setManufacturerList] = useState([]);
   useEffect(() => {
     dataStore.subscribe("/brands", (data) => setManufacturerList(data));
@@ -50,7 +55,7 @@ const MyRetailersPage = () => {
       if (!selectedSalesRepId) setSelectedSalesRepId(user.Sales_Rep__c);
 
       // Fetch retailer list
-      getRetailerListHandler({ key: user.x_access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c });
+      getRetailerListHandler({ key: user.access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c });
 
       // // Fetch sales reps if admin
       if (memoizedPermissions?.modules?.godLevel) {
@@ -112,6 +117,8 @@ const MyRetailersPage = () => {
   const memoizedPermissions = useMemo(() => permissions, [permissions]);
   console.log(memoizedPermissions?.modules?.godLevel , "retailer permission")
 localStorage.setItem('selectedSalesrepId' , JSON.stringify(selectedSalesRepId))
+console.log({retailerList})
+console.log(userData , "userData")
   return (
     <AppLayout
       filterNodes={

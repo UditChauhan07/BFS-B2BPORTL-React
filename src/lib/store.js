@@ -3,8 +3,8 @@ import LZString from 'lz-string';
 import { getPermissions } from "./permission";
 import dataStore from "./dataStore";
 import { addImageToDB } from "./indexedDBUtils";
-export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
-// export const originAPi =  "http://localhost:3004"
+// export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
+export const originAPi =  "https://beauty.truet.net/"
 export const defaultLoadTime = 1800000;
 let url2 = `${originAPi}/retailerv2/`;
 let url = `${originAPi}/beauty/`;
@@ -442,34 +442,34 @@ export async function OrderPlaced({ order }) {
 }
 
 export async function DestoryAuth() {
-  try {
-    // Start clearing IndexedDB
-    let status = await dataStore.clearAll();
-    console.log({ status });
+  // try {
+  //   // Start clearing IndexedDB
+  //   let status = await dataStore.clearAll();
+  //   console.log({ status });
 
-    if (status) {
-      // Clear localStorage except for specified keys
-      Object.keys(localStorage).forEach((key) => {
-        if (key !== "passwordB2B" && key !== "emailB2B" && key !== "token") {
-          localStorage.removeItem(key);
-        }
-      });
-      console.log("gclear");
+  //   if (status) {
+  //     // Clear localStorage except for specified keys
+  //     Object.keys(localStorage).forEach((key) => {
+  //       if (key !== "passwordB2B" && key !== "emailB2B" && key !== "token") {
+  //         localStorage.removeItem(key);
+  //       }
+  //     });
+  //     console.log("gclear");
 
 
-      // Optionally, show a loading indicator here
-      // Example: showLoadingIndicator();
+  //     // Optionally, show a loading indicator here
+  //     // Example: showLoadingIndicator();
 
-      // Redirect to the home page immediately
-      window.location.href = window.location.origin;
+  //     // Redirect to the home page immediately
+  //     // window.location.href = window.location.origin;
 
-      // Note: The clearing of IndexedDB will continue in the background
-      return true;
-    }
-  } catch (e) {
-    console.error('Error during logout:', e);
-    // Optionally handle the error (e.g., show a message to the user)
-  }
+  //     // Note: The clearing of IndexedDB will continue in the background
+  //     return true;
+  //   }
+  // } catch (e) {
+  //   console.error('Error during logout:', e);
+  //   // Optionally handle the error (e.g., show a message to the user)
+  // }
 }
 export async function cartSync({ cart }) {
 
@@ -1102,6 +1102,7 @@ export async function getRetailerList({ key, userId, manufacturerid = null }) {
   if (data.status == 300) {
     DestoryAuth();
   } else {
+    console.log({data})
     return data;
   }
 }

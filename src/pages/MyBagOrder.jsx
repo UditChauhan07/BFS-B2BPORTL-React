@@ -83,7 +83,7 @@ function MyBagOrder() {
     if (data) {
       let finalData = [];
       let accountDetails = { "": "Account Name", " ": data.Name }
-      let brandDetail = { "": "Brand Name", " ": data.ManufacturerName__c }
+      let brandDetail = { "": "Brand Name", " ": data.Manufacturer_Name__c }
       let poDetail = { "": "PO Number", " ": data.PO_Number__c }
       let orderNumberDetail = { "": "Order Number", " ": data.Order_Number__c }
       let trackingumberDetail = { "": "Tracking Number", " ": data.Tracking__c }
