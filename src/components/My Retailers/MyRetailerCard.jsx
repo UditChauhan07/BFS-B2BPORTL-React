@@ -28,6 +28,7 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address,selectedS
     localStorage.setItem("shippingMethod", JSON.stringify({number:brand.Shipping_Account_Number__c,method:brand.Shipping_Method__c}));
     navigate(`/product`);
   }
+  console.log({brands})
   return (
     <>
       <ModalPage open={modalOpen} onClose={() => setModalOpen(false)} content={<SelectBrandModel brands={brands} onChange={showProductHandler} onClose={() => setModalOpen(false)} />} />
@@ -67,13 +68,13 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address,selectedS
               <div className={Styles.Brandspan}>
                 {brands?.map((brand, index) => {
                   return (
-                    <span className={`${Styles[bgColors[brand.ManufacturerName__c]]}`}         onClick={() => {
+                    <span className={`${Styles[bgColors[brand.Name]]}`}         onClick={() => {
                       setModalOpen(true);
                       localStorage.setItem("Account", title);
                       localStorage.setItem("AccountId__c", accountId);
                       localStorage.setItem("address", JSON.stringify(address));
                     }} style={{ height: "fit-content" }} key={index}>
-                      {brand.ManufacturerName__c}
+                      {brand.Name}
                     </span>
                   );
                 })}
