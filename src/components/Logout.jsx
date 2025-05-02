@@ -5,7 +5,9 @@ import { DestoryAuth } from "../lib/store";
 
 const Logout = () => {
   useEffect(() => {
-    DestoryAuth();
+    // DestoryAuth();
+    localStorage.clear()
+    window.location.href = window.location.origin + "/dashboard";
 }, []);
   return <AppLayout><Loading height={'50vh'}/></AppLayout>;
 };
