@@ -29,7 +29,9 @@ const ProductDetails = ({ productId, setProductDetailId, AccountId = null, isPop
 
     const fetchAccountDetails = async () => {
         const data = await GetAuthData();
-        let { Sales_Rep__c: salesRepId, x_access_token: accessToken } = data;
+        console.log({data})
+        let { Sales_Rep__c: salesRepId, access_token
+: accessToken } = data;
         salesRepId = selectedsalesRep ? selectedsalesRep : salesRepId
 
         try {
@@ -50,7 +52,7 @@ const ProductDetails = ({ productId, setProductDetailId, AccountId = null, isPop
         if (productId) {
             GetAuthData()
                 .then((user) => {
-                    const rawData = { productId, key: user?.x_access_token };
+                    const rawData = { productId, key: user?.access_token };
                     dataStore.getPageData("/productPage/" + productId, () => getProductDetails({ rawData }))
                         .then((productRes) => {
                             readyProductDetails(productRes)

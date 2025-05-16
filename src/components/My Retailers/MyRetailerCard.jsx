@@ -23,7 +23,7 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address,selectedS
   const navigate = useNavigate();
   const showProductHandler=(brand)=>{
     localStorage.setItem("manufacturer", brand.ManufacturerName__c?? brand.Name);
-    localStorage.setItem("ManufacturerId__c", brand.manufacturerid__c??  brand.Id);
+    localStorage.setItem("ManufacturerId__c", brand.ManufacturerId__c??  brand.Id);
     localStorage.setItem(salesRepIdKey, selectedSalesRepId);
     localStorage.setItem("shippingMethod", JSON.stringify({number:brand.Shipping_Account_Number__c,method:brand.Shipping_Method__c}));
     navigate(`/product`);
@@ -74,7 +74,7 @@ const MyRetailerCard = ({ placeName, title, brands, accountId, address,selectedS
                       localStorage.setItem("AccountId__c", accountId);
                       localStorage.setItem("address", JSON.stringify(address));
                     }} style={{ height: "fit-content" }} key={index}>
-                      {brand.Name}
+                      {brand.ManufacturerName__c}
                     </span>
                   );
                 })}

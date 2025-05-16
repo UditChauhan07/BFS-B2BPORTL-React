@@ -26,7 +26,7 @@ const CustomerSupportDetails = () => {
   const fetchDetails = async () => {
     try {
       const user = await GetAuthData();
-      const rawData = { key: user?.x_access_token, caseId: detailsId };
+      const rawData = { key: user?.access_token, caseId: detailsId };
 
       dataStore.getPageData(location.pathname + location.search, () => getSupportDetails({ rawData }))
         .then((details) => {
@@ -77,7 +77,7 @@ const CustomerSupportDetails = () => {
 
           response = await dataStore.getPageData(
             location.pathname + location.search + "&invoice=true",
-            () => getAttachment(user.x_access_token, detailsId)
+            () => getAttachment(user.access_token, detailsId)
           );
 
           if (response && response?.attachments) {

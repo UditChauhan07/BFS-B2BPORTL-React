@@ -4,7 +4,9 @@ import { getPermissions } from "./permission";
 import dataStore from "./dataStore";
 import { addImageToDB } from "./indexedDBUtils";
 // export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
-export const originAPi =  "https://beauty.truet.net/"
+// export const originAPi =  "http://localhost:5824"
+export const originAPi =  "https://beauty.truet.net"
+
 export const defaultLoadTime = 1800000;
 let url2 = `${originAPi}/retailerv2/`;
 let url = `${originAPi}/beauty/`;
@@ -292,7 +294,7 @@ export async function POGenerator() {
 export const fetchAccountDetails = async () => {
   let data = await GetAuthData(); // Fetch authentication data
   let salesRepId = data.Sales_Rep__c;
-  let accessToken = data.x_access_token;
+  let accessToken = data.access_token;
 
   try {
     // Await the axios.post call and return the resolved response
@@ -748,7 +750,7 @@ export async function getDashboardata({ user, saleRepId }) {
   const finalSaleRepId = saleRepId || user.Sales_Rep__c;
 
 
-  headersList = { ...headersList, key: user.x_access_token, SalesRepId: finalSaleRepId }
+  headersList = { ...headersList, key: user.access_token, SalesRepId: finalSaleRepId }
   console.log(saleRepId)
   let response = await fetch(originAPi + "/95zWpMEFtbAr8lqn/FlEpv2cw4VbxgDF", {
     // let response = await fetch(url + "v3/3kMMguJj62cyyf0", {

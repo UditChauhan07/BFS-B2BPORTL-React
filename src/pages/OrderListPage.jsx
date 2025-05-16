@@ -124,7 +124,7 @@ const OrderListPage = () => {
         setUserData(response)
         dataStore.subscribe("/orderList" + `${selectedSalesRepId ?? response.Sales_Rep__c}${filterValue.month}`, readyOrderList)
         if (!selectedSalesRepId) setSelectedSalesRepId(response.Sales_Rep__c)
-        getOrderlIsthandler({ key: response.x_access_token, Sales_Rep__c: selectedSalesRepId ?? response.Sales_Rep__c })
+        getOrderlIsthandler({ key: response.access_token, Sales_Rep__c: selectedSalesRepId ?? response.Sales_Rep__c })
         if (memoizedPermissions?.modules?.godLevel) {
           dataStore.getPageData("getSalesRepList", () => getSalesRepList({ key: response.x_access_token })).then((repRes) => {
             console.log({repRes});
@@ -165,12 +165,12 @@ const OrderListPage = () => {
         console.log({ error });
       });
   }
-  useBackgroundUpdater(()=>getOrderlIsthandler(userData.x_access_token,userData.Sales_Rep__c),defaultLoadTime);
+  useBackgroundUpdater(()=>getOrderlIsthandler(userData.access_token,userData.Sales_Rep__c),defaultLoadTime);
   const orderListBasedOnRepHandler = (value) => {
     setOrders([])
     setSelectedSalesRepId(value)
     setLoaded(false)
-    getOrderlIsthandler({ key: userData.x_access_token, Sales_Rep__c: value })
+    getOrderlIsthandler({ key: userData.access_token, Sales_Rep__c: value })
   }
 
   const memoizedPermissions = useMemo(() => permissions, [permissions]);

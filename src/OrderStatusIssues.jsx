@@ -143,7 +143,7 @@ const OrderStatusIssues = () => {
                 })
                 setUserData(response)
                 if (!selectedSalesRepId) setSelectedSalesRepId(response.Sales_Rep__c)
-                getOrderlIsthandler({ key: response.x_access_token, Sales_Rep__c: selectedSalesRepId ?? response.Sales_Rep__c })
+                getOrderlIsthandler({ key: response.access_token, Sales_Rep__c: selectedSalesRepId ?? response.Sales_Rep__c })
                 if (memoizedPermissions?.modules?.godLevel) {
                     dataStore.getPageData("getSalesRepList", () => getSalesRepList({ key: response.x_access_token })).then((repRes) => {
                         setSalesRepList(repRes.data)
@@ -173,7 +173,7 @@ const OrderStatusIssues = () => {
         setSelectedSalesRepId(value)
         setLoaded(false)
         setOrders([])
-        getOrderlIsthandler({ key: userData.x_access_token, Sales_Rep__c: value })
+        getOrderlIsthandler({ key: userData.access_token, Sales_Rep__c: value })
     }
 
     return (<CustomerSupportLayout
@@ -205,7 +205,7 @@ const OrderStatusIssues = () => {
                         });
                         setSearchShipBy("");
                         setSelectedSalesRepId(userData.Sales_Rep__c);
-                        getOrderlIsthandler({ key: userData.x_access_token, Sales_Rep__c: userData.Sales_Rep__c })
+                        getOrderlIsthandler({ key: userData.access_token, Sales_Rep__c: userData.Sales_Rep__c })
                     }}
                 />
 

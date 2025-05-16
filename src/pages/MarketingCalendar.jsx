@@ -115,7 +115,7 @@ const MarketingCalendar = () => {
       // Fetch data from API
       const res = await dataStore.getPageData(
         `/marketing-calendar${selectYear??currentYear}`,
-        () => getMarketingCalendar({ key: user.x_access_token, year: selectYear })
+        () => getMarketingCalendar({ key: user.access_token, year: selectYear })
       );
 
       // If response is received, update the product list
