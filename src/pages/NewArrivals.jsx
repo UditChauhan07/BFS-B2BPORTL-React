@@ -68,7 +68,7 @@ const NewArrivals = () => {
       const user = await GetAuthData();
       const productRes = await dataStore.getPageData(
         `/marketing-calendar${year}`,
-        () => getMarketingCalendar({ key: user.x_access_token, year })
+        () => getMarketingCalendar({ key: user.access_token, year })
       );
       processCalendarData(productRes);
     } catch (err) {

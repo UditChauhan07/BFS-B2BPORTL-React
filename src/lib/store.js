@@ -3,8 +3,10 @@ import LZString from 'lz-string';
 import { getPermissions } from "./permission";
 import dataStore from "./dataStore";
 import { addImageToDB } from "./indexedDBUtils";
-export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
-// export const originAPi =  "http://localhost:3004"
+// export const originAPi = process.env.REACT_APP_OA_URL || "https://live.beautyfashionsales.com/"
+// export const originAPi =  "http://localhost:5824"
+export const originAPi =  "https://beauty.truet.net"
+
 export const defaultLoadTime = 1800000;
 let url2 = `${originAPi}/retailerv2/`;
 let url = `${originAPi}/beauty/`;
@@ -292,7 +294,7 @@ export async function POGenerator() {
 export const fetchAccountDetails = async () => {
   let data = await GetAuthData(); // Fetch authentication data
   let salesRepId = data.Sales_Rep__c;
-  let accessToken = data.x_access_token;
+  let accessToken = data.access_token;
 
   try {
     // Await the axios.post call and return the resolved response
@@ -442,34 +444,34 @@ export async function OrderPlaced({ order }) {
 }
 
 export async function DestoryAuth() {
-  try {
-    // Start clearing IndexedDB
-    let status = await dataStore.clearAll();
-    console.log({ status });
+  // try {
+  //   // Start clearing IndexedDB
+  //   let status = await dataStore.clearAll();
+  //   console.log({ status });
 
-    if (status) {
-      // Clear localStorage except for specified keys
-      Object.keys(localStorage).forEach((key) => {
-        if (key !== "passwordB2B" && key !== "emailB2B" && key !== "token") {
-          localStorage.removeItem(key);
-        }
-      });
-      console.log("gclear");
+  //   if (status) {
+  //     // Clear localStorage except for specified keys
+  //     Object.keys(localStorage).forEach((key) => {
+  //       if (key !== "passwordB2B" && key !== "emailB2B" && key !== "token") {
+  //         localStorage.removeItem(key);
+  //       }
+  //     });
+  //     console.log("gclear");
 
 
-      // Optionally, show a loading indicator here
-      // Example: showLoadingIndicator();
+  //     // Optionally, show a loading indicator here
+  //     // Example: showLoadingIndicator();
 
-      // Redirect to the home page immediately
-      window.location.href = window.location.origin;
+  //     // Redirect to the home page immediately
+  //     // window.location.href = window.location.origin;
 
-      // Note: The clearing of IndexedDB will continue in the background
-      return true;
-    }
-  } catch (e) {
-    console.error('Error during logout:', e);
-    // Optionally handle the error (e.g., show a message to the user)
-  }
+  //     // Note: The clearing of IndexedDB will continue in the background
+  //     return true;
+  //   }
+  // } catch (e) {
+  //   console.error('Error during logout:', e);
+  //   // Optionally handle the error (e.g., show a message to the user)
+  // }
 }
 export async function cartSync({ cart }) {
 
@@ -748,7 +750,7 @@ export async function getDashboardata({ user, saleRepId }) {
   const finalSaleRepId = saleRepId || user.Sales_Rep__c;
 
 
-  headersList = { ...headersList, key: user.x_access_token, SalesRepId: finalSaleRepId }
+  headersList = { ...headersList, key: user.access_token, SalesRepId: finalSaleRepId }
   console.log(saleRepId)
   let response = await fetch(originAPi + "/95zWpMEFtbAr8lqn/FlEpv2cw4VbxgDF", {
     // let response = await fetch(url + "v3/3kMMguJj62cyyf0", {
@@ -1102,6 +1104,7 @@ export async function getRetailerList({ key, userId, manufacturerid = null }) {
   if (data.status == 300) {
     DestoryAuth();
   } else {
+    console.log({data})
     return data;
   }
 }

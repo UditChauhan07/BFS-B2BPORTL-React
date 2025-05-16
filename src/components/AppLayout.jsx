@@ -21,7 +21,7 @@ const AppLayout = ({ children, filterNodes }) => {
         const user = await GetAuthData(); // Fetch user data
         const userPermissions = await getPermissions(); // Fetch permissions
         setPermissions(userPermissions); // Set permissions in state
-        const status = await getSessionStatus({ key: user?.x_access_token, salesRepId: user?.Sales_Rep__c })
+        const status = await getSessionStatus({ key: user?.access_token, salesRepId: user?.Sales_Rep__c })
         setUserName(status?.data?.Name);
       } catch (err) {
         console.error("Error fetching permissions", err);

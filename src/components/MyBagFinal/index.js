@@ -451,6 +451,7 @@ function MyBagFinal({ showOrderFor }) {
       })
     }
   }
+  console.log(order , "order")
   // useBackgroundUpdater(CheckOutStockProduct, defaultLoadTime);
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -555,8 +556,9 @@ function MyBagFinal({ showOrderFor }) {
               ShippingState: order?.Account?.address?.state,
               ShippingCountry: order?.Account?.address?.country,
               ShippingZip: order?.Account?.address?.postalCode,
+              ManufacturerName__c : order?.Manufacturer.name , 
               list,
-              key: user.x_access_token,
+              key: user.access_token,
               shippingMethod: order.Account.shippingMethod,
             };
             OrderPlaced({ order: begToOrder, cartId: order.id })
@@ -574,7 +576,7 @@ function MyBagFinal({ showOrderFor }) {
                         setOrderId(response.orderId);
                         localStorage.setItem("OpportunityId", JSON.stringify(response.orderId));
                         setIsOrderPlaced(2);
-                        window.location.href = window.location.origin + "/orderDetails";
+                        window.location.href = window.location.origin + "/order-list";
                       } else {
                         setIsOrderPlaced(2);
                         navigate("/order-list");

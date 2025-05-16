@@ -115,7 +115,7 @@ const CustomerService = () => {
           console.log({ error });
         });
     }
-    dataStore.getPageData("/getAllAccount" + Sales_Rep__c, () => getAllAccount({ user: { x_access_token: key, Sales_Rep__c } }))
+    dataStore.getPageData("/getAllAccount" + Sales_Rep__c, () => getAllAccount({ user: { access_token: key, Sales_Rep__c } }))
       .then((accounts) => {
         setAccountList(accounts);
       })
@@ -157,7 +157,7 @@ const CustomerService = () => {
         });
   
         
-        orderListBasedOnRepHandler(user.x_access_token, Reason ? SalesRepId : user.Sales_Rep__c, Reason ? false : true, OrderId);
+        orderListBasedOnRepHandler(user.access_token, Reason ? SalesRepId : user.Sales_Rep__c, Reason ? false : true, OrderId);
       } catch (err) {
         console.log('Fetch Data Error:', err);
       }
@@ -172,7 +172,7 @@ const CustomerService = () => {
       const fetchSalesRepList = async () => {
         try {
           const repRes = await dataStore.getPageData("getSalesRepList", () =>
-            getSalesRepList({ key: userData.x_access_token })
+            getSalesRepList({ key: userData.access_token })
           );
           setSalesRepList(repRes.data);
         } catch (repErr) {
@@ -222,7 +222,7 @@ const CustomerService = () => {
               subject,
               Actual_Amount__c,
             },
-            key: user.x_access_token,
+            key: user.access_token,
           };
           postSupportAny({ rawData })
             .then((response) => {
@@ -230,7 +230,7 @@ const CustomerService = () => {
                 if (response) {
                   if (files.length > 0) {
 
-                    uploadFileSupport({ key: user.x_access_token, supportId: response, files }).then((fileUploader) => {
+                    uploadFileSupport({ key: user.access_token, supportId: response, files }).then((fileUploader) => {
                       if (fileUploader) {
                         navigate("/CustomerSupportDetails?id=" + response);
                       }
@@ -272,7 +272,7 @@ const CustomerService = () => {
               label: salesRep.Id == userData.Sales_Rep__c ? 'My Orders (' + salesRep.Name + ')' : salesRep.Name,
               value: salesRep.Id,
             }))}
-            onChange={(value) => orderListBasedOnRepHandler(userData.x_access_token, value)}
+            onChange={(value) => orderListBasedOnRepHandler(userData.access_token, value)}
           />
         </> : null}
 

@@ -119,10 +119,10 @@ console.log({accountId});
                     </Link>
                   </div>
                   <div className={Styles.poNumb1}>
-                    <h3>Brand</h3>
+                    {/* <h3>Brand</h3>
                     <Link to={'/Brand/' + item.ManufacturerId__c} style={{ color: '#000' }}>
                       <p>{item.ManufacturerName__c??'NA'}</p>
-                    </Link>
+                    </Link> */}
                   </div>
 
                   <div className={Styles.PoOrderLast}>

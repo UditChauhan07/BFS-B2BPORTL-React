@@ -80,11 +80,11 @@ const CustomerSupport = () => {
             setLoaded(true);
           })
           if (!selectedSalesRepId) setSelectedSalesRepId(user.Sales_Rep__c)
-          supportHandler({ key: user.x_access_token, salesRepId: selectedSalesRepId ?? user.Sales_Rep__c })
-          reatilerHandler({ key: user.x_access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c })
-          brandhandler({ key: user.x_access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c })
+          supportHandler({ key: user.access_token, salesRepId: selectedSalesRepId ?? user.Sales_Rep__c })
+          reatilerHandler({ key: user.access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c })
+          brandhandler({ key: user.access_token, userId: selectedSalesRepId ?? user.Sales_Rep__c })
           if (memoizedPermissions?.modules?.godLevel) {
-            dataStore.getPageData("getSalesRepList", () => getSalesRepList({ key: user.x_access_token })).then((repRes) => {
+            dataStore.getPageData("getSalesRepList", () => getSalesRepList({ key: user.access_token })).then((repRes) => {
               if(repRes){
                 setSalesRepList(repRes.data)
               }
@@ -122,9 +122,9 @@ const CustomerSupport = () => {
     setLoaded(false)
     setRetailerFilter(null)
     setManufacturerFilter(null)
-    supportHandler({ key: userData.x_access_token, salesRepId: value })
-    brandhandler({ key: userData.x_access_token, userId: value })
-    reatilerHandler({ key: userData.x_access_token, userId: value })
+    supportHandler({ key: userData.access_token, salesRepId: value })
+    brandhandler({ key: userData.access_token, userId: value })
+    reatilerHandler({ key: userData.access_token, userId: value })
   }
   const filteredData = useMemo(() => {
     let newValues = supportList;
@@ -227,9 +227,9 @@ const CustomerSupport = () => {
               setStatus(["Open"]);
               setbrandList([])
               setSelectedSalesRepId(userData.Sales_Rep__c)
-              supportHandler({ key: userData.x_access_token, salesRepId: userData.Sales_Rep__c })
-              reatilerHandler({ key: userData.x_access_token, userId: userData.Sales_Rep__c })
-              brandhandler({ key: userData.x_access_token, userId: userData.Sales_Rep__c })
+              supportHandler({ key: userData.access_token, salesRepId: userData.Sales_Rep__c })
+              reatilerHandler({ key: userData.access_token, userId: userData.Sales_Rep__c })
+              brandhandler({ key: userData.access_token, userId: userData.Sales_Rep__c })
             }}
           >
             <CloseButton crossFill={'#fff'} height={20} width={20} />
